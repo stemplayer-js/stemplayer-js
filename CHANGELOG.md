@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0-beta.19 (2023-05-12)
+
+
+### Bug Fixes
+
+* **stem-player:** added padding to waveform ([730636c](https://github.com/sound-ws/stem-player/commit/730636c669e679a4b358b65fc30e884b9b75db3f))
+* **stem-player:** ensure listeners are only added once and totalduration is updated when needed ([f824f84](https://github.com/sound-ws/stem-player/commit/f824f8436c4a9297265607309fdb45b6f5c42186))
+* **stem-player:** fix for merged waveform ([300008e](https://github.com/sound-ws/stem-player/commit/300008eb3c289ae92aee14fdee8b3370e79ed609))
+* **stem-player:** fix for svg icons causing error in app using package ([ad960a7](https://github.com/sound-ws/stem-player/commit/ad960a75cab5ede893977e91fabf4ef24bc1c4fd))
+* **stem-player:** fix for typo in main and module entry in package.json ([cf76bc9](https://github.com/sound-ws/stem-player/commit/cf76bc921d0864a0b9204c13766420823ad0bf69))
+* **stem-player:** fixed styling issue with spacing ([14e31f9](https://github.com/sound-ws/stem-player/commit/14e31f9131483dcb9f44c2bd31d1bbde985bc6f9))
+* **stem-player:** seek to 0 on end ([272e220](https://github.com/sound-ws/stem-player/commit/272e220aaaaa3c57256afb79a7acbe11f5562216))
+
+
+### Features
+
+* **stem-player:** added experimental loop feature ([24f87c9](https://github.com/sound-ws/stem-player/commit/24f87c99a32aff9fee21c9457e8d8912904eadb5))
+* **stem-player:** changed solo unsolo icon to mic mic off ([a34afe3](https://github.com/sound-ws/stem-player/commit/a34afe3d381372abe95adbad1b4ab6d8cac19b16))
+* **stem-player:** updates for managing setting duration and rendering waveforms ([d626150](https://github.com/sound-ws/stem-player/commit/d6261502f6165d00e65459f1773027f4f6643230))
+
+
+
+
+
 # [2.0.0-beta.18](https://github.com/sound-ws/stem-player/compare/@soundws/stem-player@2.0.0-beta.17...@soundws/stem-player@2.0.0-beta.18) (2023-05-12)
 
 
