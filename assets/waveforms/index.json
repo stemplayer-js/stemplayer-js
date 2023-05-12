@@ -1,0 +1,35 @@
+{
+  "label": "Drums demo",
+  "stems": [
+    {
+      "id": "STEM1",
+      "waveform": "106 DRUMS B_01.5.json",
+      "src": "106 DRUMS B_01.5.m3u8",
+      "label": "Drums B"
+    },
+    {
+      "id": "STEM2",
+      "waveform": "106 DRUMS A_02.5.json",
+      "src": "106 DRUMS A_02.5.m3u8",
+      "label": "Drums A"
+    },
+    {
+      "id": "STEM3",
+      "waveform": "106 CONGA_03.3.json",
+      "src": "106 CONGA_03.3.m3u8",
+      "label": "Conga"
+    },
+    {
+      "id": "STEM4",
+      "waveform": "106 CABASA_04.3.json",
+      "src": "106 CABASA_04.3.m3u8",
+      "label": "Cabasa"
+    },
+    {
+      "id": "STEM5",
+      "waveform": "106 BELL_05.3.json",
+      "src": "106 BELL_05.3.m3u8",
+      "label": "Bell"
+    }
+  ]
+}
