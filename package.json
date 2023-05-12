@@ -1,6 +1,7 @@
 {
   "name": "@stemplayer-js/stemplayer-js",
   "author": "The First Coders Team (https://www.firstcoders.co.uk)",
+  "description": "A streaming, low latency Stem Player Web-Component",
   "email": "support@firstcoders.co.uk",
   "bugs": "https://github.com/stemplayer-js/stem-player-js/issues",
   "homepage": "https://www.stemplayer-js.com",

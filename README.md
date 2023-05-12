@@ -1,6 +1,6 @@
 # General
 
-A high performance streaming Stem Player, utilising capable of playing multiple stems allowing the user to control the volumes of each stem.
+A streaming, low latency Stem Player Web-Component
 
 ![alt text](./assets//img//screenshot.png)
 
