@@ -16,7 +16,7 @@
  */
 /* eslint-disable no-param-reassign  */
 import { LitElement, html, css } from 'lit';
-import { HLS } from '@soundws/hls-web-audio';
+import { HLS } from '@stemplayer-js/hls-web-audio';
 import { defineCustomElements as defineWaveformComponent } from './waveform-component';
 import { defineCustomElements as defineResponsiveVolumecomponent } from './responsive-volume-component';
 import gridStyles from '../styles/grid';
