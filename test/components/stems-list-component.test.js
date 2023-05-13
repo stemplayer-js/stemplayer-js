@@ -12,8 +12,8 @@ describe('StemsListComponent', () => {
         <soundws-stem
           id="stem-drums-b"
           label="Drums B"
-          src="http://localhost:8000/assets/audio/106%20DRUMS%20B_01.5.m3u8"
-          waveform="http://localhost:8000/assets/waveforms/106%20DRUMS%20B_01.5.json"
+          src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
+          waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
           muted="true"
           volume="0.2"
           wave-color="red"
