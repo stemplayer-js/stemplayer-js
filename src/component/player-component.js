@@ -17,7 +17,7 @@
 
 /* eslint-disable no-param-reassign  */
 import { LitElement, html, css } from 'lit';
-import { Controller } from '@stemplayer-js/hls-web-audio';
+import { Controller } from '@sound-ws/hls-web-audio';
 import {
   defineCustomElements as defineControlComponent,
   ControlComponent,
