@@ -5,7 +5,7 @@
   "email": "support@firstcoders.co.uk",
   "bugs": "https://github.com/stemplayer-js/stem-player-js/issues",
   "homepage": "https://stemplayer-js.com",
-  "version": "2.0.0-beta.24",
+  "version": "2.0.0",
   "main": "dist/soundws-stem-player.es.js",
   "module": "dist/soundws-stem-player.es.js",
   "type": "module",
@@ -62,7 +62,7 @@
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-replace": "^5.0.2",
-    "@soundws/hls-web-audio": "^2.0.0-beta.14",
+    "@soundws/hls-web-audio": "^2.0.0",
     "@web/dev-server": "^0.2.0",
     "@web/dev-server-rollup": "^0.5.0",
     "@web/test-runner": "^0.16.0",
@@ -92,11 +92,6 @@
     "wavesurfer.js": "^6.6.3",
     "web-component-analyzer": "^1.1.7"
   },
-  "bundledDependencies": [
-    "@soundws/hls-web-audio",
-    "wavesurfer.js",
-    "material-design-icons"
-  ],
   "engines": {
     "node": ">=16"
   },
