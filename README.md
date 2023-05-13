@@ -4,7 +4,7 @@ A streaming, low latency Stem Player Web-Component
 
 ![alt text](./assets//img//screenshot.png)
 
-[See this live example of our stem player](https://www.stemplayer-js.com)
+[See this live example of our stem player](https://stemplayer-js.com)
 
 ## Contributing
 
