@@ -30,7 +30,7 @@ The component can be either instantiated as HTML
 
 ```html
 <script type="module">
-  import { defineCustomElements } from '../dist/soundws-stem-player.es.js';
+  import { defineCustomElements } from '@stemplayer-js/stemplayer-js';
 
   // first register the custom elements
   defineCustomElements();
@@ -131,15 +131,17 @@ See also
 - [https://ffmpeg.org/ffmpeg-formats.html#toc-hls-1](https://ffmpeg.org/ffmpeg-formats.html#toc-hls-1)
 - [https://ffmpeg.org/ffmpeg-formats.html#toc-segment_002c-stream_005fsegment_002c-ssegment](https://ffmpeg.org/ffmpeg-formats.html#toc-segment_002c-stream_005fsegment_002c-ssegment)
 
-In due course we will release a docker image to make this process easier.
+See also this [Docker image](https://github.com/sound-ws/docker-segment-audio) to help you segment your audio.
 
 # Waveforms
 
 Because we don't download the entire audio file, we cannot analyse the audio so that we can display a nice waveform. So unfortunately these also need to be pre-generated. Although inconvenient, it is probably good practice anyway as a waveform in json format is very small in size; there is no need to re-compute it time and time again.
 
-[See here for info on how to generate compatible waveforms](https://github.com/bbc/audiowaveform)
+[See here for info on how to generate compatible waveforms](https://github.com/bbc/audiowaveform). Make sure you limit the `--pixels-per-second` to around `20`, since by default the library will output that contains too much detail.
 
-In due course we will release a docker image to make this process easier.
+The output will have to be normalized so the waveform will be represented by an array of numbers that is between -1 and +1.
+
+See here for a [Docker image](https://github.com/sound-ws/docker-generate-waveforms) which should (hopefully) help.
 
 # ES modules and bare imports in the browser
 
@@ -166,7 +168,7 @@ In order to resolve this we need to rely on [import-maps](https://blog.logrocket
   }
 </script>
 <script type="module">
-  import { defineCustomElements } from 'node_modules/dist/soundws-stem-player.es.js';
+  import { defineCustomElements } from '@stemplayer-js/stemplayer-js';
   defineCustomElements();
 </script>
 ```
