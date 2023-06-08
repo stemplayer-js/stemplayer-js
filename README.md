@@ -15,13 +15,13 @@ A streaming, low latency Stem Player Web-Component
 simply execute
 
 ```shell
-npm install @stemplayer-js/stemplayer-js
+npm install @stemplayer-js/stemplayer-js lit
 ```
 
 or using yarn
 
 ```shell
-yarn add @stemplayer-js/stemplayer-js
+yarn add @stemplayer-js/stemplayer-js lit
 ```
 
 # Usage

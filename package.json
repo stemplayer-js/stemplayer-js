@@ -5,7 +5,7 @@
   "email": "support@firstcoders.co.uk",
   "bugs": "https://github.com/stemplayer-js/stem-player-js/issues",
   "homepage": "https://stemplayer-js.com",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/soundws-stem-player.es.js",
   "module": "dist/soundws-stem-player.es.js",
   "type": "module",
@@ -47,7 +47,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "lit": "^2.7.3"
   },
   "devDependencies": {
