@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2-beta.0](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@2.0.1...@stemplayer-js/stemplayer-js@2.0.2-beta.0) (2023-09-22)
+
+
+### Bug Fixes
+
+* **stem-player:** Error events were not instantiated properly ([5b139d0](https://github.com/stemplayer-js/stemplayer-js/commit/5b139d01a2d5c17c22a41a1251388b053050a21b))
+
+
+
+
+
 ## [2.0.1](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@2.0.0...@stemplayer-js/stemplayer-js@2.0.1) (2023-05-13)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
