@@ -93,7 +93,7 @@
     "web-component-analyzer": "^1.1.7"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "build:dist": "rimraf dist/ && mkdir dist/ && NODE_ENV=production rollup -c rollup.config.mjs",
