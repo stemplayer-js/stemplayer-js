@@ -127,7 +127,7 @@ export class StemComponent extends LitElement {
 
     // this is also handled by the player-component - but the stem element should also emit an error event
     this.addEventListener('waveform-loading-error', ({ detail }) =>
-      this.dispatchEvent(new ErrorEvent('error', detail))
+      this.dispatchEvent(new ErrorEvent('error', { error: detail }))
     );
 
     this.addEventListener('stem-loading-end', () => {
@@ -223,13 +223,13 @@ export class StemComponent extends LitElement {
         .promise.then(() => {
           this.dispatchEvent(new Event('stem-loading-end', { bubbles: true, composed: true }));
         })
-        .catch((err) => {
+        .catch((error) => {
           // dispatch error event on element (doesnt bubble)
-          this.dispatchEvent(new ErrorEvent('error', err));
+          this.dispatchEvent(new ErrorEvent('error', { error }));
 
           // dispatch bubbling event so that the player-component can respond to it
           this.dispatchEvent(
-            new CustomEvent('stem-loading-error', { detail: err, bubbles: true, composed: true })
+            new CustomEvent('stem-loading-error', { detail: error, bubbles: true, composed: true })
           );
         });
     }

@@ -135,13 +135,17 @@ export class WaveformComponent extends LitElement {
           })
         );
       })
-      .catch((err) => {
+      .catch((error) => {
         // dispatch error event on element (doesnt bubble)
-        this.dispatchEvent(new ErrorEvent('error', err));
+        this.dispatchEvent(new ErrorEvent('error', { error }));
 
         // dispatch bubbling event so that the player-component can respond to it
         this.dispatchEvent(
-          new CustomEvent('waveform-loading-error', { detail: err, bubbles: true, composed: true })
+          new CustomEvent('waveform-loading-error', {
+            detail: error,
+            bubbles: true,
+            composed: true,
+          })
         );
       });
   }
