@@ -132,7 +132,7 @@ export class WaveformComponent extends LitElement {
             detail: this.peaks.values,
             bubbles: true,
             composed: true,
-          })
+          }),
         );
       })
       .catch((error) => {
@@ -145,7 +145,7 @@ export class WaveformComponent extends LitElement {
             detail: error,
             bubbles: true,
             composed: true,
-          })
+          }),
         );
       });
   }
@@ -168,7 +168,7 @@ export class WaveformComponent extends LitElement {
     });
 
     this.drawer.on('click', (e, pct) =>
-      this.dispatchEvent(new CustomEvent('seek', { detail: { pct } }))
+      this.dispatchEvent(new CustomEvent('seek', { detail: { pct } })),
     );
 
     this.drawer.init();

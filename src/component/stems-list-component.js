@@ -117,7 +117,7 @@ export class StemsListComponent extends LitElement {
         detail: { peaks: peaks.values, target: this },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 

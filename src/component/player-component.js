@@ -97,10 +97,10 @@ export class PlayerComponent extends LitElement {
     this.addEventListener('loading-start', this.onLoadingStart);
     this.addEventListener('loading-end', this.onLoadingEnd);
     this.addEventListener('stem-loading-error', ({ detail }) =>
-      this.dispatchEvent(new ErrorEvent('error', { error: detail }))
+      this.dispatchEvent(new ErrorEvent('error', { error: detail })),
     );
     this.addEventListener('waveform-loading-error', ({ detail }) =>
-      this.dispatchEvent(new ErrorEvent('error', { error: detail }))
+      this.dispatchEvent(new ErrorEvent('error', { error: detail })),
     );
   }
 

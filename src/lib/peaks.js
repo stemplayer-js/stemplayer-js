@@ -47,7 +47,7 @@ export default class Peaks extends Observer {
           const g = Math.sqrt(sum * sum);
 
           return f > g ? x : sum;
-        }, 0)
+        }, 0),
     );
 
     return new Peaks(data);
@@ -118,7 +118,7 @@ export default class Peaks extends Observer {
     if (this.dataDuration < this.renderedDuration) {
       const n = this.peaksPerSecond * this.renderedDuration;
       modifiedValues = modifiedValues.concat(
-        new Array(Math.floor(n - modifiedValues.length)).fill(0)
+        new Array(Math.floor(n - modifiedValues.length)).fill(0),
       );
     } else if (this.dataDuration > this.renderedDuration) {
       const n = this.peaksPerSecond * this.renderedDuration;
