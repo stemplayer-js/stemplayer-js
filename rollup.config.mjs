@@ -45,7 +45,7 @@ const config = {
   },
   output: [
     {
-      file: `dist/soundws-stem-player.es.js`,
+      file: `dist/soundws-stem-player.mjs`,
       format: 'es',
       sourcemap: true,
     },
@@ -107,7 +107,7 @@ if (process.env.NODE_ENV !== 'development') {
       // ecma: 2020,
       // module: true,
       warnings: true,
-    })
+    }),
   );
 }
 

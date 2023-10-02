@@ -1,18 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Sound Web Services | Demo of Stem Player</title>
+    <style>
+      :root {
+        --sws-stemsplayer-font-family: 'Arial Narrow';
+        --sws-stemsplayer-font-size: 0.9rem;
+        /* --sws-stemsplayer-color: black; */
+        --sws-stemsplayer-bg-color: black;
+        --sws-stemsplayer-wave-color: pink;
+        --sws-stemsplayer-wave-progress-color: purple;
+        /* --sws-stemsplayer-wave-pixel-ratio: 2; */
+
+        --sws-stemsplayer-controls-color: white;
+        --sws-stemsplayer-controls-bg-color: black;
+        --sws-stemsplayer-controls-wave-color: blue;
+        --sws-stemsplayer-controls-wave-progress-color: lightblue;
+        /* --sws-stemsplayer-controls-wave-pixel-ratio: 2; */
+
+        --sws-stemsplayer-stem-bg-color: #222;
+        --sws-stemsplayer-stem-color: white;
+        --sws-stemsplayer-stem-wave-color: white;
+        --sws-stemsplayer-stem-wave-progress-color: lightblue;
+        /* --sws-stemsplayer-stem-wave-pixel-ratio: 2; */
+
+        /* --sws-stemsplayer-wave-bar-gap: 1; */
+        /* --sws-stemsplayer-wave-bar-width: 1; */
+      }
+    </style>
+    <script type="module">
+      import { defineCustomElements } from '../dist/soundws-stem-player.mjs';
+      defineCustomElements();
+    </script>
   </head>
   <body>
-    <h1>Examples</h1>
-    <ul>
-      <li><a href="./light-theme.html">Light Theme</a></li>
-      <li><a href="./small.html">Small</a></li>
-      <li><a href="./external-control.html">Control the player externally</a></li>
-      <li><a href="./control-at-bottom.html">Control at bottom</a></li>
-      <li><a href="./scroll-pane.html">Scroll pane</a></li>
-      <li><a href="./compact.html">Compact</a></li>
-    </ul>
+    <div>
+      <div class="container text-center">
+        <div style="padding: 50px 100px">
+          <div>
+            <soundws-stem-player id="player" row-height="60px" sample-rate="22050" loop>
+              <soundws-stem-player-controls
+                label="Demo track"
+                wave-color="white"
+                wave-progress-color="rgb(0, 206, 224)"
+              ></soundws-stem-player-controls>
+              <soundws-stem
+                label="Drums A"
+                src="assets/audio/106%20DRUMS%20A_02.5.m3u8"
+                waveform="assets/waveforms/106%20DRUMS%20A_02.5.json"
+                volume="0.1"
+              >
+              </soundws-stem>
+              <soundws-stem
+                id="stem-drums-b"
+                label="Drums B"
+                src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
+                waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
+                muted="true"
+                volume="0.2"
+                wave-color="red"
+              ></soundws-stem>
+              <soundws-stem
+                label="Conga"
+                src="assets/audio/106%20CONGA_03.3.m3u8"
+                waveform="assets/waveforms/106%20CONGA_03.3.json"
+                volume="0.3"
+              ></soundws-stem>
+              <soundws-stem
+                label="Casaba"
+                src="assets/audio/106%20CABASA_04.3.m3u8"
+                waveform="assets/waveforms/106%20CABASA_04.3.json"
+                volume="0.4"
+                muted="true"
+              ></soundws-stem>
+              <soundws-stem
+                label="Bell"
+                src="assets/audio/106%20BELL_05.3.m3u8"
+                waveform="assets/waveforms/106%20BELL_05.3.json"
+                bg-color="green"
+                volume="0.5"
+              ></soundws-stem>
+            </soundws-stem-player>
+          </div>
+          <div>More examples <a href="./examples/index.html">here</a></div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
