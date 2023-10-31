@@ -14,25 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import DrawerFactory from '../factory/drawer-factory';
 import onResize from '../lib/on-resize';
 import config from '../config';
 import defineCustomElement from '../lib/define-custom-element';
 import Peaks from '../lib/peaks';
 
-const PADDING = 6;
-
 export class WaveformComponent extends LitElement {
-  static get styles() {
-    return css`
-      .container {
-        padding-top: ${PADDING / 2}px;
-        padding-bottom: ${PADDING / 2}px;
-      }
-    `;
-  }
-
   static get properties() {
     return {
       src: { type: String },
@@ -163,7 +152,7 @@ export class WaveformComponent extends LitElement {
         barGap: this.barGap,
         barWidth: this.barWidth,
         ...this.options,
-        height: this.options.height - PADDING,
+        height: this.options.height,
       },
     });
 
