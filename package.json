@@ -57,8 +57,8 @@
     "wavesurfer.js": "^6.6.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.20",
-    "@babel/preset-env": "^7.22.20",
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
     "@material-design-icons/svg": "^0.14.6",
     "@open-wc/testing": "^3.1.8",
     "@rollup/plugin-babel": "^6.0.3",
