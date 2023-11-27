@@ -283,8 +283,14 @@ export class PlayerComponent extends LitElement {
    * @returns {Controller}
    */
   createController() {
+    let { ac } = this;
+
+    if (config.ac) {
+      ac = typeof config.ac === 'function' ? config.ac(this) : config.ac;
+    }
+
     const controller = new Controller({
-      ac: config.ac || this.ac,
+      ac,
       acOpts: { latencyHint: 'playback', sampleRate: this.sampleRate },
       duration: this.duration,
       loop: this.loop,
