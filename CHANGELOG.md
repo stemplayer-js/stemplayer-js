@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0-beta.0](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@2.0.2-beta.7...@stemplayer-js/stemplayer-js@2.1.0-beta.0) (2023-11-27)
+
+### Features
+
+- **stem-player:** injecting audiocontext into config accepts function ([bef5f58](https://github.com/stemplayer-js/stemplayer-js/commit/bef5f580e7d3e437b2e560f34fea5d07c83e19fc))
+
 ## [2.0.2-beta.7](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@2.0.2-beta.6...@stemplayer-js/stemplayer-js@2.0.2-beta.7) (2023-11-09)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
