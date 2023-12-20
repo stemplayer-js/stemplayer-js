@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Sound Web Services | Demo of Stem Player</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <style>
       :root {
         --sws-stemsplayer-font-family: 'Arial Narrow';
@@ -37,9 +38,15 @@
   <body>
     <div>
       <div class="container text-center">
-        <div style="padding: 50px 100px">
+        <div>
           <div>
-            <soundws-stem-player id="player" row-height="60px" sample-rate="22050" loop>
+            <soundws-stem-player
+              id="player"
+              row-height="60px"
+              sample-rate="22050"
+              loop
+              auto-play="true"
+            >
               <soundws-stem-player-controls
                 label="Demo track"
                 wave-color="white"

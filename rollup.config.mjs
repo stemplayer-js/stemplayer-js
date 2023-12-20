@@ -104,8 +104,8 @@ const config = {
 if (process.env.NODE_ENV !== 'development') {
   config.plugins.push(
     terser({
-      // ecma: 2020,
-      // module: true,
+      ecma: 2021,
+      module: true,
       warnings: true,
     }),
   );
