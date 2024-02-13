@@ -2,8 +2,6 @@
 
 A streaming, low latency Stem Player Web-Component
 
-![alt text](./assets//img//screenshot.png)
-
 [See this live example of our stem player](https://stemplayer-js.com)
 
 This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
@@ -15,21 +13,20 @@ This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) reco
 ## Installation
 
 ```bash
-npm i stemplayer-js
+npm i @stemplayer-js
 ```
 
 ## Usage
 
 ```html
 <script type="module">
-  import 'stemplayer-js/stemplayer.js';
+  import '@stemplayer-js/stemplayer.js';
 </script>
 
-<soundws-stem-player row-height="60px" sample-rate="22050">
+<soundws-stem-player>
   <soundws-stem-player-controls
     label="A label"
     wave-color="white"
-    wave-progress-color="rgb(0, 206, 224)"
   ></soundws-stem-player-controls>
   <soundws-stem
     label="Drums A"
@@ -48,50 +45,11 @@ npm i stemplayer-js
 </soundws-stem-player>
 ```
 
-or using javascript
-
-```javascript
-import { defineCustomElements } from '@stemplayer-js/stemplayer-js';
-
-// first register the custom elements
-defineCustomElements();
-
-// create the stems-player web-component
-const player = document.createElement('soundws-stem-player');
-
-// append the controls web-component
-const controls = document.createElement('soundws-stem-player-controls');
-controls.label = 'Stems rule!';
-player.appendChild(controls);
-
-// append a stem web-component
-const drums = document.createElement('soundws-stem');
-drums.label = 'Drums';
-drums.src = 'https://your-cdn-com/drums.m3u8;
-drums.waveform = 'https://your-cdn-com/drums.json';
-player.appendChild(drums);
-
-// append a stem web-component
-const vocals = document.createElement('soundws-stem');
-vocals.label = 'Vocals';
-vocals.src = 'https://your-cdn-com/vocals.m3u8;
-vocals.waveform = 'https://your-cdn-com/vocals.json';
-player.appendChild(vocals);
-
-// listen to some events
-player.addEventListener('timeupdate', () => { /* do something */ });
-player.addEventListener('end', () => { /* do something */ });
-```
-
-See [docs](./docs) for more information.
-
 # Browser Support
 
 The Player works in [browsers supporting the Web Audio API](https://caniuse.com/#feat=audio-api). This includes most modern browsers.
 
 The stem player is built as a [web-component](https://caniuse.com/?search=web%20components) which is supported natively by most modern browsers.
-
-A bundles ES module is provided, transpiled to support modern browsers.
 
 For targeting older browsers, you can utilise your own build system.
 
