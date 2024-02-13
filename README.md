@@ -23,26 +23,26 @@ npm i @stemplayer-js/stemplayer-js
   import '@stemplayer-js/stemplayer.js';
 </script>
 
-<soundws-stem-player>
-  <soundws-stem-player-controls
+<stemplayer-js>
+  <stemplayer-js-controls
     label="A label"
     wave-color="white"
-  ></soundws-stem-player-controls>
-  <soundws-stem
+  ></stemplayer-js-controls>
+  <stemplayer-js-stem
     label="Drums A"
     src="https://your-cdn-com/drums.m3u8"
     waveform="https://your-cdn-com/drums.json"
     volume="0.1"
   >
-  </soundws-stem>
-  <soundws-stem
+  </stemplayer-js-stem>
+  <stemplayer-js-stem
     label="Vocals"
     src="https://your-cdn-com/vocals.m3u8"
     waveform="https://your-cdn-com/vocals.json"
     muted="true"
     volume="0.2"
-  ></soundws-stem>
-</soundws-stem-player>
+  ></stemplayer-js-stem>
+</stemplayer-js>
 ```
 
 # Browser Support
