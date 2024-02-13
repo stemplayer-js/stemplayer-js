@@ -24,10 +24,7 @@ npm i @stemplayer-js/stemplayer-js
 </script>
 
 <stemplayer-js>
-  <stemplayer-js-controls
-    label="A label"
-    wave-color="white"
-  ></stemplayer-js-controls>
+  <stemplayer-js-controls label="A label"></stemplayer-js-controls>
   <stemplayer-js-stem
     label="Drums A"
     src="https://your-cdn-com/drums.m3u8"
