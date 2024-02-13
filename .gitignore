@@ -1,5 +1,24 @@
+## editors
+/.idea
+/.vscode
+
+## system files
 .DS_Store
-node_modules
-dist
-README-preamble.md
-coverage
+
+## npm
+/node_modules/
+/npm-debug.log
+
+## testing
+/coverage/
+
+## temp folders
+/.tmp/
+
+# build
+/_site/
+/dist/
+/out-tsc/
+
+storybook-static
+custom-elements.json

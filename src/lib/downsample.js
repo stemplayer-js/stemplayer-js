@@ -67,7 +67,7 @@ export default function largestTriangleThreeBuckets(data, threshold) {
       area =
         Math.abs(
           (point_a_x - avg_x) * (data[range_offs] - point_a_y) -
-            (point_a_x - range_offs) * (avg_y - point_a_y)
+            (point_a_x - range_offs) * (avg_y - point_a_y),
         ) * 0.5;
       if (area > max_area) {
         max_area = area;

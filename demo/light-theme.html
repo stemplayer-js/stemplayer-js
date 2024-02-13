@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sound Web Services | Demo of Stem Player</title>
+    <style>
+      body {
+        background-color: #222;
+        color: white;
+      }
+      a {
+        color: white;
+      }
+      :root {
+        --stemplayer-js-font-family: 'Arial Narrow';
+        --stemplayer-js-font-size: 0.9rem;
+        --stemplayer-js-accent-color: lightblue;
+        --stemplayer-js-color: black;
+        --stemplayer-js-background-color: white;
+        --stemplayer-js-waveform-color: red;
+        --stemplayer-js-waveform-progress-color: purple;
+        --stemplayer-js-controls-color: black;
+        --stemplayer-js-controls-background-color: white;
+        --stemplayer-js-controls-waveform-color: black;
+        --stemplayer-js-controls-waveform-progress-color: lightblue;
+      }
+    </style>
+    <script type="module">
+      import 'lit';
+      import '../stemplayer.js';
+    </script>
+  </head>
+  <body>
+    <div>
+      <div class="container text-center">
+        <div style="padding: 50px 100px">
+          <div>
+            <stemplayer-js
+              id="player"
+              row-height="160px"
+              sample-rate="22050"
+            >
+              <stemplayer-js-controls
+                label="Demo track"
+              ></stemplayer-js-controls>
+              <stemplayer-js-stem
+                label="Drums A"
+                src="assets/audio/106%20DRUMS%20A_02.5.m3u8"
+                waveform="assets/waveforms/106%20DRUMS%20A_02.5.json"
+                volume="0.1"
+              >
+              </stemplayer-js-stem>
+              <stemplayer-js-stem
+                id="stem-drums-b"
+                label="Drums B"
+                src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
+                waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
+                muted="true"
+                volume="0.2"
+              ></stemplayer-js-stem>
+              <stemplayer-js-stem
+                label="Conga"
+                src="assets/audio/106%20CONGA_03.3.m3u8"
+                waveform="assets/waveforms/106%20CONGA_03.3.json"
+                volume="0.3"
+              ></stemplayer-js-stem>
+              <stemplayer-js-stem
+                label="Casaba"
+                src="assets/audio/106%20CABASA_04.3.m3u8"
+                waveform="assets/waveforms/106%20CABASA_04.3.json"
+                volume="0.4"
+                muted="true"
+              ></stemplayer-js-stem>
+              <stemplayer-js-stem
+                label="Bell"
+                src="assets/audio/106%20BELL_05.3.m3u8"
+                waveform="assets/waveforms/106%20BELL_05.3.json"
+                volume="0.5"
+              ></stemplayer-js-stem>
+            </stemplayer-js>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

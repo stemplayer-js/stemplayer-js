@@ -14,22 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import { css } from 'lit';
+export default (...arrays) => {
+  const n = arrays.reduce((max, xs) => Math.max(max, xs.length), 0);
+  const result = Array.from({ length: n });
 
-export default css`
-  .w2 {
-    width: calc(var(--stemplayer-js-grid-base, 1.5rem) * 2);
-  }
+  const data = result.map((_, i) =>
+    arrays
+      .map(xs => xs[i] || 0)
+      .reduce((sum, x) => {
+        const f = Math.sqrt(x * x);
+        const g = Math.sqrt(sum * sum);
 
-  .w5 {
-    width: calc(var(--stemplayer-js-grid-base, 1.5rem) * 5);
-  }
+        return f > g ? x : sum;
+      }, 0),
+  );
 
-  .w6 {
-    width: calc(var(--stemplayer-js-grid-base, 1.5rem) * 6);
-  }
-
-  .w9 {
-    width: calc(var(--stemplayer-js-grid-base, 1.5rem) * 9);
-  }
-`;
+  return { data };
+};

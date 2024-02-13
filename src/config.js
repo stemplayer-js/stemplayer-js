@@ -14,6 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-const fetchOptions = {};
+export const fetchOptions = {};
 
-export default { fetchOptions };
+export const responsiveBreakpoints = {
+  xs: '640',
+  sm: '1007',
+};
+
+export const defaults = {
+  waveform: {
+    waveColor: '#AAA',
+    controlsWaveColor: '#AAA',
+    progressColor: 'rgb(0, 206, 224)',
+    controlsProgressColor: 'rgb(0, 206, 224)',
+    devicePixelRatio: 2,
+    barGap: 2,
+    barWidth: 2,
+  },
+};
+
+export default { fetchOptions, responsiveBreakpoints, defaults };

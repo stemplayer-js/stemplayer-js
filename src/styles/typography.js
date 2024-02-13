@@ -18,11 +18,11 @@ import { css } from 'lit';
 
 export default css`
   .textSm {
-    font-size: 0.9em;
+    font-size: 0.85rem;
   }
 
   .textXs {
-    font-size: 0.8em;
+    font-size: 0.75rem;
   }
 
   .textMuted {
@@ -37,13 +37,5 @@ export default css`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-  }
-
-  .textHide {
-    text-indent: 100%;
-  }
-
-  .textHide {
-    text-indent: 100%;
   }
 `;

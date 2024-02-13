@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sound Web Services | Demo of Stem Player</title>
+    <style>
+      body {
+        background-color: #222;
+        color: white;
+      }
+      a {
+        color: white;
+      }
+      :root {
+        --stemplayer-js-accent-color: #EB4926;
+        /* --stemplayer-js-font-family: 'Arial Narrow';
+        --stemplayer-js-font-size: 0.9rem;
+
+        --stemplayer-js-color: black;
+        --stemplayer-js-background-color: white;
+        --stemplayer-js-waveform-color: red;
+        --stemplayer-js-waveform-progress-color: purple;
+        --stemplayer-js-controls-color: black;
+        --stemplayer-js-controls-background-color: white;
+        --stemplayer-js-controls-waveform-color: black;
+        --stemplayer-js-controls-waveform-progress-color: lightblue;
+        --stemplayer-js-stem-background-color: #ddd;
+        --stemplayer-js-stem-color: black;
+        --stemplayer-js-stem-waveform-color: black;
+        --stemplayer-js-stem-waveform-progress-color: lightblue; */
+      }
+    </style>
+    <script type="module">
+      import { html, render } from 'lit';
+      import '../stemplayer.js';
+
+      const canvas = document.createElement('canvas')
+      canvas.height = 100
+      const ctx = canvas.getContext('2d')
+
+      // Define the waveform gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1.35)
+      gradient.addColorStop(0, '#656666') // Top color
+      gradient.addColorStop((canvas.height * 0.7) / canvas.height, '#656666') // Top color
+      gradient.addColorStop((canvas.height * 0.7 + 1) / canvas.height, '#ffffff') // White line
+      gradient.addColorStop((canvas.height * 0.7 + 2) / canvas.height, '#ffffff') // White line
+      gradient.addColorStop((canvas.height * 0.7 + 3) / canvas.height, '#B1B1B1') // Bottom color
+      gradient.addColorStop(1, '#B1B1B1') // Bottom color
+
+      // Define the progress gradient
+      const progressGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1.35)
+      progressGradient.addColorStop(0, '#EE772F') // Top color
+      progressGradient.addColorStop((canvas.height * 0.7) / canvas.height, '#EB4926') // Top color
+      progressGradient.addColorStop((canvas.height * 0.7 + 1) / canvas.height, '#ffffff') // White line
+      progressGradient.addColorStop((canvas.height * 0.7 + 2) / canvas.height, '#ffffff') // White line
+      progressGradient.addColorStop((canvas.height * 0.7 + 3) / canvas.height, '#F6B094') // Bottom color
+      progressGradient.addColorStop(1, '#F6B094') // Bottom color
+
+      render(
+        html`<stemplayer-js
+              id="player"
+            >
+              <stemplayer-js-controls
+                label="Demo track"
+                .waveColor=${gradient}
+                .waveProgressColor=${progressGradient}
+              ></stemplayer-js-controls>
+              <stemplayer-js-stem
+                label="Drums A"
+                src="assets/audio/106%20DRUMS%20A_02.5.m3u8"
+                waveform="assets/waveforms/106%20DRUMS%20A_02.5.json"
+                .waveColor=${gradient}
+                .waveProgressColor=${progressGradient}
+              >
+              </stemplayer-js-stem>
+              <stemplayer-js-stem
+                id="stem-drums-b"
+                label="Drums B"
+                src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
+                waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
+                .waveColor=${gradient}
+                .waveProgressColor=${progressGradient}
+              ></stemplayer-js-stem>
+              <stemplayer-js-stem
+                label="Conga"
+                src="assets/audio/106%20CONGA_03.3.m3u8"
+                waveform="assets/waveforms/106%20CONGA_03.3.json"
+                .waveColor=${gradient}
+                .waveProgressColor=${progressGradient}
+              ></stemplayer-js-stem>
+              <stemplayer-js-stem
+                label="Casaba"
+                src="assets/audio/106%20CABASA_04.3.m3u8"
+                waveform="assets/waveforms/106%20CABASA_04.3.json"
+                .waveColor=${gradient}
+                .waveProgressColor=${progressGradient}
+              ></stemplayer-js-stem>
+              <stemplayer-js-stem
+                label="Bell"
+                src="assets/audio/106%20BELL_05.3.m3u8"
+                waveform="assets/waveforms/106%20BELL_05.3.json"
+                .waveColor=${gradient}
+                .waveProgressColor=${progressGradient}
+              ></stemplayer-js-stem>
+            </stemplayer-js>`,
+        document.querySelector('#demo')
+      );
+
+      // const hover = document.querySelector('#hover')
+
+      // console.log(hover)
+    </script>
+  </head>
+  <body>
+    <div id="demo"></div>
+  </body>
+</html>

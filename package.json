@@ -5,10 +5,6 @@
   "email": "support@firstcoders.co.uk",
   "bugs": "https://github.com/stemplayer-js/stem-player-js/issues",
   "homepage": "https://stemplayer-js.com",
-  "version": "2.1.0-beta.2",
-  "main": "dist/soundws-stem-player.mjs",
-  "module": "dist/soundws-stem-player.mjs",
-  "type": "module",
   "license": "GPL-3.0-or-later",
   "contributors": [
     {
@@ -17,26 +13,6 @@
       "url": "http://www.firstcoders.co.uk"
     }
   ],
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/",
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stemplayer-js/stemplayer-js.git"
-  },
-  "files": [
-    "dist",
-    "docs",
-    "LICENSE",
-    "README.md",
-    "CHANGELOG.md",
-    "src"
-  ],
-  "directories": {
-    "test": "test",
-    "example": "examples"
-  },
   "keywords": [
     "hls",
     "web-audio",
@@ -47,64 +23,72 @@
     "webcomponent",
     "custom-element"
   ],
-  "peerDependencies": {
-    "lit": "^2.7.3"
+  "version": "3.0.0",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
-  "dependencies": {
-    "@soundws/hls-web-audio": "^2.1.0-beta.1",
-    "lodash.debounce": "^4.0.8",
-    "material-design-icons": "^3.0.1",
-    "wavesurfer.js": "^6.6.3"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.23.2",
-    "@babel/preset-env": "^7.23.2",
-    "@material-design-icons/svg": "^0.14.6",
-    "@open-wc/testing": "^3.1.8",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-replace": "^5.0.5",
-    "@web/dev-server": "^0.4.0",
-    "@web/dev-server-rollup": "^0.6.0",
-    "@web/test-runner": "^0.18.0",
-    "@web/test-runner-puppeteer": "^0.15.0",
-    "concurrently": "^8.0.1",
-    "cross-env": "^7.0.2",
-    "eslint": "^8.50.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-prettier": "^5.0.0",
-    "lint-staged": "^14.0.1",
-    "postcss": "^8.4.32",
-    "prettier": "^3.0.3",
-    "rollup": "^4.9.1",
-    "rollup-plugin-filesize": "^10.0.0",
-    "rollup-plugin-license": "^3.2.0",
-    "rollup-plugin-minify-html-literals": "^1.2.6",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-postcss-lit": "^2.1.0",
-    "rollup-plugin-svg": "^2.0.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "web-component-analyzer": "^1.1.7"
-  },
-  "engines": {
-    "node": ">=18"
+  "private": true,
+  "exports": {
+    ".": "./index.js",
+    "./stemplayer-legacy.js": "./stemplayer-legacy.js",
+    "./stemplayer.js": "./stemplayer.js",
+    "./config.js": "./src/config.js"
   },
   "scripts": {
-    "build:dist": "rm -rf dist/ && mkdir dist/ && NODE_ENV=production rollup -c rollup.config.mjs",
-    "build:dev": "rm -rf dist/ && mkdir dist/ && NODE_ENV=development rollup -c rollup.config.mjs",
-    "build:docs": "rm -rf docs/ && mkdir docs/ && web-component-analyzer --format markdown docs.js --outDir docs",
-    "build": "npm run build:dist && npm run build:docs",
-    "watch": "rollup -c rollup.config.mjs -w",
-    "qa": "eslint \"src/**/*.js\"",
-    "precommit": "lint-staged",
-    "prepublishOnly": "npm run build && npm run build:docs",
-    "start:dev": "concurrently --kill-others --names watch,web-dev-server \"rollup -c rollup.config.mjs -w\" \"web-dev-server --app-index examples/index.html --node-resolve --open --watch\"",
-    "start": "npm run build:dist && web-dev-server --app-index examples/index.html --node-resolve --open",
-    "test": "web-test-runner --coverage",
-    "test:watch": "web-test-runner --watch"
+    "analyze": "cem analyze --litelement",
+    "start": "web-dev-server",
+    "lint": "eslint --ext .js,.html . --ignore-path .gitignore && prettier \"**/*.js\" --check --ignore-path .gitignore",
+    "format": "eslint --ext .js,.html . --fix --ignore-path .gitignore && prettier \"**/*.js\" --write --ignore-path .gitignore",
+    "test:disabled": "web-test-runner --coverage",
+    "test:watch": "web-test-runner --watch",
+    "prepublishOnly": "npm run analyze"
+  },
+  "dependencies": {
+    "@soundws/hls-web-audio": "workspace:^",
+    "@soundws/loader-element": "workspace:^",
+    "@soundws/mask-element": "workspace:^",
+    "@soundws/player-button-element": "workspace:^",
+    "@soundws/range-element": "workspace:^",
+    "@soundws/slider-element": "workspace:^",
+    "@soundws/waveform-element": "workspace:^",
+    "lit": "^3.1.2"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.4.17",
+    "@open-wc/eslint-config": "^12.0.3",
+    "@open-wc/testing": "^4.0.0",
+    "@web/dev-server": "^0.4.2",
+    "@web/test-runner": "^0.18.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "customElements": "custom-elements.json",
+  "eslintConfig": {
+    "extends": [
+      "@open-wc",
+      "prettier"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

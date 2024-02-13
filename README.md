@@ -1,4 +1,4 @@
-# General
+# \<stemplayer-js>
 
 A streaming, low latency Stem Player Web-Component
 
@@ -6,35 +6,25 @@ A streaming, low latency Stem Player Web-Component
 
 [See this live example of our stem player](https://stemplayer-js.com)
 
+This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
+
 ## Contributing
 
 > This repo is a subtree split of our monorepo which will be made public in due course. We cannot process any pull-requests to this repo. Please contact us for help.
 
-# Installation
+## Installation
 
-simply execute
-
-```shell
-npm install @stemplayer-js/stemplayer-js lit
+```bash
+npm i stemplayer-js
 ```
 
-or using yarn
-
-```shell
-yarn add @stemplayer-js/stemplayer-js lit
-```
-
-# Usage
-
-The component can be either instantiated as HTML
+## Usage
 
 ```html
 <script type="module">
-  import { defineCustomElements } from '@stemplayer-js/stemplayer-js';
-
-  // first register the custom elements
-  defineCustomElements();
+  import 'stemplayer-js/stemplayer.js';
 </script>
+
 <soundws-stem-player row-height="60px" sample-rate="22050">
   <soundws-stem-player-controls
     label="A label"
@@ -95,15 +85,6 @@ player.addEventListener('end', () => { /* do something */ });
 
 See [docs](./docs) for more information.
 
-## Demo
-
-Clone this repo and run
-
-```bash
-npm install
-npm start
-```
-
 # Browser Support
 
 The Player works in [browsers supporting the Web Audio API](https://caniuse.com/#feat=audio-api). This includes most modern browsers.
@@ -143,49 +124,48 @@ The output will have to be normalized so the waveform will be represented by an 
 
 See here for a [Docker image](https://github.com/sound-ws/docker-generate-waveforms) which should (hopefully) help.
 
-# ES modules and bare imports in the browser
+## Linting and formatting
 
-This
+To scan the project for linting and formatting errors, run
 
-```js
-import { defineCustomElements } from '@stemplayer-js/stemplayer-js';
+```bash
+npm run lint
 ```
 
-should work fine when using node, webpack etc. to create a bundled application.
+To automatically fix linting and formatting errors, run
 
-However when using ES modules directly in the browser this will lead to an error:
-
-> failed to resolve module specifier "lit". Relative references must start with either "/", "./", or "../".
-
-In order to resolve this we need to rely on [import-maps](https://blog.logrocket.com/es-modules-in-browsers-with-import-maps/). This is because module resolution in the browser works differently from what we are used to from Node.
-
-```html
-<script type="importmap">
-  {
-    "imports": {
-      "lit": "https://cdn.jsdelivr.net/npm/lit-element@3.3.2/+esm"
-    }
-  }
-</script>
-<script type="module">
-  import { defineCustomElements } from '@stemplayer-js/stemplayer-js';
-  defineCustomElements();
-</script>
+```bash
+npm run format
 ```
+
+## Testing with Web Test Runner
+
+To execute a single test run:
+
+```bash
+npm run test
+```
+
+To run the tests in interactive watch mode run:
+
+```bash
+npm run test:watch
+```
+
+## Tooling configs
+
+For most of the tools, the configuration is in the `package.json` to minimize the amount of files in your project.
+
+If you customize the configuration a lot, you can consider moving them to individual files.
+
+## Local Demo with `web-dev-server`
+
+```bash
+npm start
+```
+
+To run a local development server that serves the basic demo located in `demo/index.html`
 
 # License
 
-Copyright (C) 2019-2023 First Coders LTD
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
+see [LICENSE](./LICENSE)

@@ -17,15 +17,20 @@
 import { css } from 'lit';
 
 export default css`
-  .p1 {
-    padding-right: 2.5px;
+  .pr1 {
+    padding-right: 0.15rem;
   }
 
-  .p2 {
-    padding-right: 5px;
+  .px1 {
+    padding-left: 0.15rem;
+    padding-right: 0.15rem;
   }
 
-  .p3 {
-    padding-right: 10px;
+  .pr2 {
+    padding-right: 0.3rem;
+  }
+
+  .pr3 {
+    padding-right: 0.3rem;
   }
 `;

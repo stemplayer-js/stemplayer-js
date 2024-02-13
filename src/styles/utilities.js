@@ -20,16 +20,4 @@ export default css`
   .relative {
     position: relative;
   }
-
-  .displayBlock {
-    display: block;
-  }
-
-  .rowHeight {
-    height: var(--sws-stemsplayer-row-height, 60px);
-  }
-
-  .noOutline {
-    outline-style: none !important;
-  }
 `;

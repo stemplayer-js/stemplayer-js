@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import debounce from 'lodash.debounce';
+import debounce from './debounce.js';
 
 export default (el, fn) => {
   const onResize = debounce(fn, 200);
-
   // most browsers support resizeobserver
   if (ResizeObserver) {
     const resizeObserver = new ResizeObserver(onResize);
@@ -31,11 +30,9 @@ export default (el, fn) => {
       },
     };
   }
-
   // if not, listen on window change
   window.addEventListener('resize', onResize, true);
   window.addEventListener('orientationchange', onResize, true);
-
   // return function to stop observing
   return {
     un: () => {
