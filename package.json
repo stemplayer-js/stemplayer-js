@@ -40,12 +40,13 @@
   },
   "scripts": {
     "analyze": "cem analyze --litelement",
+    "build:docs": "npx web-component-analyzer --format markdown stemplayer.js --outDir docs",
     "start": "web-dev-server",
     "lint": "eslint --ext .js,.html . --ignore-path .gitignore && prettier \"**/*.js\" --check --ignore-path .gitignore",
     "format": "eslint --ext .js,.html . --fix --ignore-path .gitignore && prettier \"**/*.js\" --write --ignore-path .gitignore",
-    "test:disabled": "web-test-runner --coverage",
+    "test": "web-test-runner",
     "test:watch": "web-test-runner --watch",
-    "prepublishOnly": "npm run analyze"
+    "prepublishOnly": "npm run analyze && npm run build:docs"
   },
   "dependencies": {
     "@soundws/hls-web-audio": "workspace:^",

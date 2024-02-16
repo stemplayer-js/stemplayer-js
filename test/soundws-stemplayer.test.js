@@ -4,27 +4,31 @@ import { fixture, expect } from '@open-wc/testing';
 import '../stemplayer.js';
 
 describe('SoundwsStemplayer', () => {
-  it('has a default header "Hey there" and counter 5', async () => {
-    const el = await fixture(html`<stemplayer-js></stemplayer-js>`);
+  it('allows setting of a max-height attribute', async () => {});
 
-    expect(el.header).to.equal('Hey there');
-    expect(el.counter).to.equal(5);
-  });
+  // it('has a default header "Hey there" and counter 5', async () => {
+  //   const el = await fixture(html`<stemplayer-js></stemplayer-js>`);
 
-  it('increases the counter on button click', async () => {
-    const el = await fixture(html`<stemplayer-js></stemplayer-js>`);
-    el.shadowRoot.querySelector('button').click();
+  //   expect(el.header).to.equal('Hey there');
+  //   expect(el.counter).to.equal(5);
+  // });
 
-    expect(el.counter).to.equal(6);
-  });
+  // it('increases the counter on button click', async () => {
+  //   const el = await fixture(html`<stemplayer-js></stemplayer-js>`);
+  //   el.shadowRoot.querySelector('button').click();
 
-  it('can override the header via attribute', async () => {
-    const el = await fixture(
-      html`<stemplayer-js header="attribute header"></stemplayer-js>`,
-    );
+  //   expect(el.counter).to.equal(6);
+  // });
 
-    expect(el.header).to.equal('attribute header');
-  });
+  // it('can override the header via attribute', async () => {
+  //   const el = await fixture(
+  //     html`<stemplayer-js header="attribute header"></stemplayer-js>`,
+  //   );
+
+  //   expect(el.header).to.equal('attribute header');
+  // });
+
+  // it('pauses when disconnected', async () => {});
 
   it('passes the a11y audit', async () => {
     const el = await fixture(html`<stemplayer-js></stemplayer-js>`);

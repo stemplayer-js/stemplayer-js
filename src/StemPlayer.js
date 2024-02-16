@@ -18,13 +18,16 @@ import { html, css } from 'lit';
 import Controller from '@soundws/hls-web-audio/controller.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
 import { SoundwsStemPlayerControls as ControlComponent } from './StemPlayerControls.js';
+import { SoundwsStemPlayerStem as StemComponent } from './StemPlayerStem.js';
+import combinePeaks from './lib/combine-peaks.js';
+import debounce from './lib/debounce.js';
 
 /**
  * A Stem Player web component
  *
- * @slot header - The slot names "header"
- * @slot - The default slot
- * @slot footer - The default slot
+ * @slot header
+ * @slot - The default (body) slot
+ * @slot footer
  *
  * @fires loading-start - Fires when the player starts loading data
  * @fires loading-end - Fires when the player completes loading data
@@ -44,6 +47,7 @@ import { SoundwsStemPlayerControls as ControlComponent } from './StemPlayerContr
  * @cssprop [--stemplayer-js-waveform-progress-color]
  * @cssprop [--stemplayer-js-wave-pixel-ratio=2]
  * @cssprop [--stemplayer-js-grid-base=1.5rem]
+ * @cssprop [--stemplayer-js-max-height=auto]
  *
  */
 export class SoundwsStemPlayer extends ResponsiveLitElement {
@@ -103,74 +107,17 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         opacity: 0;
         transition: opacity 0.2s ease;
       }
+
+      .stemsWrapper {
+        max-height: var(--stemplayer-js-max-height, auto);
+        overflow: auto;
+      }
     `;
-  }
-
-  constructor() {
-    super();
-
-    // set default values for props
-    this.autoplay = false;
-    this.loop = false;
-    this.noHover = false;
-
-    this.addEventListener('peaks', this.onPeaks);
-    this.addEventListener('play-click', this.onPlay);
-    this.addEventListener('pause-click', this.onPause);
-
-    // these events bubble up
-    this.addEventListener('loading-start', this.onLoadingStart);
-    this.addEventListener('loading-end', this.onLoadingEnd);
-
-    if (!this.noHover) this.addEventListener('pointermove', this.onHover);
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.controller = this.createController();
-
-    if (this.rowHeight) {
-      this.style.setProperty('--stemplayer-js-row-height', this.rowHeight);
-    }
-
-    if (this.maxHeight) {
-      this.style.setProperty('--stemplayer-js-max-height', this.maxHeight);
-    }
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-
-    this.controller.destroy();
-    this.controller = null;
-  }
-
-  firstUpdated() {
-    setTimeout(() => {
-      if (this.controls) this.controls.controller = this.controller;
-
-      this.stems?.forEach(stemComponent => {
-        // eslint-disable-next-line no-param-reassign
-        stemComponent.controller = this.controller;
-      });
-    }, 0);
   }
 
   static get properties() {
     return {
       isLoading: { type: Boolean },
-
-      /**
-       * Limits the height of the "body" slot, making that section scrollable
-       * @type {string}
-       */
-      maxHeight: { attribute: 'max-height' },
-
-      /**
-       * The height of each row Each stem will occupy one row.
-       */
-      rowHeight: { attribute: 'row-height' },
 
       /**
        * Whether to (attempt) autoplay
@@ -199,30 +146,104 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     };
   }
 
+  constructor() {
+    super();
+
+    // set default values for props
+    this.autoplay = false;
+    this.loop = false;
+    this.noHover = false;
+
+    this.debouncedGeneratePeaks = debounce(
+      () => this.generatePeaks(),
+      200,
+      true,
+    );
+
+    this.addEventListener('peaks', this.onPeaks);
+    this.addEventListener('play-click', this.onPlay);
+    this.addEventListener('pause-click', this.onPause);
+    this.addEventListener('loading-start', this.onLoadingStart);
+    this.addEventListener('loading-end', this.onLoadingEnd);
+    if (!this.noHover) this.addEventListener('pointermove', this.onHover);
+    this.addEventListener('stem-loading-start', this.onStemLoadingStart);
+    this.addEventListener('stem-loading-end', this.onStemLoadingEnd);
+    this.addEventListener('waveform-draw', this.onWaveformDraw);
+    this.addEventListener('solo', this.onSolo);
+    this.addEventListener('unsolo', this.onUnSolo);
+
+    const controller = new Controller({
+      ac: this.audioContext,
+      acOpts: { latencyHint: 'playback', sampleRate: 44100 },
+      duration: this.duration,
+      loop: this.loop,
+    });
+
+    const exposeEvent = (event, exposeAs) => {
+      controller.on(event, args => {
+        this.dispatchEvent(
+          new CustomEvent(exposeAs || event, { detail: args, bubbles: true }),
+        );
+      });
+    };
+
+    controller.on('pause-start', () => {
+      this.isLoading = true;
+      this.dispatchEvent(new Event('loading-start'));
+    });
+
+    controller.on('pause-end', () => {
+      this.isLoading = false;
+      this.dispatchEvent(new Event('loading-end'));
+    });
+
+    exposeEvent('timeupdate');
+    exposeEvent('end');
+    exposeEvent('seek');
+    exposeEvent('start');
+    exposeEvent('pause');
+
+    controller.on('error', err =>
+      this.dispatchEvent(new ErrorEvent('error', err)),
+    );
+
+    if (this.autoplay) {
+      this.addEventListener('loading-end', this.play, { once: true });
+    }
+
+    this.controller = controller;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.controller.pause();
+  }
+
+  onSlotChange(e) {
+    // inject the controller when an element is added to a slot
+    e.target.assignedNodes().forEach(el => {
+      if (el instanceof ControlComponent || el instanceof StemComponent) {
+        // eslint-disable-next-line no-param-reassign
+        el.controller = this.controller;
+      }
+    });
+  }
+
   render() {
-    return html`<div
-      class="relative"
-      aria-label="Stem Player powered by sound.ws"
-      role="region"
-    >
-      <slot name="header"></slot>
-      <stemplayer-js-stemslist
-        .controller=${this.controller}
-        ><slot></slot
-      ><stemplayer-js-stemslist>
-      <slot name="footer"></slot>
-      ${
-        this.isLoading
-          ? html`<soundws-mask>
+    return html`<div class="relative">
+      <slot name="header" @slotchange=${this.onSlotChange}></slot>
+      <div class="stemsWrapper">
+        <slot class="default" @slotchange=${this.onSlotChange}></slot>
+      </div>
+      <slot name="footer" @slotchange=${this.onSlotChange}></slot>
+      ${this.isLoading
+        ? html`<soundws-mask>
             <soundws-loader></soundws-icon>
           </soundws-mask>`
-          : ''
-      }
-      ${
-        this.displayMode === 'lg' && !this.noHover
-          ? html`<div class="hover"></div>`
-          : ''
-      }
+        : ''}
+      ${this.displayMode === 'lg' && !this.noHover
+        ? html`<div class="hover"></div>`
+        : ''}
     </div>`;
   }
 
@@ -231,7 +252,10 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @param {Event} e
    */
   onPeaks(e) {
-    this.setControlsComponentPeaks(e.detail.peaks);
+    const { peaks } = e.detail;
+    if (peaks && this.controls) {
+      this.controls.peaks = peaks;
+    }
   }
 
   /**
@@ -271,63 +295,15 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     return {
       state,
       currentTime,
-      stems: this.shadowRoot?.querySelector('stemplayer-js-stemslist').state,
+      stems: this.stemComponents.map(c => ({
+        id: c.id,
+        src: c.src,
+        waveform: c.waveform,
+        volume: c.volume,
+        muted: c.muted,
+        solo: c.solo,
+      })),
     };
-  }
-
-  /**
-   * @private
-   */
-  setControlsComponentPeaks(peaks) {
-    if (peaks && this.controls) {
-      this.controls.peaks = peaks;
-    }
-  }
-
-  /**
-   * @private
-   * @returns {Controller}
-   */
-  createController() {
-    const controller = new Controller({
-      ac: this.audioContext,
-      acOpts: { latencyHint: 'playback', sampleRate: 44100 },
-      duration: this.duration,
-      loop: this.loop,
-    });
-
-    const exposeEvent = (event, exposeAs) => {
-      controller.on(event, args => {
-        this.dispatchEvent(
-          new CustomEvent(exposeAs || event, { detail: args, bubbles: true }),
-        );
-      });
-    };
-
-    controller.on('pause-start', () => {
-      this.isLoading = true;
-      this.dispatchEvent(new Event('loading-start'));
-    });
-
-    controller.on('pause-end', () => {
-      this.isLoading = false;
-      this.dispatchEvent(new Event('loading-end'));
-    });
-
-    exposeEvent('timeupdate');
-    exposeEvent('end');
-    exposeEvent('seek');
-    exposeEvent('start');
-    exposeEvent('pause');
-
-    controller.on('error', err =>
-      this.dispatchEvent(new ErrorEvent('error', err)),
-    );
-
-    if (this.autoplay)
-      this.addEventListener('loading-end', this.play, { once: true });
-
-    return controller;
   }
 
   /**
@@ -411,5 +387,120 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       el.style.left = `${left}px`;
       el.style.width = `${e.offsetX - left}px`;
     }
+  }
+
+  /**
+   * Calculates the "combined" peaks
+   *
+   * @private
+   */
+  generatePeaks() {
+    const peaks = combinePeaks(
+      ...this.stemComponents
+        .map(c => c.peaks)
+        .filter(e => !!e)
+        .map(e => e.data),
+    );
+
+    this.dispatchEvent(
+      new CustomEvent('peaks', {
+        detail: { peaks, target: this },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  /**
+   * @private
+   * @param {Event} e
+   */
+  onStemLoadingStart(e) {
+    e.stopPropagation();
+
+    if (this.nLoading === 0)
+      this.dispatchEvent(
+        new Event('loading-start', { bubbles: true, composed: true }),
+      );
+
+    this.nLoading += 1;
+  }
+
+  /**
+   * @private
+   * @param {Event} e
+   */
+  onStemLoadingEnd(e) {
+    e.stopPropagation();
+
+    this.nLoading -= 1;
+
+    if (this.nLoading === 0)
+      this.dispatchEvent(
+        new Event('loading-end', { bubbles: true, composed: true }),
+      );
+  }
+
+  /**
+   * Listen to peaks events emitting from the stems
+   * @private
+   * @param {Event} e
+   */
+  onWaveformDraw(e) {
+    if (e.target instanceof StemComponent) {
+      e.stopPropagation();
+      this.debouncedGeneratePeaks();
+    }
+  }
+
+  /**
+   * @private
+   * @param {Event} e
+   */
+  onSolo(e) {
+    e.stopPropagation();
+
+    this.stemComponents?.forEach(stemComponent => {
+      if (e.detail === stemComponent) {
+        // eslint-disable-next-line no-param-reassign
+        stemComponent.solo = 1;
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        stemComponent.solo = -1;
+      }
+    });
+  }
+
+  /**
+   * @private
+   * @param {Event} e
+   */
+  onUnSolo(e) {
+    e.stopPropagation();
+
+    this.stemComponents?.forEach(stemComponent => {
+      // eslint-disable-next-line no-param-reassign
+      stemComponent.solo = undefined;
+    });
+  }
+
+  /**
+   * @private
+   */
+  get slottedElements() {
+    const slots = this.shadowRoot?.querySelectorAll('slot');
+
+    return Array.from(slots)
+      .map(slot => slot.assignedElements({ flatten: true }))
+      .flat();
+  }
+
+  /**
+   * Get the stem componenents
+   *
+   * @returns {Array}
+   */
+  get stemComponents() {
+    return this.slottedElements.filter(e => e instanceof StemComponent);
   }
 }

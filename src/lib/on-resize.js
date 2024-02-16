@@ -25,7 +25,7 @@ export default (el, fn) => {
     // return function to stop observing
     return {
       un: () => {
-        onResize.cancel();
+        // onResize.cancel();
         resizeObserver.unobserve(el);
       },
     };

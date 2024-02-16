@@ -23,6 +23,7 @@ export class ResponsiveLitElement extends LitElement {
     return {
       /**
        * The displayMode determines normal or small screen rendering
+       * @private
        */
       displayMode: { type: String },
     };
@@ -47,6 +48,9 @@ export class ResponsiveLitElement extends LitElement {
     this.onResizeCallback?.un();
   }
 
+  /**
+   * @private
+   */
   recalculateDisplayMode() {
     const { xs, sm } = responsiveBreakpoints;
 

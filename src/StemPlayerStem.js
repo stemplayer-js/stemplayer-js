@@ -66,13 +66,18 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       solo: { type: Boolean },
       muted: { type: Boolean },
       currentPct: { type: Number },
-      controller: { type: Object },
       volume: { type: Number },
-      clientHeight: { type: Number },
       duration: { type: Number },
-      rowHeight: { attribute: false },
+      /** @private */
+      controller: { type: Object },
+      /** @private */
       waveColor: { type: String },
+      /** @private */
       waveProgressColor: { type: String },
+      /** @private */
+      rowHeight: { attribute: false },
+      /** @private */
+      clientHeight: { type: Number },
     };
   }
 
@@ -199,6 +204,8 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    * The way the waveform is rendered depends on the duration of the other stems.
    * In the case where one stem is of (e.g.) shorted duration, the waveform has to
    * be adjusted so that the rendering is consistent with the other waveforms;
+   *
+   * @private
    */
   calculateWaveformWidth() {
     if (this.controller && this.waveformComponent) {
@@ -280,7 +287,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   getLargeScreenTpl() {
     const styles = this.computedWaveformStyles;
 
-    return html`<div class="dFlex flexRow">
+    return html`<div class="dFlex flexRow row">
       <div class="w2 pr1 flexNoShrink">
         ${
           this.solo === 1
@@ -323,10 +330,10 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       <div class="w6 pr1 alignRight truncate noPointerEvents textCenter">
         <span class="truncate textSm">${this.label}</span>
       </div>
-      <div class="flex1">
         ${
           this.rowHeight
             ? html`<soundws-waveform
+                class="flex1"
                 .height=${this.rowHeight}
                 .src=${this.waveform}
                 .progress=${this.currentPct}
@@ -341,7 +348,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
               ></soundws-waveform>`
             : ''
         }
-      </div>
       <div class="w2 flexNoShrink"></div>
     </div>`;
   }
@@ -435,10 +441,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     return this.waveformComponent?.adjustedPeaks;
   }
 
-  // get duration() {
-  //   return this.HLS?.duration;
-  // }
-
   /**
    * @private
    */
@@ -448,6 +450,8 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
 
   /**
    * Calculates the styles for rendering the waveform
+   *
+   * @private
    */
   computeWaveformStyles() {
     const styles = computeWaveformStyles(this, defaults.waveform);

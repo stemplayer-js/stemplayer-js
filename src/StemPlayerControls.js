@@ -60,15 +60,20 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     return {
       ...ResponsiveLitElement.properties,
       label: { type: String },
-      controller: { type: Object },
       duration: { type: Number },
       currentTime: { type: Number },
-      currentPct: { type: Number },
       peaks: { type: Object },
+      /** @private */
+      controller: { type: Object },
+      /** @private */
+      currentPct: { type: Number },
+      /** @private */
       isPlaying: { type: Boolean },
-      isLoading: { type: Boolean },
+      /** @private */
       rowHeight: { attribute: false },
+      /** @private */
       waveColor: { type: String },
+      /** @private */
       waveProgressColor: { type: String },
     };
   }
@@ -132,68 +137,75 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   render() {
     const styles = this.computedWaveformStyles;
 
-    return html`<div class="row">
-      <div class="dFlex flexRow">
-        <div class="w2 pr1">
-          ${this.isPlaying
-            ? html`<soundws-player-button
-                @click=${this.pause}
-                title="Pause"
-                type="pause"
-              ></soundws-player-button>`
-            : html`<soundws-player-button
-                @click=${this.play}
-                title="Play"
-                type="play"
-              ></soundws-player-button>`}
-        </div>
-        ${this.displayMode !== 'xs'
-          ? html`<div class="w9 truncate hideXs pr1 textCenter">
-              <span>${this.label}</span>
-            </div>`
-          : ''}
-        <div class="w2 textXs textMuted textCenter">
-          <span>${formatSeconds(this.currentTime || 0)}</span>
-        </div>
-        ${this.displayMode === 'lg' && this.rowHeight
-          ? html`<div class="flex1">
-              <soundws-waveform
-                .height=${this.rowHeight}
-                .peaks=${this.peaks}
-                .progress=${this.currentPct}
-                .progressColor=${styles.waveProgressColor}
-                .waveColor=${styles.waveColor}
-                .barWidth=${styles.barWidth}
-                .barGap=${styles.barGap}
-                .pixelRatio=${styles.devicePixelRatio}
-                @click=${e =>
-                  this.handleSeek(
-                    Math.round((e.offsetX / e.target.clientWidth) * 100) / 100,
-                  )}
-              ></soundws-waveform>
-            </div>`
-          : html`<soundws-range
-              label="progress"
-              class="focusBgAccent px1 flex1"
-              .value=${this.currentPct * 100}
-              @input=${this.handleSeeking}
-              @change=${e => this.handleSeek(e.detail / 100)}
-            ></soundws-range>`}
-        <div class="w2 truncate textXs textMuted textCenter">
-          <span>${formatSeconds(this.duration)}</span>
-        </div>
+    return html` <div class="dFlex flexRow row">
+      <div class="w2 pr1">
+        ${this.isPlaying
+          ? html`<soundws-player-button
+              @click=${this.onPauseClick}
+              title="Pause"
+              type="pause"
+            ></soundws-player-button>`
+          : html`<soundws-player-button
+              @click=${this.onPlayClick}
+              title="Play"
+              type="play"
+            ></soundws-player-button>`}
+      </div>
+      ${this.displayMode !== 'xs'
+        ? html`<div class="w9 truncate hideXs pr1 textCenter">
+            <span>${this.label}</span>
+          </div>`
+        : ''}
+      <div class="w2 textXs textMuted textCenter">
+        <span>${formatSeconds(this.currentTime || 0)}</span>
+      </div>
+      ${this.displayMode === 'lg' && this.rowHeight
+        ? html`<div class="flex1">
+            <soundws-waveform
+              .height=${this.rowHeight}
+              .peaks=${this.peaks}
+              .progress=${this.currentPct}
+              .progressColor=${styles.waveProgressColor}
+              .waveColor=${styles.waveColor}
+              .barWidth=${styles.barWidth}
+              .barGap=${styles.barGap}
+              .pixelRatio=${styles.devicePixelRatio}
+              @click=${e =>
+                this.handleSeek(
+                  Math.round((e.offsetX / e.target.clientWidth) * 100) / 100,
+                )}
+            ></soundws-waveform>
+          </div>`
+        : html`<soundws-range
+            label="progress"
+            class="focusBgAccent px1 flex1"
+            .value=${this.currentPct * 100}
+            @input=${this.handleSeeking}
+            @change=${e => this.handleSeek(e.detail / 100)}
+          ></soundws-range>`}
+      <div class="w2 truncate textXs textMuted textCenter">
+        <span>${formatSeconds(this.duration)}</span>
       </div>
     </div>`;
   }
 
-  play() {
+  /**
+   * @private
+   */
+  onPlayClick() {
     this.dispatchEvent(new Event('play-click', { bubbles: true }));
   }
 
-  pause() {
+  /**
+   * @private
+   */
+  onPauseClick() {
     this.dispatchEvent(new Event('pause-click', { bubbles: true }));
   }
 
+  /**
+   * @private
+   */
   async handleSeeking() {
     const { state } = this.controller;
 
@@ -207,12 +219,17 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     }
   }
 
+  /**
+   * @private
+   */
   handleSeek(pct) {
     this.controller.pct = pct;
   }
 
   /**
    * Calculates the styles for rendering the waveform
+   *
+   * @private
    */
   computeWaveformStyles() {
     const styles = computeWaveformStyles(this, defaults.waveform);
