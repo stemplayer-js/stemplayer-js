@@ -154,11 +154,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.loop = false;
     this.noHover = false;
 
-    this.debouncedGeneratePeaks = debounce(
-      () => this.generatePeaks(),
-      200,
-      true,
-    );
+    this.debouncedGeneratePeaks = debounce(this.generatePeaks, 200, true);
 
     const controller = new Controller({
       ac: this.audioContext,
@@ -167,17 +163,15 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       loop: this.loop,
     });
 
+    this.addEventListener('controls:play', this.onPlay);
+    this.addEventListener('controls:pause', this.onPause);
     this.addEventListener('peaks', this.onPeaks);
-    this.addEventListener('play-click', this.onPlay);
-    this.addEventListener('pause-click', this.onPause);
-    this.addEventListener('loading-start', this.onLoadingStart);
-    this.addEventListener('loading-end', this.onLoadingEnd);
+    this.addEventListener('stem:load:start', this.onStemLoadingStart);
+    this.addEventListener('stem:load:end', this.onStemLoadingEnd);
+    this.addEventListener('stem:solo', this.onSolo);
+    this.addEventListener('stem:unsolo', this.onUnSolo);
+    this.addEventListener('waveform:draw', this.onWaveformDraw);
     if (!this.noHover) this.addEventListener('pointermove', this.onHover);
-    this.addEventListener('stem-loading-start', this.onStemLoadingStart);
-    this.addEventListener('stem-loading-end', this.onStemLoadingEnd);
-    this.addEventListener('waveform-draw', this.onWaveformDraw);
-    this.addEventListener('solo', this.onSolo);
-    this.addEventListener('unsolo', this.onUnSolo);
 
     this.addEventListener('seek', e => {
       if (
@@ -189,9 +183,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     });
 
     this.addEventListener('seeking', () => {
-      // stop playback while seeking (using the range slider)
-      const { state } = controller;
-      if (state === 'running') {
+      if (controller.state === 'running') {
         controller.pause();
         controller.once('seek', () => {
           controller.playOnceReady();
@@ -331,20 +323,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   }
 
   /**
-   * @private
-   */
-  onLoadingStart() {
-    this.isLoading = true;
-  }
-
-  /**
-   * @private
-   */
-  onLoadingEnd() {
-    this.isLoading = false;
-  }
-
-  /**
    * Exports the current state of the player
    */
   get state() {
@@ -434,14 +412,14 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     return this.shadowRoot?.querySelector('stemplayer-js-stemslist');
   }
 
+  /**
+   *@private
+   */
   onHover(e) {
     const el = this.shadowRoot.querySelector('.hover');
 
-    // calculate left of waveforms
-    const left =
-      this.stemListComponent?.stemComponents[0]?.waveformComponent?.offsetLeft;
-
     if (el) {
+      const left = e.target.waveformComponent?.offsetLeft;
       el.style.left = `${left}px`;
       el.style.width = `${e.offsetX - left}px`;
     }
@@ -476,10 +454,12 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   onStemLoadingStart(e) {
     e.stopPropagation();
 
-    if (this.nLoading === 0)
+    if (this.nLoading === 0) {
+      this.isLoading = true;
       this.dispatchEvent(
         new Event('loading-start', { bubbles: true, composed: true }),
       );
+    }
 
     this.nLoading += 1;
   }
@@ -493,20 +473,24 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     this.nLoading -= 1;
 
-    if (this.nLoading === 0)
+    if (this.nLoading === 0) {
+      this.isLoading = false;
       this.dispatchEvent(
         new Event('loading-end', { bubbles: true, composed: true }),
       );
+    }
   }
 
   /**
    * Listen to peaks events emitting from the stems
+   *
    * @private
    * @param {Event} e
    */
   onWaveformDraw(e) {
+    e.stopPropagation();
+
     if (e.target instanceof StemComponent) {
-      e.stopPropagation();
       this.debouncedGeneratePeaks();
     }
   }

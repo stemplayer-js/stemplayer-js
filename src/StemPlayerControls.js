@@ -154,14 +154,14 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
    * @private
    */
   onPlayClick() {
-    this.dispatchEvent(new Event('play-click', { bubbles: true }));
+    this.dispatchEvent(new Event('controls:play', { bubbles: true }));
   }
 
   /**
    * @private
    */
   onPauseClick() {
-    this.dispatchEvent(new Event('pause-click', { bubbles: true }));
+    this.dispatchEvent(new Event('controls:pause', { bubbles: true }));
   }
 
   /**

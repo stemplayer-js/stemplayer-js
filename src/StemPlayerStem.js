@@ -120,13 +120,13 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     });
 
     this.dispatchEvent(
-      new Event('stem-loading-start', { bubbles: true, composed: true }),
+      new Event('stem:load:start', { bubbles: true, composed: true }),
     );
 
     try {
       await this.HLS.load(this.src).promise;
       this.dispatchEvent(
-        new Event('stem-loading-end', { bubbles: true, composed: true }),
+        new Event('stem:load:end', { bubbles: true, composed: true }),
       );
     } catch (error) {
       // dispatch error event on element (doesnt bubble)
@@ -152,7 +152,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
 
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
-      if (['volume', 'muted', 'solo'].indexOf(propName) !== -1) {
+      if (['volume', 'muted', 'stem:solo'].indexOf(propName) !== -1) {
         if (this.HLS) this.HLS.volume = this.volume;
         if (this.waveformComponent) this.waveformComponent.scaleY = this.volume;
       }
@@ -210,7 +210,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       <soundws-waveform
         .src=${this.waveform}
         .scaleY=${this.volume}
-        @draw=${this.handlePeaks}
         style="display: none;"
       ></soundws-waveform>
     </div>`;
@@ -305,7 +304,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    */
   handleSolo() {
     this.dispatchEvent(
-      new CustomEvent('solo', { detail: this, bubbles: true }),
+      new CustomEvent('stem:solo', { detail: this, bubbles: true }),
     );
   }
 
@@ -314,15 +313,8 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    */
   handleUnSolo() {
     this.dispatchEvent(
-      new CustomEvent('unsolo', { detail: this, bubbles: true }),
+      new CustomEvent('stem:unsolo', { detail: this, bubbles: true }),
     );
-  }
-
-  /**
-   * @private
-   */
-  handlePeaks(e) {
-    this.dispatchEvent(new CustomEvent('peaks', { detail: e, bubbles: true }));
   }
 
   /**
