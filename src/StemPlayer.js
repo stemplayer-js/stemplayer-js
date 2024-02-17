@@ -188,16 +188,16 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       }
     });
 
-    // this.addEventListener('seeking', () => {
-    //   const { state } = controller;
-
-    //   if (state === 'running') {
-    //     controller.pause();
-    //     controller.once('seek', () => {
-    //       controller.playOnceReady();
-    //     });
-    //   }
-    // });
+    this.addEventListener('seeking', () => {
+      // stop playback while seeking (using the range slider)
+      const { state } = controller;
+      if (state === 'running') {
+        controller.pause();
+        controller.once('seek', () => {
+          controller.playOnceReady();
+        });
+      }
+    });
 
     if (this.autoplay) {
       this.addEventListener('loading-end', this.play, { once: true });

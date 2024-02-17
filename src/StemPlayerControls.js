@@ -183,7 +183,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   }
 
   handleSeeking() {
-    this.dispatchEvent(new Event('seeking'));
+    this.dispatchEvent(new CustomEvent('seeking', { bubbles: true }));
   }
 
   handleSeek(e) {
