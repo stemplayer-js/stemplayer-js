@@ -69,15 +69,11 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       volume: { type: Number },
       duration: { type: Number },
       /** @private */
-      controller: { type: Object },
-      /** @private */
       waveColor: { type: String },
       /** @private */
       waveProgressColor: { type: String },
       /** @private */
       rowHeight: { attribute: false },
-      /** @private */
-      clientHeight: { type: Number },
     };
   }
 

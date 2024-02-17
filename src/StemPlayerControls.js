@@ -64,9 +64,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
       duration: { type: Number },
       currentTime: { type: Number },
       peaks: { type: Object },
-      /** @private */
       currentPct: { type: Number },
-      /** @private */
       isPlaying: { type: Boolean },
       /** @private */
       rowHeight: { attribute: false },
@@ -182,10 +180,16 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     };
   }
 
+  /**
+   * @private
+   */
   handleSeeking() {
     this.dispatchEvent(new CustomEvent('seeking', { bubbles: true }));
   }
 
+  /**
+   * @private
+   */
   handleSeek(e) {
     this.dispatchEvent(
       new CustomEvent('seek', {
