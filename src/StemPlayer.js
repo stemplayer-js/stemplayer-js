@@ -160,6 +160,13 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       true,
     );
 
+    const controller = new Controller({
+      ac: this.audioContext,
+      acOpts: { latencyHint: 'playback', sampleRate: 44100 },
+      duration: this.duration,
+      loop: this.loop,
+    });
+
     this.addEventListener('peaks', this.onPeaks);
     this.addEventListener('play-click', this.onPlay);
     this.addEventListener('pause-click', this.onPause);
@@ -172,20 +179,37 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.addEventListener('solo', this.onSolo);
     this.addEventListener('unsolo', this.onUnSolo);
 
-    const controller = new Controller({
-      ac: this.audioContext,
-      acOpts: { latencyHint: 'playback', sampleRate: 44100 },
-      duration: this.duration,
-      loop: this.loop,
+    this.addEventListener('seek', e => {
+      if (
+        e.target instanceof StemComponent ||
+        e.target instanceof ControlComponent
+      ) {
+        controller.pct = e.detail;
+      }
     });
 
-    const exposeEvent = (event, exposeAs) => {
+    // this.addEventListener('seeking', () => {
+    //   const { state } = controller;
+
+    //   if (state === 'running') {
+    //     controller.pause();
+    //     controller.once('seek', () => {
+    //       controller.playOnceReady();
+    //     });
+    //   }
+    // });
+
+    if (this.autoplay) {
+      this.addEventListener('loading-end', this.play, { once: true });
+    }
+
+    ['timeupdate', 'end', 'seek', 'start', 'pause'].forEach(event => {
       controller.on(event, args => {
         this.dispatchEvent(
-          new CustomEvent(exposeAs || event, { detail: args, bubbles: true }),
+          new CustomEvent(event, { detail: args, bubbles: true }),
         );
       });
-    };
+    });
 
     controller.on('pause-start', () => {
       this.isLoading = true;
@@ -197,20 +221,49 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       this.dispatchEvent(new Event('loading-end'));
     });
 
-    exposeEvent('timeupdate');
-    exposeEvent('end');
-    exposeEvent('seek');
-    exposeEvent('start');
-    exposeEvent('pause');
-
     controller.on('error', err =>
       this.dispatchEvent(new ErrorEvent('error', err)),
     );
 
-    if (this.autoplay) {
-      this.addEventListener('loading-end', this.play, { once: true });
-    }
+    controller.on('timeupdate', ({ t, pct }) => {
+      this.updateChildren({
+        currentTime: t,
+        currentPct: pct,
+      });
+    });
 
+    controller.on('end', () => {
+      this.updateChildren({
+        currentTime: 0,
+        currentPct: 0,
+      });
+    });
+
+    controller.on('seek', ({ t, pct }) => {
+      this.updateChildren({
+        currentTime: t,
+        currentPct: pct,
+      });
+    });
+
+    controller.on('duration', duration => {
+      this.updateChildren({
+        duration,
+      });
+    });
+
+    controller.on('start', () => {
+      this.updateChildren({
+        duration: controller.duration,
+        isPlaying: true,
+      });
+    });
+
+    controller.on('pause', () => {
+      this.updateChildren({ isPlaying: false });
+    });
+
+    // store a reference
     this.controller = controller;
   }
 
@@ -222,9 +275,14 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   onSlotChange(e) {
     // inject the controller when an element is added to a slot
     e.target.assignedNodes().forEach(el => {
-      if (el instanceof ControlComponent || el instanceof StemComponent) {
+      if (el instanceof ControlComponent) {
         // eslint-disable-next-line no-param-reassign
         el.controller = this.controller;
+      }
+
+      // load the stem if the stem is added to the player
+      if (el instanceof StemComponent) {
+        el.load(this.controller);
       }
     });
   }
@@ -502,5 +560,15 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    */
   get stemComponents() {
     return this.slottedElements.filter(e => e instanceof StemComponent);
+  }
+
+  updateChildren(props) {
+    this.slottedElements.forEach(el => {
+      if (el instanceof StemComponent || el instanceof ControlComponent)
+        Object.keys(props).forEach(key => {
+          // eslint-disable-next-line no-param-reassign
+          el[key] = props[key];
+        });
+    });
   }
 }

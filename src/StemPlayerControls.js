@@ -25,6 +25,7 @@ import bgStyles from './styles/backgrounds.js';
 import formatSeconds from './lib/format-seconds.js';
 import { defaults } from './config.js';
 import { computeWaveformStyles } from './lib/compute-styles.js';
+import debounce from './lib/debounce.js';
 
 export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   /**
@@ -64,8 +65,6 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
       currentTime: { type: Number },
       peaks: { type: Object },
       /** @private */
-      controller: { type: Object },
-      /** @private */
       currentPct: { type: Number },
       /** @private */
       isPlaying: { type: Boolean },
@@ -76,6 +75,11 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
       /** @private */
       waveProgressColor: { type: String },
     };
+  }
+
+  constructor() {
+    super();
+    this.debouncedHandleSeek = debounce(this.handleSeek, 100);
   }
 
   connectedCallback() {
@@ -93,45 +97,6 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     super.disconnectedCallback();
     this.onResizeCallback?.un();
     this.onResizeCallback = null;
-    this._controller = null;
-  }
-
-  set controller(controller) {
-    if (controller) {
-      controller.on('start', () => {
-        this.duration = controller.duration;
-        this.isPlaying = true;
-      });
-
-      controller.on('pause', () => {
-        this.isPlaying = false;
-      });
-
-      controller.on('duration', () => {
-        this.duration = controller.duration;
-      });
-
-      controller.on('timeupdate', ({ t, pct }) => {
-        this.currentTime = t;
-        this.currentPct = pct;
-      });
-
-      controller.on('seek', ({ t, pct }) => {
-        this.currentTime = t;
-        this.currentPct = pct;
-      });
-
-      controller.on('end', () => {
-        this.currentTime = 0;
-        this.currentPct = 0;
-      });
-
-      this._controller = controller;
-    }
-  }
-
-  get controller() {
-    return this._controller;
   }
 
   render() {
@@ -170,10 +135,6 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
               .barWidth=${styles.barWidth}
               .barGap=${styles.barGap}
               .pixelRatio=${styles.devicePixelRatio}
-              @click=${e =>
-                this.handleSeek(
-                  Math.round((e.offsetX / e.target.clientWidth) * 100) / 100,
-                )}
             ></soundws-waveform>
           </div>`
         : html`<soundws-range
@@ -181,7 +142,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
             class="focusBgAccent px1 flex1"
             .value=${this.currentPct * 100}
             @input=${this.handleSeeking}
-            @change=${e => this.handleSeek(e.detail / 100)}
+            @change=${this.debouncedHandleSeek}
           ></soundws-range>`}
       <div class="w2 truncate textXs textMuted textCenter">
         <span>${formatSeconds(this.duration)}</span>
@@ -204,29 +165,6 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   }
 
   /**
-   * @private
-   */
-  async handleSeeking() {
-    const { state } = this.controller;
-
-    // Seeking occurs when moving the seek slider using the keyboard. Repeated events are fired and we want to
-    // pause the clock for a while when seeking so that the running clock doesnt compete with the input value.
-    if (state === 'running') {
-      this.controller.pause();
-      this.controller.once('seek', () => {
-        this.controller.playOnceReady();
-      });
-    }
-  }
-
-  /**
-   * @private
-   */
-  handleSeek(pct) {
-    this.controller.pct = pct;
-  }
-
-  /**
    * Calculates the styles for rendering the waveform
    *
    * @private
@@ -242,5 +180,18 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
         styles.controlsProgressColor ||
         styles.progressColor,
     };
+  }
+
+  handleSeeking() {
+    this.dispatchEvent(new Event('seeking'));
+  }
+
+  handleSeek(e) {
+    this.dispatchEvent(
+      new CustomEvent('seek', {
+        detail: e.detail / 100,
+        bubbles: true,
+      }),
+    );
   }
 }

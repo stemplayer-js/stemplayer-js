@@ -89,10 +89,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     this.addEventListener('waveform-loading-error', ({ detail }) =>
       this.dispatchEvent(new ErrorEvent('error', { error: detail })),
     );
-
-    this.addEventListener('stem-loading-end', () => {
-      this.duration = this.HLS.duration;
-    });
   }
 
   connectedCallback() {
@@ -104,112 +100,53 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       // get the rowHeight so we know the height for the waveform
       this.rowHeight = this.shadowRoot.firstElementChild.clientHeight;
     }, 100);
-
-    this.attemptToLoad();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.eTimeupdate?.un();
-    this.eEnd?.un();
-    this.eSeek?.un();
-    this.HLS?.destroy();
-    this.HLS = null;
-    this.controller = null;
+    this.unload();
   }
 
-  /**
-   * The loading of the actual HLS track can happen when both the src is set, and the controller.
-   * So we attempt to load the HLS track when certain things happen:
-   * - the src is updated
-   * - the controller is updated
-   * The controller is updated as soon as the stemcomponent is placed in the parent stemslist component.
-   * We cannot simply do constructor injection, or set the property manual, since we also want to be able
-   * to instantiate this component via html, in which case the controller needs to be retrieved from the parent.
-   *
+  /*
    * @private
    */
-  attemptToLoad() {
-    if (!this.HLS && this.controller && this.src) {
-      this.HLS = new HLS({
-        controller: this.controller,
-        volume: this.volume,
-        fetchOptions,
-      });
+  async load(controller) {
+    if (!this.src || this.HLS) return;
 
+    this.HLS = new HLS({
+      controller,
+      volume: this.volume,
+      fetchOptions,
+    });
+
+    this.dispatchEvent(
+      new Event('stem-loading-start', { bubbles: true, composed: true }),
+    );
+
+    try {
+      await this.HLS.load(this.src).promise;
       this.dispatchEvent(
-        new Event('stem-loading-start', { bubbles: true, composed: true }),
+        new Event('stem-loading-end', { bubbles: true, composed: true }),
       );
+    } catch (error) {
+      // dispatch error event on element (doesnt bubble)
+      this.dispatchEvent(new ErrorEvent('error', { error }));
 
-      this.HLS.load(this.src)
-        .promise.then(() => {
-          this.dispatchEvent(
-            new Event('stem-loading-end', { bubbles: true, composed: true }),
-          );
-        })
-        .catch(error => {
-          // dispatch error event on element (doesnt bubble)
-          this.dispatchEvent(new ErrorEvent('error', { error }));
-
-          // dispatch bubbling event so that the player-component can respond to it
-          this.dispatchEvent(
-            new CustomEvent('stem-loading-error', {
-              detail: error,
-              bubbles: true,
-              composed: true,
-            }),
-          );
-        });
+      // dispatch bubbling event so that the player-component can respond to it
+      this.dispatchEvent(
+        new CustomEvent('stem-loading-error', {
+          detail: error,
+          bubbles: true,
+          composed: true,
+        }),
+      );
     }
   }
 
-  /**
-   * The controller is injected into this component as soon as it is added in the parent.
-   *
-   * @private
-   */
-  set controller(controller) {
-    // TODO currently we're assuming we're not reusing the same component for another track
-    // so we do not update either controller and src
-    if (controller && !this._controller) {
-      this.eTimeupdate = controller.on('timeupdate', ({ pct }) => {
-        this.currentPct = pct;
-      });
-
-      this.eEnd = controller.on('end', () => {
-        this.currentTime = 0;
-        this.currentPct = 0;
-      });
-
-      this.eSeek = controller.on('seek', ({ t, pct }) => {
-        this.currentTime = t;
-        this.currentPct = pct;
-      });
-
-      this.eDuration = controller?.on('duration', () => {
-        this.calculateWaveformWidth();
-      });
-
-      this._controller = controller;
-
-      this.attemptToLoad();
-    }
-  }
-
-  get controller() {
-    return this._controller;
-  }
-
-  /**
-   * The way the waveform is rendered depends on the duration of the other stems.
-   * In the case where one stem is of (e.g.) shorted duration, the waveform has to
-   * be adjusted so that the rendering is consistent with the other waveforms;
-   *
-   * @private
-   */
-  calculateWaveformWidth() {
-    if (this.controller && this.waveformComponent) {
-      this.waveformComponent.duration = this.controller.duration;
+  unload() {
+    if (this.HLS) {
+      this.HLS.destroy();
+      this.HLS = null;
     }
   }
 
@@ -219,7 +156,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
         if (this.HLS) this.HLS.volume = this.volume;
         if (this.waveformComponent) this.waveformComponent.scaleY = this.volume;
       }
-      if (propName === 'src') this.attemptToLoad();
     });
   }
 
@@ -276,7 +212,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
         .scaleY=${this.volume}
         @draw=${this.handlePeaks}
         style="display: none;"
-        @load=${this.calculateWaveformWidth}
       ></soundws-waveform>
     </div>`;
   }
@@ -343,8 +278,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
                 .barWidth=${styles.barWidth}
                 .barGap=${styles.barGap}
                 .pixelRatio=${styles.devicePixelRatio}
-                @click=${e => this.handleSeek(e)}
-                @load=${this.calculateWaveformWidth}
+                .duration=${this.duration}
               ></soundws-waveform>`
             : ''
         }
@@ -396,14 +330,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    */
   handleVolume(v) {
     this.volume = v;
-  }
-
-  /**
-   * @private
-   */
-  handleSeek(e) {
-    this.controller.pct =
-      Math.round((e.offsetX / e.target.clientWidth) * 100) / 100;
   }
 
   /**
