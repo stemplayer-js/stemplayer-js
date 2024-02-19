@@ -87,12 +87,20 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
        */
       isPlaying: { type: Boolean },
 
-      /** @private */
-      rowHeight: { attribute: false },
-      /** @private */
+      /**
+       * The colour of the waveform
+       */
       waveColor: { type: String },
-      /** @private */
+
+      /**
+       * The wave progress colour
+       */
       waveProgressColor: { type: String },
+
+      /**
+       * Used to determine whether the DOM has been initialised
+       */
+      _rowHeight: { state: true },
     };
   }
 
@@ -107,8 +115,8 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     setTimeout(() => {
       this.computedWaveformStyles = this.computeWaveformStyles();
 
-      // get the rowHeight so we know the height for the waveform
-      this.rowHeight = this.shadowRoot.firstElementChild.clientHeight;
+      // get the _rowHeight so we know the height for the waveform
+      this._rowHeight = this.shadowRoot.firstElementChild.clientHeight;
     }, 100);
   }
 
@@ -143,10 +151,9 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
       <div class="w2 textXs textMuted textCenter">
         <span>${formatSeconds(this.currentTime || 0)}</span>
       </div>
-      ${this.displayMode === 'lg' && this.rowHeight
+      ${this.displayMode === 'lg' && this._rowHeight
         ? html`<div class="flex1">
             <soundws-waveform
-              .height=${this.rowHeight}
               .peaks=${this.peaks}
               .progress=${this.currentPct}
               .progressColor=${styles.waveProgressColor}
