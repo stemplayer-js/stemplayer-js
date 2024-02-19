@@ -154,7 +154,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.loop = false;
     this.noHover = false;
 
-    this.debouncedGeneratePeaks = debounce(this.generatePeaks, 200, true);
+    this.debouncedMergePeaks = debounce(this.mergePeaks, 200, true);
 
     const controller = new Controller({
       ac: this.audioContext,
@@ -165,7 +165,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     this.addEventListener('controls:play', this.onPlay);
     this.addEventListener('controls:pause', this.onPause);
-    this.addEventListener('peaks', this.onPeaks);
+    // this.addEventListener('peaks', this.onPeaks);
     this.addEventListener('stem:load:start', this.onStemLoadingStart);
     this.addEventListener('stem:load:end', this.onStemLoadingEnd);
     this.addEventListener('stem:solo', this.onSolo);
@@ -259,6 +259,10 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.controller = controller;
   }
 
+  destroy() {
+    this.controller.destroy();
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
     this.controller.pause();
@@ -267,12 +271,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   onSlotChange(e) {
     // inject the controller when an element is added to a slot
     e.target.assignedNodes().forEach(el => {
-      if (el instanceof ControlComponent) {
-        // eslint-disable-next-line no-param-reassign
-        el.controller = this.controller;
-      }
-
-      // load the stem if the stem is added to the player
+      // load the stem when the stem is added to the player
       if (el instanceof StemComponent) {
         el.load(this.controller);
       }
@@ -295,17 +294,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         ? html`<div class="hover"></div>`
         : ''}
     </div>`;
-  }
-
-  /**
-   * @private
-   * @param {Event} e
-   */
-  onPeaks(e) {
-    const { peaks } = e.detail;
-    if (peaks && this.controls) {
-      this.controls.peaks = peaks;
-    }
   }
 
   /**
@@ -389,30 +377,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   }
 
   /**
-   * Gets the controls component
-   */
-  get controls() {
-    const slots = Array.from(this.shadowRoot.querySelectorAll('slot'));
-
-    return slots
-      .map(slot =>
-        slot.assignedElements().find(e => e instanceof ControlComponent),
-      )
-      .find(e => !!e);
-  }
-
-  get stems() {
-    return this.stemListComponent?.stems;
-  }
-
-  /**
-   *@private
-   */
-  get stemListComponent() {
-    return this.shadowRoot?.querySelector('stemplayer-js-stemslist');
-  }
-
-  /**
    *@private
    */
   onHover(e) {
@@ -430,13 +394,20 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    *
    * @private
    */
-  generatePeaks() {
+  mergePeaks() {
     const peaks = combinePeaks(
       ...this.stemComponents
         .map(c => c.peaks)
         .filter(e => !!e)
         .map(e => e.data),
     );
+
+    // pass the combined peaks to the controls component
+    this.slottedElements
+      .filter(el => el instanceof ControlComponent)
+      .forEach(el => {
+        el.peaks = peaks;
+      });
 
     this.dispatchEvent(
       new CustomEvent('peaks', {
@@ -491,7 +462,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     e.stopPropagation();
 
     if (e.target instanceof StemComponent) {
-      this.debouncedGeneratePeaks();
+      this.debouncedMergePeaks();
     }
   }
 
@@ -502,13 +473,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   onSolo(e) {
     e.stopPropagation();
 
-    this.stemComponents?.forEach(stemComponent => {
-      if (e.detail === stemComponent) {
-        // eslint-disable-next-line no-param-reassign
-        stemComponent.solo = 1;
+    this.stemComponents?.forEach(el => {
+      if (e.detail === el) {
+        el.solo = 1;
       } else {
-        // eslint-disable-next-line no-param-reassign
-        stemComponent.solo = -1;
+        el.solo = -1;
       }
     });
   }
@@ -520,9 +489,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   onUnSolo(e) {
     e.stopPropagation();
 
-    this.stemComponents?.forEach(stemComponent => {
-      // eslint-disable-next-line no-param-reassign
-      stemComponent.solo = undefined;
+    this.stemComponents?.forEach(el => {
+      el.solo = undefined;
     });
   }
 
@@ -550,7 +518,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.slottedElements.forEach(el => {
       if (el instanceof StemComponent || el instanceof ControlComponent)
         Object.keys(props).forEach(key => {
-          // eslint-disable-next-line no-param-reassign
           el[key] = props[key];
         });
     });

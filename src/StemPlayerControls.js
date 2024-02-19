@@ -28,10 +28,6 @@ import { computeWaveformStyles } from './lib/compute-styles.js';
 import debounce from './lib/debounce.js';
 
 export class SoundwsStemPlayerControls extends ResponsiveLitElement {
-  /**
-   * Safari does not like inherit for css variables
-   * https://stackoverflow.com/questions/48079541/css-variables-inheritance-and-fallback
-   */
   static get styles() {
     return [
       gridStyles,
@@ -60,12 +56,37 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   static get properties() {
     return {
       ...ResponsiveLitElement.properties,
+
+      /**
+       * The label to display
+       */
       label: { type: String },
+
+      /**
+       * The duration of the track
+       */
       duration: { type: Number },
+
+      /**
+       * The current time of playback
+       */
       currentTime: { type: Number },
+
+      /**
+       * The peaks data that are to be used for displaying the waveform
+       */
       peaks: { type: Object },
+
+      /**
+       * The percentage of the current time
+       */
       currentPct: { type: Number },
+
+      /**
+       * The playing state
+       */
       isPlaying: { type: Boolean },
+
       /** @private */
       rowHeight: { attribute: false },
       /** @private */

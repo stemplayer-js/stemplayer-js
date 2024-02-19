@@ -33,10 +33,6 @@ import { computeWaveformStyles } from './lib/compute-styles.js';
  * @cssprop [--stemplayer-js-waveform-progress-color=rgb(0, 206, 224)]
  */
 export class SoundwsStemPlayerStem extends ResponsiveLitElement {
-  /**
-   * Safari does not like inherit for css variables
-   * https://stackoverflow.com/questions/48079541/css-variables-inheritance-and-fallback
-   */
   static get styles() {
     return [
       gridStyles,
@@ -60,14 +56,32 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   static get properties() {
     return {
       ...ResponsiveLitElement.properties,
+
+      /**
+       * The label to display
+       */
       label: { type: String },
+
+      /**
+       * The url of the audio file
+       */
       src: { type: String },
+
+      /**
+       * The url of the waveform file
+       */
       waveform: { type: String },
+
       solo: { type: Boolean },
       muted: { type: Boolean },
       currentPct: { type: Number },
       volume: { type: Number },
+
+      /**
+       * Override the duration of the track
+       */
       duration: { type: Number },
+
       /** @private */
       waveColor: { type: String },
       /** @private */
@@ -80,11 +94,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   constructor() {
     super();
     this._volume = 1;
-
-    // this is also handled by the player-component - but the stem element should also emit an error event
-    this.addEventListener('waveform-loading-error', ({ detail }) =>
-      this.dispatchEvent(new ErrorEvent('error', { error: detail })),
-    );
   }
 
   connectedCallback() {
