@@ -173,7 +173,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.addEventListener('waveform:draw', this.onWaveformDraw);
     if (!this.noHover) this.addEventListener('pointermove', this.onHover);
 
-    this.addEventListener('seek', e => {
+    this.addEventListener('controls:seek', e => {
       if (
         e.target instanceof StemComponent ||
         e.target instanceof ControlComponent
@@ -182,7 +182,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       }
     });
 
-    this.addEventListener('seeking', () => {
+    this.addEventListener('controls:seeking', () => {
       if (controller.state === 'running') {
         controller.pause();
         controller.once('seek', () => {

@@ -120,12 +120,6 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     }, 100);
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.onResizeCallback?.un();
-    this.onResizeCallback = null;
-  }
-
   render() {
     const styles = this.computedWaveformStyles;
 
@@ -212,7 +206,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
    * @private
    */
   handleSeeking() {
-    this.dispatchEvent(new CustomEvent('seeking', { bubbles: true }));
+    this.dispatchEvent(new CustomEvent('controls:seeking', { bubbles: true }));
   }
 
   /**
@@ -220,7 +214,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
    */
   handleSeek(e) {
     this.dispatchEvent(
-      new CustomEvent('seek', {
+      new CustomEvent('controls:seek', {
         detail: e.detail / 100,
         bubbles: true,
       }),

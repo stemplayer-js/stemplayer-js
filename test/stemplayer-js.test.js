@@ -3,7 +3,7 @@ import { fixture, expect } from '@open-wc/testing';
 
 import '../stemplayer.js';
 
-describe('SoundwsStemplayer', () => {
+describe('StemPlayer', () => {
   it('allows setting of a max-height attribute', async () => {});
 
   // it('has a default header "Hey there" and counter 5', async () => {
