@@ -1,0 +1,9 @@
+:root {
+  --stemplayer-js-brand-color: #01a4b3;
+  --stemplayer-js-color: white;
+  --stemplayer-js-background-color: black;
+  --stemplayer-js-waveform-color: white;
+  --stemplayer-js-waveform-progress-color: #01a4b3;
+  --stemplayer-hover-background-color: rgba(255, 255, 255, 0.5);
+  --stemplayer-hover-mix-blend-mode: overlay;
+}

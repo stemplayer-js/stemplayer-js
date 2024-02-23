@@ -40,7 +40,7 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-font-family="'Franklin Gothic Medium','Arial Narrow',Arial,sans-serif"]
  * @cssprop [--stemplayer-js-font-size=16px]
  * @cssprop [--stemplayer-js-color=rgb(220, 220, 220)]
- * @cssprop [--stemplayer-js-accent-color=rgb(1, 164, 179)]
+ * @cssprop [--stemplayer-js-brand-color=rgb(1, 164, 179)]
  * @cssprop [--stemplayer-js-background-color=black]
  * @cssprop [--stemplayer-js-row-height=60px]
  * @cssprop [--stemplayer-js-waveform-color]
@@ -48,6 +48,8 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-wave-pixel-ratio=2]
  * @cssprop [--stemplayer-js-grid-base=1.5rem]
  * @cssprop [--stemplayer-js-max-height=auto]
+ * @cssprop [--stemplayer-hover-mix-blend-mode=overlay]
+ * @cssprop [--stemplayer-hover-background-color=rgba(255, 255, 255, 0.5)]
  *
  */
 export class SoundwsStemPlayer extends ResponsiveLitElement {
@@ -55,18 +57,15 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     return css`
       :host {
         --soundws-player-button-color: var(--stemplayer-js-color, white);
-        --soundws-range-border-color: var(
-          --stemplayer-js-accent-color,
-          #01a4b3
-        );
+        --soundws-range-border-color: var(--stemplayer-js-brand-color, #01a4b3);
         --soundws-player-button-focus-background-color: var(
-          --stemplayer-js-accent-color
+          --stemplayer-js-brand-color
         );
         --soundws-range-focus-background-color: var(
-          --stemplayer-js-accent-color
+          --stemplayer-js-brand-color
         );
         --soundws-slider-handle-border-right-color: var(
-          --stemplayer-js-accent-color
+          --stemplayer-js-brand-color
         );
         display: block;
         font-family: var(
@@ -102,8 +101,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         pointer-events: none;
         height: 100%;
         width: 0;
-        mix-blend-mode: overlay;
-        background: rgba(255, 255, 255, 0.5);
+        mix-blend-mode: var(--stemplayer-hover-mix-blend-mode, overlay);
+        background: var(
+          --stemplayer-hover-background-color,
+          rgba(255, 255, 255, 0.5)
+        );
         opacity: 0;
         transition: opacity 0.2s ease;
       }
@@ -173,14 +175,17 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.addEventListener('waveform:draw', this.onWaveformDraw);
     if (!this.noHover) this.addEventListener('pointermove', this.onHover);
 
-    this.addEventListener('controls:seek', e => {
+    const handleSeek = e => {
       if (
         e.target instanceof StemComponent ||
         e.target instanceof ControlComponent
       ) {
         controller.pct = e.detail;
       }
-    });
+    };
+
+    this.addEventListener('waveform:seek', e => handleSeek(e));
+    this.addEventListener('controls:seek', e => handleSeek(e));
 
     this.addEventListener('controls:seeking', () => {
       if (controller.state === 'running') {

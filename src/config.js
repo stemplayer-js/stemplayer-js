@@ -24,9 +24,7 @@ export const responsiveBreakpoints = {
 export const defaults = {
   waveform: {
     waveColor: '#AAA',
-    controlsWaveColor: '#AAA',
     progressColor: 'rgb(0, 206, 224)',
-    controlsProgressColor: 'rgb(0, 206, 224)',
     devicePixelRatio: 2,
     barGap: 2,
     barWidth: 2,

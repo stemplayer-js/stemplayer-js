@@ -18,15 +18,15 @@ import { css } from 'lit';
 
 export default css`
   .bgAccent {
-    background-color: var(--stemplayer-js-accent-color, rgb(1, 164, 179));
+    background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
   }
 
   .hoverBgAccent:hover {
-    background-color: var(--stemplayer-js-accent-color, rgb(1, 164, 179));
+    background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
   }
 
   .focusBgAccent:focus {
-    background-color: var(--stemplayer-js-accent-color, rgb(1, 164, 179));
+    background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
   }
 
   .bgOp3 {
