@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.0](https://github.com/firstcoders/monorepo/compare/@stemplayer-js/stemplayer-js@2.1.0...@stemplayer-js/stemplayer-js@3.1.0-beta.0) (2024-02-23)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** also export config as default ([e24c6a5](https://github.com/firstcoders/monorepo/commit/e24c6a581f6c835f482610bcec307d345d623f8d))
+* **stemplayer-js:** differing waveform durations ([a57bce1](https://github.com/firstcoders/monorepo/commit/a57bce1ca19319a686e62b8c9bc04171b828fd3a))
+* **stemplayer-js:** fix for css vars + safari + inherit ([535f429](https://github.com/firstcoders/monorepo/commit/535f429a22d2fec708697d28a9138b901e71efce))
+* **stemplayer-js:** fix for waveformstyles referencing wrong barwidth and bargap pros ([99db1b6](https://github.com/firstcoders/monorepo/commit/99db1b69f2a2368c5cb9d2b6387279faa984ff98))
+* **stemplayer-js:** fix seeking controls ([c297d70](https://github.com/firstcoders/monorepo/commit/c297d7008d269774a6669e98b3468a001f8d33a8))
+* **stemplayer-js:** fix seeking event ([f3a0286](https://github.com/firstcoders/monorepo/commit/f3a02869d07a54814a9c808d41b6535d2aa54d9a))
+* **stemplayer-js:** optional chain removal of event listener ([08f3848](https://github.com/firstcoders/monorepo/commit/08f384855420bba35357928d51f07d7c0d417a67))
+
+
+### Features
+
+* **stemplayer-js:** added aria label to slider ([a770830](https://github.com/firstcoders/monorepo/commit/a770830360fea97a6162108d1ef96169aa42a4e8))
+* **stemplayer-js:** added hover effect ([df42451](https://github.com/firstcoders/monorepo/commit/df42451acbdc51d2f5023245369e45caaa3c9e77))
+* **stemplayer-js:** added label to soundws-range element ([d8647b9](https://github.com/firstcoders/monorepo/commit/d8647b939384f2cac1bd42c9153df3cb5f39dc86))
+* **stemplayer-js:** export config and added custom-config demo ([9fec421](https://github.com/firstcoders/monorepo/commit/9fec42171ed6593931667d9273f6918763868545))
+
+
+### Reverts
+
+* **stemplayer-js:** fixed waveform json ([643da3c](https://github.com/firstcoders/monorepo/commit/643da3c726bcec4d6d79806d4415c5502a277489))
+
+
+
+
+
 # [2.1.0-beta.2](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@2.1.0-beta.1...@stemplayer-js/stemplayer-js@2.1.0-beta.2) (2024-01-08)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js

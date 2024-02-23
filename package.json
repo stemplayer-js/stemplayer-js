@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "3.0.0",
+  "version": "3.1.0-beta.0",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -31,7 +31,6 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "private": true,
   "exports": {
     ".": "./index.js",
     "./stemplayer-legacy.js": "./stemplayer-legacy.js",
