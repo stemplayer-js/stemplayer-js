@@ -3,7 +3,7 @@
   "author": "The First Coders Team (https://www.firstcoders.co.uk)",
   "description": "A streaming, low latency Stem Player Web-Component",
   "email": "support@firstcoders.co.uk",
-  "bugs": "https://github.com/stemplayer-js/stem-player-js/issues",
+  "bugs": "https://github.com/stemplayer-js/stemplayer-js/issues",
   "homepage": "https://stemplayer-js.com",
   "license": "GPL-3.0-or-later",
   "contributors": [
@@ -30,6 +30,10 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stemplayer-js/stem-player-js.git"
   },
   "exports": {
     ".": "./index.js",
