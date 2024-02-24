@@ -278,7 +278,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       const [target] = e.composedPath();
 
       // ignore form input events
-      if (['INPUT', 'TEXTAREA'].indexOf(target.tagName.toUpperCase()) !== -1)
+      if (
+        ['INPUT', 'TEXTAREA', 'BUTTON'].indexOf(
+          target.tagName.toUpperCase(),
+        ) !== -1
+      )
         return;
 
       // control player on spacebar

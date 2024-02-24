@@ -185,31 +185,19 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   getSmallScreenTpl() {
     return html`<div class="dFlex flexRow showSm">
       <div class="w2 flexNoShrink">
-        ${this.solo === 1
-          ? html`<soundws-player-button
-              @click=${this.handleUnSolo}
-              title="Disable solo"
-              type="unsolo"
-              class="bgAccent"
-            ></soundws-player-button>`
-          : html`<soundws-player-button
-              @click=${this.handleSolo}
-              title="Solo"
-              type="solo"
-            ></soundws-player-button>`}
+        <soundws-player-button
+          @click=${this.solo === 1 ? this.handleUnSolo : this.handleSolo}
+          .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
+          .type=${this.solo === 1 ? 'unsolo' : 'solo'}
+          class=${this.solo === 1 ? 'bgAccent' : ''}
+        ></soundws-player-button>
       </div>
       <div class="w2 flexNoShrink">
-        ${this.muted || this.volume === 0
-          ? html`<soundws-player-button
-              @click=${this.handleUnmute}
-              title="Unmute"
-              type="unmute"
-            ></soundws-player-button>`
-          : html`<soundws-player-button
-              @click=${this.handleMute}
-              title="Mute"
-              type="mute"
-            ></soundws-player-button>`}
+        <soundws-player-button
+          @click=${this.toggleMute}
+          .title="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
+          .type="${this.muted || this.volume === 0 ? 'unmute' : 'mute'}"
+        ></soundws-player-button>
       </div>
       <soundws-slider
         .value=${this.volume * 100}
@@ -235,63 +223,44 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
 
     return html`<div class="dFlex flexRow row">
       <div class="w2 pr1 flexNoShrink">
-        ${
-          this.solo === 1
-            ? html`<soundws-player-button
-                @click=${this.handleUnSolo}
-                title="Disable solo"
-                type="unsolo"
-                class="bgAccent"
-              ></soundws-player-button>`
-            : html`<soundws-player-button
-                @click=${this.handleSolo}
-                title="Solo"
-                type="solo"
-              ></soundws-player-button>`
-        }
+        <soundws-player-button
+          @click=${this.solo === 1 ? this.handleUnSolo : this.handleSolo}
+          .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
+          .type=${this.solo === 1 ? 'unsolo' : 'solo'}
+          class=${this.solo === 1 ? 'bgAccent' : ''}
+        ></soundws-player-button>
       </div>
       <div class="w5 hoverMenuAnchor dFlex flexAlignStretch">
-        ${
-          this.muted || this.volume === 0
-            ? html`<soundws-player-button
-                class="w2 flexNoShrink pr1"
-                @click=${this.handleUnmute}
-                title="Unmute"
-                type="unmute"
-              ></soundws-player-button>`
-            : html`<soundws-player-button
-                class="w2 flexNoShrink pr1"
-                @click=${this.handleMute}
-                title="Mute"
-                type="mute"
-              ></soundws-player-button>`
-        }
-            <soundws-range
-            label="volume"
-            class="focusBgAccent px1"
-            @change=${e => this.handleVolume(e.detail / 100)}
-            .value=${this.volume * 100}
-            ></sounws-range>
+        <soundws-player-button
+          class="w2 flexNoShrink pr1"
+          @click=${this.toggleMute}
+          .title="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
+          type="${this.muted || this.volume === 0 ? 'unmute' : 'mute'}"
+        ></soundws-player-button>
+        <soundws-range
+          label="volume"
+          class="focusBgAccent px1"
+          @change=${e => this.handleVolume(e.detail / 100)}
+          .value=${this.volume * 100}
+        ></soundws-range>
       </div>
       <div class="w6 pr1 alignRight truncate noPointerEvents textCenter">
         <span class="truncate textSm">${this.label}</span>
       </div>
-        ${
-          this._rowHeight
-            ? html`<soundws-waveform
-                class="flex1"
-                .src=${this.waveform}
-                .progress=${this.currentPct}
-                .scaleY=${this.volume}
-                .progressColor=${styles.waveProgressColor}
-                .waveColor=${styles.waveColor}
-                .barWidth=${styles.barWidth}
-                .barGap=${styles.barGap}
-                .pixelRatio=${styles.devicePixelRatio}
-                .duration=${this.duration}
-              ></soundws-waveform>`
-            : ''
-        }
+      ${this._rowHeight
+        ? html`<soundws-waveform
+            class="flex1"
+            .src=${this.waveform}
+            .progress=${this.currentPct}
+            .scaleY=${this.volume}
+            .progressColor=${styles.waveProgressColor}
+            .waveColor=${styles.waveColor}
+            .barWidth=${styles.barWidth}
+            .barGap=${styles.barGap}
+            .pixelRatio=${styles.devicePixelRatio}
+            .duration=${this.duration}
+          ></soundws-waveform>`
+        : ''}
       <div class="w2 flexNoShrink"></div>
     </div>`;
   }
@@ -299,15 +268,8 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   /**
    * @private
    */
-  handleMute() {
-    this.muted = true;
-  }
-
-  /**
-   * @private
-   */
-  handleUnmute() {
-    this.muted = false;
+  toggleMute() {
+    this.muted = !(this.muted || this.volume === 0);
   }
 
   /**
