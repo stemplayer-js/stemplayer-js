@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.11](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.10...@stemplayer-js/stemplayer-js@3.1.0-beta.11) (2024-02-24)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** preventdefault on keypress space event ([1120b31](https://github.com/stemplayer-js/stem-player-js/commit/1120b318b39ed2a19f0d67a26767975d8598d4a9))
+
+
+
+
+
 # [3.1.0-beta.10](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.9...@stemplayer-js/stemplayer-js@3.1.0-beta.10) (2024-02-24)
 
 
