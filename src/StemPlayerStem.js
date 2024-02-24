@@ -161,7 +161,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
 
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
-      if (['volume', 'muted', 'stem:solo'].indexOf(propName) !== -1) {
+      if (['volume', 'muted', 'solo'].indexOf(propName) !== -1) {
         if (this.HLS) this.HLS.volume = this.volume;
         if (this.waveformComponent) this.waveformComponent.scaleY = this.volume;
       }
