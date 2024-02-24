@@ -117,19 +117,18 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     const styles = this.computedWaveformStyles;
 
     return html` <div class="dFlex flexRow row">
-      <div class="w2 pr1">
-        <soundws-player-button
-          @click=${this.isPlaying ? this.onPauseClick : this.onPlayClick}
-          .title=${this.isPlaying ? 'Pause' : 'Play'}
-          .type=${this.isPlaying ? 'pause' : 'play'}
-        ></soundws-player-button>
-      </div>
+      <soundws-player-button
+        class="w2"
+        @click=${this.isPlaying ? this.onPauseClick : this.onPlayClick}
+        .title=${this.isPlaying ? 'Pause' : 'Play'}
+        .type=${this.isPlaying ? 'pause' : 'play'}
+      ></soundws-player-button>
       ${this.displayMode !== 'xs'
-        ? html`<div class="w9 truncate hideXs pr1 textCenter">
+        ? html`<div class="w9 truncate hideXs px4 textCenter">
             <span>${this.label}</span>
           </div>`
         : ''}
-      <div class="w2 textXs textMuted textCenter">
+      <div class="w2 textXs textMuted pr1 textCenter">
         <span>${formatSeconds(this.currentTime || 0)}</span>
       </div>
       ${this.displayMode === 'lg' && this._rowHeight

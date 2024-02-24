@@ -222,7 +222,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     const styles = this.computedWaveformStyles;
 
     return html`<div class="dFlex flexRow row">
-      <div class="w2 pr1 flexNoShrink">
+      <div class="w2 flexNoShrink">
         <soundws-player-button
           @click=${this.solo === 1 ? this.handleUnSolo : this.handleSolo}
           .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
@@ -230,7 +230,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           class=${this.solo === 1 ? 'bgAccent' : ''}
         ></soundws-player-button>
       </div>
-      <div class="w5 hoverMenuAnchor dFlex flexAlignStretch">
+      <div class="w5 hoverMenuAnchor dFlex flexAlignStretch pr1">
         <soundws-player-button
           class="w2 flexNoShrink pr1"
           @click=${this.toggleMute}
@@ -244,7 +244,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           .value=${this.volume * 100}
         ></soundws-range>
       </div>
-      <div class="w6 pr1 alignRight truncate noPointerEvents textCenter">
+      <div class="w6 px4 alignRight truncate noPointerEvents textCenter">
         <span class="truncate textSm">${this.label}</span>
       </div>
       ${this._rowHeight

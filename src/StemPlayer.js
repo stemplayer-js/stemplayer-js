@@ -289,6 +289,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       if (e.code.toLowerCase() === 'space') {
         if (this.controller.state !== 'running') this.play();
         else this.pause();
+        e.preventDefault();
       }
     };
   }
