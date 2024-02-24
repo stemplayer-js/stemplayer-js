@@ -201,7 +201,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     });
 
     if (this.autoplay) {
-      this.addEventListener('loading-end', this.play, { once: true });
+      this.addEventListener('stem:load:end', this.play, { once: true });
     }
 
     ['timeupdate', 'end', 'seek', 'start', 'pause'].forEach(event => {
