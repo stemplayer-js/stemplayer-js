@@ -80,6 +80,10 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         background-color: var(--stemplayer-js-background-color, black);
       }
 
+      .overflow-hidden {
+        overflow: hidden;
+      }
+
       .relative {
         position: relative;
       }
@@ -284,7 +288,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   }
 
   render() {
-    return html`<div class="relative">
+    return html`<div class="relative overflow-hidden">
       <slot name="header" @slotchange=${this.onSlotChange}></slot>
       <div class="stemsWrapper">
         <slot class="default" @slotchange=${this.onSlotChange}></slot>
