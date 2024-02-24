@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.9](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.8...@stemplayer-js/stemplayer-js@3.1.0-beta.9) (2024-02-24)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix autoplay ([c535b9a](https://github.com/stemplayer-js/stem-player-js/commit/c535b9a0b61c34ffae7bed8e469f39f3fe490eeb))
+
+
+
+
+
 # [3.1.0-beta.8](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.7...@stemplayer-js/stemplayer-js@3.1.0-beta.8) (2024-02-24)
 
 
