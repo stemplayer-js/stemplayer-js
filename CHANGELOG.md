@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.10](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.9...@stemplayer-js/stemplayer-js@3.1.0-beta.10) (2024-02-24)
+
+
+### Features
+
+* **stemplayer-js:** added keyboard control.. play on spacebar ([bdd42a8](https://github.com/stemplayer-js/stem-player-js/commit/bdd42a8bb92f76fb55488842781fd3c5bc5ff2e8))
+
+
+
+
+
 # [3.1.0-beta.9](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.8...@stemplayer-js/stemplayer-js@3.1.0-beta.9) (2024-02-24)
 
 
