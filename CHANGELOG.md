@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.8](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.7...@stemplayer-js/stemplayer-js@3.1.0-beta.8) (2024-02-24)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** listen to renamed stem loading end event ([12df156](https://github.com/stemplayer-js/stem-player-js/commit/12df1565278cdd387570c28daf0b453978c4a513))
+* **stemplayer-js:** overflow hiiden ([dc3186d](https://github.com/stemplayer-js/stem-player-js/commit/dc3186d41fe062e902719a71dca64a6bb7437609))
+
+
+
+
+
 # [3.1.0-beta.7](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.6...@stemplayer-js/stemplayer-js@3.1.0-beta.7) (2024-02-24)
 
 
