@@ -17,8 +17,8 @@
 export const fetchOptions = {};
 
 export const responsiveBreakpoints = {
-  xs: '640',
-  sm: '1007',
+  xs: '600',
+  sm: '800',
 };
 
 export const defaults = {
