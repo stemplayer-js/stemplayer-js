@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.6](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.5...@stemplayer-js/stemplayer-js@3.1.0-beta.6) (2024-02-24)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix solo ([4806868](https://github.com/stemplayer-js/stem-player-js/commit/48068686bc41e566b3c7487921015ebece34b685))
+* **stemplayer-js:** reverted responsive widths ([59fdee5](https://github.com/stemplayer-js/stem-player-js/commit/59fdee521503603a1e16df46f2cb885f35b29681))
+
+
+
+
+
 # [3.1.0-beta.5](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.4...@stemplayer-js/stemplayer-js@3.1.0-beta.5) (2024-02-24)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
