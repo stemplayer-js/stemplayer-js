@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.7](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.6...@stemplayer-js/stemplayer-js@3.1.0-beta.7) (2024-02-24)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** added getter for waveform component ([b5f23ec](https://github.com/stemplayer-js/stem-player-js/commit/b5f23ec9ec8040e44c5c7a64f89f0c5d245290ba))
+
+
+
+
+
 # [3.1.0-beta.6](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.5...@stemplayer-js/stemplayer-js@3.1.0-beta.6) (2024-02-24)
 
 
