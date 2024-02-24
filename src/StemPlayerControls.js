@@ -44,10 +44,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
           );
           display: block;
           color: var(--stemplayer-js-controls-color, inherit);
-          background-color: var(
-            --stemplayer-js-controls-background-color,
-            inherit
-          );
+          background-color: var(--stemplayer-js-controls-background-color);
         }
       `,
     ];
