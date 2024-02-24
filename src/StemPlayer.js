@@ -268,15 +268,40 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     // store a reference
     this.controller = controller;
+
+    // keypress event
+    this.handleKeypress = e => {
+      if (e.defaultPrevented) {
+        return; // Should do nothing if the default action has been cancelled
+      }
+
+      const [target] = e.composedPath();
+
+      // ignore form input events
+      if (['INPUT', 'TEXTAREA'].indexOf(target.tagName.toUpperCase()) !== -1)
+        return;
+
+      // control player on spacebar
+      if (e.code.toLowerCase() === 'space') {
+        if (this.controller.state !== 'running') this.play();
+        else this.pause();
+      }
+    };
   }
 
   destroy() {
     this.controller.destroy();
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('keypress', this.handleKeypress);
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
     this.controller.pause();
+    window.removeEventListener('keypress', this.handleKeypress);
   }
 
   onSlotChange(e) {
