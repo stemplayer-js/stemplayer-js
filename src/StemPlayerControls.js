@@ -109,15 +109,11 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     this.debouncedHandleSeek = debounce(this.handleSeek, 100);
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated() {
+    this.computedWaveformStyles = this.computeWaveformStyles();
 
-    setTimeout(() => {
-      this.computedWaveformStyles = this.computeWaveformStyles();
-
-      // get the _rowHeight so we know the height for the waveform
-      this._rowHeight = this.shadowRoot.firstElementChild.clientHeight;
-    }, 100);
+    // get the _rowHeight so we know the height for the waveform
+    this._rowHeight = this.shadowRoot.firstElementChild.clientHeight;
   }
 
   render() {
