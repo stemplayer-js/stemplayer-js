@@ -134,6 +134,9 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
 
     try {
       await this.HLS.load(this.src).promise;
+
+      this.isLoaded = true;
+
       this.dispatchEvent(
         new Event('stem:load:end', { bubbles: true, composed: true }),
       );

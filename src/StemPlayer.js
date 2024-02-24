@@ -128,7 +128,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       /**
        * Whether to (attempt) autoplay
        */
-      autoplay: { attribute: 'autoplay' },
+      autoplay: { attribute: 'autoplay', type: Boolean },
 
       /**
        * overrides the duration
@@ -200,9 +200,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       }
     });
 
-    if (this.autoplay) {
-      this.addEventListener('stem:load:end', this.play, { once: true });
-    }
+    this.addEventListener('stem:load:end', () => {
+      if (this.autoplay && !this.stemComponents.find(e => !e.isLoaded)) {
+        this.play();
+      }
+    });
 
     ['timeupdate', 'end', 'seek', 'start', 'pause'].forEach(event => {
       controller.on(event, args => {
