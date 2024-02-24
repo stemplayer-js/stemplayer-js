@@ -213,4 +213,8 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
       }),
     );
   }
+
+  get waveformComponent() {
+    return this.shadowRoot?.querySelector('soundws-waveform');
+  }
 }
