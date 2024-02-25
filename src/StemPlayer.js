@@ -149,6 +149,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
        * Inject an audio context
        */
       audioContext: { type: Object },
+
+      /**
+       * Controls the player by keyboard events (e.g. space = start/pause)
+       */
+      noKeyboardEvents: { type: Boolean, attribute: 'no-keyboard-events' },
     };
   }
 
@@ -159,6 +164,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.autoplay = false;
     this.loop = false;
     this.noHover = false;
+    this.noKeyboardEvents = false;
 
     this.debouncedMergePeaks = debounce(this.mergePeaks, 200, true);
 
@@ -277,19 +283,23 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
       const [target] = e.composedPath();
 
-      // ignore form input events
-      if (
-        ['INPUT', 'TEXTAREA', 'BUTTON'].indexOf(
-          target.tagName.toUpperCase(),
-        ) !== -1
-      )
-        return;
-
       // control player on spacebar
       if (e.code.toLowerCase() === 'space') {
+        // ignore form input events
+        if (
+          ['INPUT', 'TEXTAREA', 'BUTTON'].indexOf(
+            target.tagName.toUpperCase(),
+          ) !== -1
+        )
+          return;
+
         if (this.controller.state !== 'running') this.play();
         else this.pause();
         e.preventDefault();
+      }
+
+      if (e.code.toLowerCase() === 'escape') {
+        target.blur();
       }
     };
   }
@@ -300,13 +310,19 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('keypress', this.handleKeypress);
+
+    if (!this.noKeyboardEvents) {
+      window.addEventListener('keyup', this.handleKeypress);
+    }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.controller.pause();
-    window.removeEventListener('keypress', this.handleKeypress);
+
+    if (!this.noKeyboardEvents) {
+      window.removeEventListener('keyup', this.handleKeypress);
+    }
   }
 
   onSlotChange(e) {
