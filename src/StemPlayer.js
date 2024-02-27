@@ -441,8 +441,10 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     if (el) {
       const left = e.target.waveformComponent?.offsetLeft;
+      const width = e.offsetX - left > 0 ? e.offsetX - left : 0;
+
       el.style.left = `${left}px`;
-      el.style.width = `${e.offsetX - left}px`;
+      el.style.width = `${width}px`;
     }
   }
 
