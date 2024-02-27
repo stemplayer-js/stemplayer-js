@@ -438,10 +438,12 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    */
   onHover(e) {
     const el = this.shadowRoot.querySelector('.hover');
+    const waveformEl = e.target.waveformComponent;
 
-    if (el) {
-      const left = e.target.waveformComponent?.offsetLeft;
-      const width = e.offsetX - left > 0 ? e.offsetX - left : 0;
+    if (el && waveformEl) {
+      const left = waveformEl.offsetLeft;
+      let width = e.offsetX - left > 0 ? e.offsetX - left : 0;
+      if (width > waveformEl.offsetWidth) width = waveformEl.offsetWidth;
 
       el.style.left = `${left}px`;
       el.style.width = `${width}px`;
