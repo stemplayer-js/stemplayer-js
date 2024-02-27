@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.13](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.12...@stemplayer-js/stemplayer-js@3.1.0-beta.13) (2024-02-27)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** hover div should not be wider than waveform ([10aad73](https://github.com/stemplayer-js/stem-player-js/commit/10aad737040512a86d87d29c231e35fc730e6c75))
+* **stemplayer-js:** keypress on keydown to fix chrome scrolling ([85ba266](https://github.com/stemplayer-js/stem-player-js/commit/85ba266f39cffdded1606ab5c53b21c0892aa847))
+
+
+
+
+
 # [3.1.0-beta.12](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.11...@stemplayer-js/stemplayer-js@3.1.0-beta.12) (2024-02-27)
 
 
