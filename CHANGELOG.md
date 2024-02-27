@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.12](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.11...@stemplayer-js/stemplayer-js@3.1.0-beta.12) (2024-02-27)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix for hover width too wide on hover out ([b600688](https://github.com/stemplayer-js/stem-player-js/commit/b600688d19e6d553e82b26920e8e4b2682097ac8))
+
+
+### Features
+
+* **stemplayer-js:** escape keypress blur. added attr to disable keyboard events ([37eb599](https://github.com/stemplayer-js/stem-player-js/commit/37eb599d3f748be022335ea555ea798f570cea91))
+
+
+
+
+
 # [3.1.0-beta.11](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.10...@stemplayer-js/stemplayer-js@3.1.0-beta.11) (2024-02-24)
 
 
