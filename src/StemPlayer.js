@@ -312,7 +312,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     super.connectedCallback();
 
     if (!this.noKeyboardEvents) {
-      window.addEventListener('keyup', this.handleKeypress);
+      window.addEventListener('keydown', this.handleKeypress);
     }
   }
 
@@ -321,7 +321,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.controller.pause();
 
     if (!this.noKeyboardEvents) {
-      window.removeEventListener('keyup', this.handleKeypress);
+      window.removeEventListener('keydown', this.handleKeypress);
     }
   }
 
