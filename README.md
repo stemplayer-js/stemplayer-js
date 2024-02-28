@@ -44,7 +44,7 @@ npm i @stemplayer-js/stemplayer-js
 </stemplayer-js>
 ```
 
-See [here for further options, events and CSS variables](./docs//stemplayer-js.md)
+See [here for further options, events and CSS variables](docs/stemplayer-js.md)
 
 # Browser Support
 
