@@ -44,6 +44,8 @@ npm i @stemplayer-js/stemplayer-js
 </stemplayer-js>
 ```
 
+See [here for further options, events and CSS variables](./docs//stemplayer-js.md)
+
 # Browser Support
 
 The Player works in [browsers supporting the Web Audio API](https://caniuse.com/#feat=audio-api). This includes most modern browsers.

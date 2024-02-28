@@ -95,11 +95,68 @@ describe('StemPlayerControls', () => {
   });
 
   describe('when the currentPct is set', () => {
-    it('allows setting of the currentPct', async () => {});
+    it('sets the progress on the waveform', async () => {
+      const el = await fixture(
+        html`<stemplayer-js
+          ><stemplayer-js-controls
+            label="Down by the River"
+          ></stemplayer-js-controls
+        ></stemplayer-js>`,
+      );
+
+      el.slottedElements[0].currentPct = 50;
+
+      await el.slottedElements[0].updateComplete;
+
+      const waveformEl =
+        el.slottedElements[0].shadowRoot.querySelector('soundws-waveform');
+
+      await waveformEl.updateComplete;
+
+      expect(waveformEl.progress).to.equal(50);
+    });
   });
 
-  describe('when the play state is set', () => {
-    it('allows setting of the play state', async () => {});
+  describe('when #isPlaying is true', () => {
+    it('renders a pause button', async () => {
+      const el = await fixture(
+        html`<stemplayer-js
+          ><stemplayer-js-controls
+            label="Down by the River"
+          ></stemplayer-js-controls
+        ></stemplayer-js>`,
+      );
+
+      el.slottedElements[0].isPlaying = true;
+
+      await el.slottedElements[0].updateComplete;
+
+      expect(
+        el.slottedElements[0].shadowRoot.querySelector('soundws-player-button')
+          .type,
+      ).to.equal('pause');
+    });
+  });
+
+  describe('when #isPlaying is false', () => {
+    it('renders a play button', async () => {
+      const el = await fixture(
+        html`<stemplayer-js
+          ><stemplayer-js-controls
+            label="Down by the River"
+          ></stemplayer-js-controls
+        ></stemplayer-js>`,
+      );
+
+      el.slottedElements[0].isPlaying = false;
+
+      await el.slottedElements[0].updateComplete;
+
+      expect(
+        el.slottedElements[0].shadowRoot.querySelector('soundws-player-button')
+          .type,
+      ).to.equal('play');
+    });
   });
 
   it('allows setting of a waveColor', async () => {});
