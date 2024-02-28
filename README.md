@@ -2,6 +2,8 @@
 
 A streaming, low latency Stem Player Web-Component
 
+![A Stem Player](./img/stem-player.png 'Stem Player')
+
 [See this live example of our stem player](https://stemplayer-js.com)
 
 This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
