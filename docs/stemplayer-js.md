@@ -4,32 +4,27 @@ A Stem Player web component
 
 ## Properties
 
-| Property              | Attribute            | Modifiers | Type                                             | Default      | Description                                      |
-|-----------------------|----------------------|-----------|--------------------------------------------------|--------------|--------------------------------------------------|
-| `audioContext`        | `audioContext`       |           | `object`                                         |              | Inject an audio context                          |
-| `autoplay`            | `autoplay`           |           | `boolean`                                        | false        | Whether to (attempt) autoplay                    |
-| `controller`          |                      |           |                                                  | "controller" |                                                  |
-| `currentTime`         |                      |           | `number`                                         |              | Set the curentTime of playback, seeking to that time. |
-| `debouncedMergePeaks` |                      |           | `object`                                         |              |                                                  |
-| `duration`            | `duration`           |           | `number`                                         |              | overrides the duration                           |
-| `handleKeypress`      |                      |           | `object`                                         |              |                                                  |
-| `isLoading`           | `isLoading`          |           | `boolean`                                        |              |                                                  |
-| `loop`                | `loop`               |           | `boolean`                                        | false        | allows looping                                   |
-| `noHover`             | `no-hover`           |           | `boolean`                                        | false        | Disabled the mouseover hover effect              |
-| `noKeyboardEvents`    | `no-keyboard-events` |           | `boolean`                                        | false        | Controls the player by keyboard events (e.g. space = start/pause) |
-| `pct`                 |                      |           | `number`                                         |              | Sets the currentTime to a pct of total duration, seeking to that time |
-| `state`               |                      | readonly  | `{ state: any; currentTime: any; stems: { id: any; src: any; waveform: any; volume: any; muted: any; solo: any; }[]; }` |              | Exports the current state of the player          |
-| `stemComponents`      |                      | readonly  | `array`                                          |              | Get the stem componenents                        |
+| Property           | Attribute            | Modifiers | Type                                             | Default | Description                                      |
+|--------------------|----------------------|-----------|--------------------------------------------------|---------|--------------------------------------------------|
+| `audioContext`     | `audioContext`       |           | `object`                                         |         | Inject a pre instantiated AudioContext           |
+| `autoplay`         | `autoplay`           |           | `boolean`                                        | false   | Whether to (attempt) autoplay                    |
+| `currentTime`      |                      |           | `number`                                         |         | Set the curentTime of playback, seeking to that time. |
+| `duration`         | `duration`           |           | `number`                                         |         | overrides the duration                           |
+| `isLoading`        | `isLoading`          |           |                                                  |         |                                                  |
+| `loop`             | `loop`               |           | `boolean`                                        | false   | Allows looping (experimental)                    |
+| `noHover`          | `no-hover`           |           | `boolean`                                        | false   | Disabled the mouseover hover effect              |
+| `noKeyboardEvents` | `no-keyboard-events` |           | `boolean`                                        | false   | Controls the player by keyboard events (e.g. space = start/pause) |
+| `pct`              |                      |           | `number`                                         |         | Sets the currentTime to a pct of total duration, seeking to that time |
+| `state`            |                      | readonly  | `{ state: any; currentTime: any; stems: { id: any; src: any; waveform: any; volume: any; muted: any; solo: any; }[]; }` |         | Exports the current state of the player          |
+| `stemComponents`   |                      | readonly  | `array`                                          |         | Get the stem componenents                        |
 
 ## Methods
 
-| Method           | Type                 | Description    |
-|------------------|----------------------|----------------|
-| `destroy`        | `(): void`           |                |
-| `onSlotChange`   | `(e: any): void`     |                |
-| `pause`          | `(): any`            | Pause playback |
-| `play`           | `(): any`            | Start playback |
-| `updateChildren` | `(props: any): void` |                |
+| Method    | Type       | Description    |
+|-----------|------------|----------------|
+| `destroy` | `(): void` |                |
+| `pause`   | `(): any`  | Pause playback |
+| `play`    | `(): any`  | Start playback |
 
 ## Events
 
@@ -65,28 +60,31 @@ A Stem Player web component
 | `--stemplayer-js-font-size`               | "16px"                                           |
 | `--stemplayer-js-grid-base`               | "1.5rem"                                         |
 | `--stemplayer-js-max-height`              | "auto"                                           |
-| `--stemplayer-js-row-height`              | "60px"                                           |
-| `--stemplayer-js-wave-pixel-ratio`        | 2                                                |
+| `--stemplayer-js-row-height`              | "4.5rem"                                         |
+| `--stemplayer-js-waveform-bar-gap`        |                                                  |
+| `--stemplayer-js-waveform-bar-width`      |                                                  |
 | `--stemplayer-js-waveform-color`          |                                                  |
+| `--stemplayer-js-waveform-pixel-ratio`    |                                                  |
 | `--stemplayer-js-waveform-progress-color` |                                                  |
 
 
 # stemplayer-js-controls
 
+A component to render a single stem
+
 ## Properties
 
-| Property              | Attribute           | Modifiers | Type                           | Description                                      |
-|-----------------------|---------------------|-----------|--------------------------------|--------------------------------------------------|
-| `currentPct`          | `currentPct`        |           | `number`                       | The percentage of the current time               |
-| `currentTime`         | `currentTime`       |           | `number`                       | The current time of playback                     |
-| `debouncedHandleSeek` |                     |           | `object`                       |                                                  |
-| `duration`            | `duration`          |           | `number`                       | The duration of the track                        |
-| `isPlaying`           | `isPlaying`         |           | `boolean`                      | The playing state                                |
-| `label`               | `label`             |           | `string`                       | The label to display                             |
-| `peaks`               | `peaks`             |           | `object`                       | The peaks data that are to be used for displaying the waveform |
-| `waveColor`           | `waveColor`         |           | `string`                       | The colour of the waveform                       |
-| `waveProgressColor`   | `waveProgressColor` |           | `string`                       | The wave progress colour                         |
-| `waveformComponent`   |                     | readonly  | `Element \| null \| undefined` |                                                  |
+| Property            | Attribute           | Modifiers | Type                           | Description                                      |
+|---------------------|---------------------|-----------|--------------------------------|--------------------------------------------------|
+| `currentPct`        | `currentPct`        |           | `number`                       | The percentage of the current time               |
+| `currentTime`       | `currentTime`       |           | `number`                       | The current time of playback                     |
+| `duration`          | `duration`          |           | `number`                       | The duration of the track                        |
+| `isPlaying`         | `isPlaying`         |           | `boolean`                      | The playing state                                |
+| `label`             | `label`             |           | `string`                       | The label to display                             |
+| `peaks`             | `peaks`             |           | `object`                       | The peaks data that are to be used for displaying the waveform |
+| `waveColor`         | `waveColor`         |           | `string`                       | The colour of the waveform                       |
+| `waveProgressColor` | `waveProgressColor` |           | `string`                       | The wave progress colour                         |
+| `waveformComponent` |                     | readonly  | `Element \| null \| undefined` |                                                  |
 
 ## Events
 
@@ -96,6 +94,15 @@ A Stem Player web component
 | `controls:play`    |                       |
 | `controls:seek`    | `CustomEvent<number>` |
 | `controls:seeking` | `CustomEvent<any>`    |
+
+## CSS Custom Properties
+
+| Property                                         |
+|--------------------------------------------------|
+| `--stemplayer-js-controls-background-color`      |
+| `--stemplayer-js-controls-color`                 |
+| `--stemplayer-js-controls-waveform-color`        |
+| `--stemplayer-js-controls-waveform-progress-color` |
 
 
 # stemplayer-js-stem
@@ -126,17 +133,10 @@ A component to render a single stem
 
 ## Events
 
-| Event                | Type                |
-|----------------------|---------------------|
-| `stem-loading-error` | `CustomEvent<any>`  |
-| `stem:load:end`      |                     |
-| `stem:load:start`    |                     |
-| `stem:solo`          | `CustomEvent<this>` |
-| `stem:unsolo`        | `CustomEvent<this>` |
-
-## CSS Custom Properties
-
-| Property                                  | Default            |
-|-------------------------------------------|--------------------|
-| `--stemplayer-js-waveform-color`          | "#AAA"             |
-| `--stemplayer-js-waveform-progress-color` | "rgb(0, 206, 224)" |
+| Event             | Type                |
+|-------------------|---------------------|
+| `stem:load:end`   |                     |
+| `stem:load:error` | `CustomEvent<any>`  |
+| `stem:load:start` |                     |
+| `stem:solo`       | `CustomEvent<this>` |
+| `stem:unsolo`     | `CustomEvent<this>` |

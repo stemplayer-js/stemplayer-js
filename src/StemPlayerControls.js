@@ -27,6 +27,14 @@ import { defaults } from './config.js';
 import { computeWaveformStyles } from './lib/compute-styles.js';
 import debounce from './lib/debounce.js';
 
+/**
+ * A component to render a single stem
+ *
+ * @cssprop [--stemplayer-js-controls-color]
+ * @cssprop [--stemplayer-js-controls-background-color]
+ * @cssprop [--stemplayer-js-controls-waveform-color]
+ * @cssprop [--stemplayer-js-controls-waveform-progress-color]
+ */
 export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   static get styles() {
     return [
@@ -103,6 +111,8 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
 
   constructor() {
     super();
+
+    /** @private */
     this.debouncedHandleSeek = debounce(this.handleSeek, 100);
   }
 

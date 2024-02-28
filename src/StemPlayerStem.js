@@ -28,9 +28,6 @@ import { computeWaveformStyles } from './lib/compute-styles.js';
 
 /**
  * A component to render a single stem
- *
- * @cssprop [--stemplayer-js-waveform-color=#AAA]
- * @cssprop [--stemplayer-js-waveform-progress-color=rgb(0, 206, 224)]
  */
 export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   static get styles() {
@@ -146,7 +143,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
 
       // dispatch bubbling event so that the player-component can respond to it
       this.dispatchEvent(
-        new CustomEvent('stem-loading-error', {
+        new CustomEvent('stem:load:error', {
           detail: error,
           bubbles: true,
           composed: true,

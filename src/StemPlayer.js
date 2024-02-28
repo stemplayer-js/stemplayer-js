@@ -42,10 +42,12 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-color=rgb(220, 220, 220)]
  * @cssprop [--stemplayer-js-brand-color=rgb(1, 164, 179)]
  * @cssprop [--stemplayer-js-background-color=black]
- * @cssprop [--stemplayer-js-row-height=60px]
+ * @cssprop [--stemplayer-js-row-height=4.5rem]
  * @cssprop [--stemplayer-js-waveform-color]
  * @cssprop [--stemplayer-js-waveform-progress-color]
- * @cssprop [--stemplayer-js-wave-pixel-ratio=2]
+ * @cssprop [--stemplayer-js-waveform-bar-width]
+ * @cssprop [--stemplayer-js-waveform-bar-gap]
+ * @cssprop [--stemplayer-js-waveform-pixel-ratio]
  * @cssprop [--stemplayer-js-grid-base=1.5rem]
  * @cssprop [--stemplayer-js-max-height=auto]
  * @cssprop [--stemplayer-hover-mix-blend-mode=overlay]
@@ -123,7 +125,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
   static get properties() {
     return {
-      isLoading: { type: Boolean },
+      isLoading: { state: true },
 
       /**
        * Whether to (attempt) autoplay
@@ -136,7 +138,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       duration: { type: Number },
 
       /**
-       * allows looping
+       * Allows looping (experimental)
        */
       loop: { type: Boolean },
 
@@ -146,7 +148,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       noHover: { type: Boolean, attribute: 'no-hover' },
 
       /**
-       * Inject an audio context
+       * Inject a pre instantiated AudioContext
+       * @see https://developer.mozilla.org/en-US/docs/Web/API/AudioContext
        */
       audioContext: { type: Object },
 
@@ -166,6 +169,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.noHover = false;
     this.noKeyboardEvents = false;
 
+    /** @private */
     this.debouncedMergePeaks = debounce(this.mergePeaks, 200, true);
 
     const controller = new Controller({
@@ -273,9 +277,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     });
 
     // store a reference
+    /** @private */
     this.controller = controller;
 
     // keypress event
+    /** @private */
     this.handleKeypress = e => {
       if (e.defaultPrevented) {
         return; // Should do nothing if the default action has been cancelled
@@ -325,6 +331,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     }
   }
 
+  /**
+   * @private
+   */
   onSlotChange(e) {
     // inject the controller when an element is added to a slot
     e.target.assignedNodes().forEach(el => {
@@ -575,6 +584,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     return this.slottedElements.filter(e => e instanceof StemComponent);
   }
 
+  /**
+   * @private
+   */
   updateChildren(props) {
     this.slottedElements.forEach(el => {
       if (el instanceof StemComponent || el instanceof ControlComponent)
