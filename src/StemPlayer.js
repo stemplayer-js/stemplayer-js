@@ -16,10 +16,10 @@
  */
 import { html, css } from 'lit';
 import Controller from '@soundws/hls-web-audio/controller.js';
+import Peaks from '@soundws/waveform-element/Peaks.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
 import { SoundwsStemPlayerControls as ControlComponent } from './StemPlayerControls.js';
 import { SoundwsStemPlayerStem as StemComponent } from './StemPlayerStem.js';
-import combinePeaks from './lib/combine-peaks.js';
 import debounce from './lib/debounce.js';
 
 /**
@@ -469,11 +469,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @private
    */
   #mergePeaks() {
-    const peaks = combinePeaks(
-      ...this.stemComponents
-        .map(c => c.peaks)
-        .filter(e => !!e)
-        .map(e => e.data),
+    const peaks = Peaks.combine(
+      ...this.stemComponents.map(c => c.peaks).filter(e => !!e),
     );
 
     // pass the combined peaks to the controls component
@@ -485,9 +482,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     this.dispatchEvent(
       new CustomEvent('peaks', {
-        detail: { peaks, target: this },
+        detail: { peaks },
         bubbles: true,
-        composed: true,
       }),
     );
   }

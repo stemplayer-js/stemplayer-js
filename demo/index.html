@@ -58,5 +58,12 @@
         volume="0.5"
       ></stemplayer-js-stem>
     </stemplayer-js>
+
+    <script>
+      const stemplayer = document.querySelector('stemplayer-js');
+      stemplayer.addEventListener('peaks', (peaks) => {
+        console.log(peaks)
+      })
+    </script>
   </body>
 </html>
