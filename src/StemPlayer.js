@@ -52,7 +52,6 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-max-height=auto]
  * @cssprop [--stemplayer-hover-mix-blend-mode=overlay]
  * @cssprop [--stemplayer-hover-background-color=rgba(255, 255, 255, 0.5)]
- *
  */
 export class SoundwsStemPlayer extends ResponsiveLitElement {
   static get styles() {
@@ -88,11 +87,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
       .relative {
         position: relative;
-      }
-
-      .hide {
-        position: absolute;
-        left: -999%;
       }
 
       .relative:hover .hover {
