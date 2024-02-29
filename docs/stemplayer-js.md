@@ -15,6 +15,7 @@ A Stem Player web component
 | `noHover`          | `no-hover`           |           | `boolean`                                        | false   | Disabled the mouseover hover effect              |
 | `noKeyboardEvents` | `no-keyboard-events` |           | `boolean`                                        | false   | Controls the player by keyboard events (e.g. space = start/pause) |
 | `pct`              |                      |           | `number`                                         |         | Sets the currentTime to a pct of total duration, seeking to that time |
+| `slottedElements`  |                      | readonly  | `Element[]`                                      |         |                                                  |
 | `state`            |                      | readonly  | `{ state: any; currentTime: any; stems: { id: any; src: any; waveform: any; volume: any; muted: any; solo: any; }[]; }` |         | Exports the current state of the player          |
 | `stemComponents`   |                      | readonly  | `array`                                          |         | Get the stem componenents                        |
 
@@ -28,16 +29,16 @@ A Stem Player web component
 
 ## Events
 
-| Event           | Type                                             | Description                                      |
-|-----------------|--------------------------------------------------|--------------------------------------------------|
-| `end`           |                                                  | Fires when the player reaches the end of the playback |
-| `loading-end`   |                                                  | Fires when the player completes loading data     |
-| `loading-start` |                                                  | Fires when the player starts loading data        |
-| `pause`         |                                                  | Fires when the player pauses playback            |
-| `peaks`         | `CustomEvent<{ peaks: { data: any[]; }; target: this; }>` |                                                  |
-| `seek`          |                                                  | Fires when the player seeks                      |
-| `start`         |                                                  | Fires when the player starts playing             |
-| `timeupdate`    |                                                  | Fires the player progresses                      |
+| Event           | Type                           | Description                                      |
+|-----------------|--------------------------------|--------------------------------------------------|
+| `end`           |                                | Fires when the player reaches the end of the playback |
+| `loading-end`   |                                | Fires when the player completes loading data     |
+| `loading-start` |                                | Fires when the player starts loading data        |
+| `pause`         |                                | Fires when the player pauses playback            |
+| `peaks`         | `CustomEvent<{ peaks: any; }>` |                                                  |
+| `seek`          |                                | Fires when the player seeks                      |
+| `start`         |                                | Fires when the player starts playing             |
+| `timeupdate`    |                                | Fires the player progresses                      |
 
 ## Slots
 
@@ -127,9 +128,10 @@ A component to render a single stem
 
 ## Methods
 
-| Method   | Type       |
-|----------|------------|
-| `unload` | `(): void` |
+| Method   | Type                               |
+|----------|------------------------------------|
+| `load`   | `(controller: any): Promise<void>` |
+| `unload` | `(): void`                         |
 
 ## Events
 
