@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <style>
-      :root {
-        font-size: 16px;
-        --stemplayer-js-controls-waveform-color: red;
+      body {
+        background-color: #333;
       }
     </style>
   </head>
@@ -20,13 +19,13 @@
     >
       <stemplayer-js-controls
         slot="header"
-        label="Demo track12"
+        label="Demo track"
       ></stemplayer-js-controls>
       <stemplayer-js-stem
         label="Drums A"
         src="assets/audio/106%20DRUMS%20A_02.5.m3u8"
         waveform="assets/waveforms/106%20DRUMS%20A_02.5.json"
-        volume="0.1"
+        volume="1"
       >
       </stemplayer-js-stem>
       <stemplayer-js-stem
@@ -35,13 +34,13 @@
         src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
         waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
         muted="true"
-        volume="0.2"
+        volume="0.8"
       ></stemplayer-js-stem>
       <stemplayer-js-stem
         label="Conga"
         src="assets/audio/106%20CONGA_03.3.m3u8"
         waveform="assets/waveforms/106%20CONGA_03.3.json"
-        volume="0.3"
+        volume="0.7"
       ></stemplayer-js-stem>
       <stemplayer-js-stem
         label="Casaba"
