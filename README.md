@@ -62,9 +62,13 @@ The player consumes m3u8 playlist files known from the [HLS protocol](https://en
 
 The audio is split up into chunks and served (over simple HTTP) separately.
 
-Why HLS and not just download whole files? Downloading and decoding, for example, 10 5minute audio files will consume bandwith and bloat memory: each minute of every audio file worth of mp3 data is decoded into 44k PCM data and will consume roughly 100mb. By using live streaming we not only speed up playback, we also reduce the memory footprint.
+## Why HLS and not just download whole files?
 
-Why not progressive download? We need to use the web audio API to achieve precise synchronized playback.
+Downloading and decoding, for example, 10 5minute audio files will consume bandwith and bloat memory: each minute of every audio file worth of mp3 data is decoded into 44k PCM data and will consume roughly 100mb. By using live streaming we not only speed up playback, we also reduce the memory footprint.
+
+## Why not progressive download?
+
+We need to use the web audio API to achieve precise synchronized playback.
 
 See also
 
