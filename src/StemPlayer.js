@@ -20,6 +20,7 @@ import Peaks from '@soundws/waveform-element/Peaks.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
 import { SoundwsStemPlayerControls as ControlComponent } from './StemPlayerControls.js';
 import { SoundwsStemPlayerStem as StemComponent } from './StemPlayerStem.js';
+import utilitiesStyles from './styles/utilities.js';
 import debounce from './lib/debounce.js';
 
 /**
@@ -55,66 +56,64 @@ import debounce from './lib/debounce.js';
  */
 export class SoundwsStemPlayer extends ResponsiveLitElement {
   static get styles() {
-    return css`
-      :host {
-        --soundws-player-button-color: var(--stemplayer-js-color, white);
-        --soundws-range-border-color: var(--stemplayer-js-brand-color, #01a4b3);
-        --soundws-player-button-focus-background-color: var(
-          --stemplayer-js-brand-color
-        );
-        --soundws-range-focus-background-color: var(
-          --stemplayer-js-brand-color
-        );
-        --soundws-slider-handle-border-right-color: var(
-          --stemplayer-js-brand-color
-        );
-        display: block;
-        font-family: var(
-          --stemplayer-js-font-family,
-          'Franklin Gothic Medium',
-          'Arial Narrow',
-          Arial,
-          sans-serif
-        );
-        font-size: var(--stemplayer-js-font-size, 1rem);
-        color: var(--stemplayer-js-color, white);
-        background-color: var(--stemplayer-js-background-color, black);
-      }
+    return [
+      utilitiesStyles,
+      css`
+        :host {
+          --soundws-player-button-color: var(--stemplayer-js-color, white);
+          --soundws-range-border-color: var(
+            --stemplayer-js-brand-color,
+            #01a4b3
+          );
+          --soundws-player-button-focus-background-color: var(
+            --stemplayer-js-brand-color
+          );
+          --soundws-range-focus-background-color: var(
+            --stemplayer-js-brand-color
+          );
+          --soundws-slider-handle-border-right-color: var(
+            --stemplayer-js-brand-color
+          );
+          display: block;
+          font-family: var(
+            --stemplayer-js-font-family,
+            'Franklin Gothic Medium',
+            'Arial Narrow',
+            Arial,
+            sans-serif
+          );
+          font-size: var(--stemplayer-js-font-size, 1rem);
+          color: var(--stemplayer-js-color, white);
+          background-color: var(--stemplayer-js-background-color, black);
+        }
 
-      .overflow-hidden {
-        overflow: hidden;
-      }
+        .relative:hover .hover {
+          opacity: 1;
+        }
 
-      .relative {
-        position: relative;
-      }
+        .hover {
+          position: absolute;
+          left: 0;
+          top: 0;
+          z-index: 10;
+          pointer-events: none;
+          height: 100%;
+          width: 0;
+          mix-blend-mode: var(--stemplayer-hover-mix-blend-mode, overlay);
+          background: var(
+            --stemplayer-hover-background-color,
+            rgba(255, 255, 255, 0.5)
+          );
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
 
-      .relative:hover .hover {
-        opacity: 1;
-      }
-
-      .hover {
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 10;
-        pointer-events: none;
-        height: 100%;
-        width: 0;
-        mix-blend-mode: var(--stemplayer-hover-mix-blend-mode, overlay);
-        background: var(
-          --stemplayer-hover-background-color,
-          rgba(255, 255, 255, 0.5)
-        );
-        opacity: 0;
-        transition: opacity 0.2s ease;
-      }
-
-      .stemsWrapper {
-        max-height: var(--stemplayer-js-max-height, auto);
-        overflow: auto;
-      }
-    `;
+        .stemsWrapper {
+          max-height: var(--stemplayer-js-max-height, auto);
+          overflow: auto;
+        }
+      `,
+    ];
   }
 
   static get properties() {

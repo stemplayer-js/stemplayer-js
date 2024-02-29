@@ -29,10 +29,6 @@ export default css`
     flex-direction: row;
   }
 
-  .flexAlignCenter {
-    align-items: center;
-  }
-
   .flexAlignStretch {
     align-items: stretch;
   }

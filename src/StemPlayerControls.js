@@ -163,7 +163,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
           </div>`
         : html`<soundws-range
             label="progress"
-            class="focusBgAccent px1 flex1"
+            class="focusBgBrand px1 flex1"
             .value=${this.currentPct * 100}
             @input=${this.#handleSeeking}
             @change=${this.#debouncedHandleSeek}

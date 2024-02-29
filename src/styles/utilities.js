@@ -20,4 +20,8 @@ export default css`
   .relative {
     position: relative;
   }
+
+  .overflow-hidden {
+    overflow: hidden;
+  }
 `;

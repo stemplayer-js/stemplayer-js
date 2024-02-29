@@ -21,15 +21,7 @@ export default css`
     background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
   }
 
-  .hoverBgAccent:hover {
+  .focusBgBrand:focus {
     background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
-  }
-
-  .focusBgAccent:focus {
-    background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
-  }
-
-  .bgOp3 {
-    background-color: rgba(0, 0, 0, 0.3);
   }
 `;
