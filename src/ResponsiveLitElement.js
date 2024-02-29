@@ -25,9 +25,15 @@ export class ResponsiveLitElement extends LitElement {
        * The displayMode determines normal or small screen rendering
        * @private
        */
-      displayMode: { type: String },
+      displayMode: { state: true },
     };
   }
+
+  /**
+   * @function
+   * @private
+   */
+  #onResizeCallback;
 
   constructor() {
     super();
@@ -37,7 +43,7 @@ export class ResponsiveLitElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     setTimeout(() => {
-      this.onResizeCallback = onResize(this.shadowRoot.firstElementChild, () =>
+      this.#onResizeCallback = onResize(this.shadowRoot.firstElementChild, () =>
         this.recalculateDisplayMode(),
       );
     }, 0);
@@ -45,7 +51,7 @@ export class ResponsiveLitElement extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.onResizeCallback?.un();
+    this.#onResizeCallback?.un();
   }
 
   /**

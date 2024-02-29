@@ -97,14 +97,22 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   }
 
   /**
+   * @type {Number}
    * @private
    */
   #volume;
 
   /**
+   * @type {Object}
    * @private
    */
   #computedWaveformStyles;
+
+  /**
+   * @type {HLS}
+   * @private
+   */
+  #HLS;
 
   constructor() {
     super();
@@ -123,13 +131,10 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     this.unload();
   }
 
-  /*
-   * @private
-   */
   async load(controller) {
-    if (!this.src || this.HLS) return;
+    if (!this.src || this.#HLS) return;
 
-    this.HLS = new HLS({
+    this.#HLS = new HLS({
       controller,
       volume: this.volume,
       fetchOptions,
@@ -140,7 +145,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     );
 
     try {
-      await this.HLS.load(this.src).promise;
+      await this.#HLS.load(this.src).promise;
 
       this.isLoaded = true;
 
@@ -163,16 +168,16 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   }
 
   unload() {
-    if (this.HLS) {
-      this.HLS.destroy();
-      this.HLS = null;
+    if (this.#HLS) {
+      this.#HLS.destroy();
+      this.#HLS = null;
     }
   }
 
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
       if (['volume', 'muted', 'solo'].indexOf(propName) !== -1) {
-        if (this.HLS) this.HLS.volume = this.volume;
+        if (this.#HLS) this.#HLS.volume = this.volume;
         if (this.waveformComponent) this.waveformComponent.scaleY = this.volume;
       }
     });
