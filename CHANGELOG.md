@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.14](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.13...@stemplayer-js/stemplayer-js@3.1.0-beta.14) (2024-02-29)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** emit Peaks object in event payload ([b2ea793](https://github.com/stemplayer-js/stem-player-js/commit/b2ea793623e1693654adbb9c5b7929424c190b00))
+
+
+
+
+
 # [3.1.0-beta.13](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.0-beta.12...@stemplayer-js/stemplayer-js@3.1.0-beta.13) (2024-02-27)
 
 

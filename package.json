@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "3.1.0-beta.13",
+  "version": "3.1.0-beta.14",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -58,7 +58,7 @@
     "@soundws/player-button-element": "^0.0.1-beta.1",
     "@soundws/range-element": "^0.0.1-beta.1",
     "@soundws/slider-element": "^0.1.0-beta.1",
-    "@soundws/waveform-element": "^0.1.0-beta.3",
+    "@soundws/waveform-element": "^0.1.0-beta.4",
     "lit": "^3.1.2"
   },
   "devDependencies": {
