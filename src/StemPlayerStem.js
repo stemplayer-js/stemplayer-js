@@ -96,13 +96,23 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     };
   }
 
+  /**
+   * @private
+   */
+  #volume;
+
+  /**
+   * @private
+   */
+  #computedWaveformStyles;
+
   constructor() {
     super();
-    this._volume = 1;
+    this.#volume = 1;
   }
 
   firstUpdated() {
-    this.computedWaveformStyles = this.computeWaveformStyles();
+    this.#computedWaveformStyles = this.#computeWaveformStyles();
 
     // get the _rowHeight so we know the height for the waveform
     this._rowHeight = this.shadowRoot.firstElementChild.clientHeight;
@@ -171,19 +181,19 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   render() {
     return html`<div class="row">
       ${this.displayMode === 'lg'
-        ? this.getLargeScreenTpl()
-        : this.getSmallScreenTpl()}
+        ? this.#getLargeScreenTpl()
+        : this.#getSmallScreenTpl()}
     </div>`;
   }
 
   /**
    * @private
    */
-  getSmallScreenTpl() {
+  #getSmallScreenTpl() {
     return html`<div class="dFlex flexRow showSm">
       <div class="w2 flexNoShrink">
         <soundws-player-button
-          @click=${this.solo === 1 ? this.handleUnSolo : this.handleSolo}
+          @click=${this.solo === 1 ? this.#handleUnSolo : this.#handleSolo}
           .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
           .type=${this.solo === 1 ? 'unsolo' : 'solo'}
           class=${this.solo === 1 ? 'bgAccent' : ''}
@@ -191,7 +201,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       </div>
       <div class="w2 flexNoShrink">
         <soundws-player-button
-          @click=${this.toggleMute}
+          @click=${this.#toggleMute}
           .title="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
           .type="${this.muted || this.volume === 0 ? 'unmute' : 'mute'}"
         ></soundws-player-button>
@@ -200,7 +210,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
         .value=${this.volume * 100}
         label="volume"
         class="flex1"
-        @change=${e => this.handleVolume(e.detail / 100)}
+        @change=${e => this.#handleVolume(e.detail / 100)}
         >${this.label}</soundws-slider
       >
       <!-- for calculating combined peaks which should still be emited in events -->
@@ -215,13 +225,13 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   /**
    * @private
    */
-  getLargeScreenTpl() {
-    const styles = this.computedWaveformStyles;
+  #getLargeScreenTpl() {
+    const styles = this.#computedWaveformStyles;
 
     return html`<div class="dFlex flexRow row">
       <div class="w2 flexNoShrink">
         <soundws-player-button
-          @click=${this.solo === 1 ? this.handleUnSolo : this.handleSolo}
+          @click=${this.solo === 1 ? this.#handleUnSolo : this.#handleSolo}
           .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
           .type=${this.solo === 1 ? 'unsolo' : 'solo'}
           class=${this.solo === 1 ? 'bgAccent' : ''}
@@ -230,14 +240,14 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       <div class="w5 hoverMenuAnchor dFlex flexAlignStretch pr1">
         <soundws-player-button
           class="w2 flexNoShrink pr1"
-          @click=${this.toggleMute}
+          @click=${this.#toggleMute}
           .title="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
           type="${this.muted || this.volume === 0 ? 'unmute' : 'mute'}"
         ></soundws-player-button>
         <soundws-range
           label="volume"
           class="focusBgAccent px1"
-          @change=${e => this.handleVolume(e.detail / 100)}
+          @change=${e => this.#handleVolume(e.detail / 100)}
           .value=${this.volume * 100}
         ></soundws-range>
       </div>
@@ -265,14 +275,14 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   /**
    * @private
    */
-  toggleMute() {
+  #toggleMute() {
     this.muted = !(this.muted || this.volume === 0);
   }
 
   /**
    * @private
    */
-  handleSolo() {
+  #handleSolo() {
     this.dispatchEvent(
       new CustomEvent('stem:solo', { detail: this, bubbles: true }),
     );
@@ -281,7 +291,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   /**
    * @private
    */
-  handleUnSolo() {
+  #handleUnSolo() {
     this.dispatchEvent(
       new CustomEvent('stem:unsolo', { detail: this, bubbles: true }),
     );
@@ -290,7 +300,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   /**
    * @private
    */
-  handleVolume(v) {
+  #handleVolume(v) {
     this.volume = v;
   }
 
@@ -298,9 +308,9 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    * Set the volume
    */
   set volume(v) {
-    const oldValue = this._volume;
+    const oldValue = this.#volume;
 
-    this._volume = v;
+    this.#volume = v;
 
     if (v > 0) {
       // When changing the volume to > 0, unmute
@@ -319,7 +329,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   get volume() {
     if (this.muted || this.solo === -1) return 0;
 
-    return this._volume;
+    return this.#volume;
   }
 
   /**
@@ -341,7 +351,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    *
    * @private
    */
-  computeWaveformStyles() {
+  #computeWaveformStyles() {
     const styles = computeWaveformStyles(this, defaults.waveform);
 
     return {

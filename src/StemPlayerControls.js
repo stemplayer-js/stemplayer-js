@@ -109,27 +109,35 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
     };
   }
 
+  /**
+   * @private
+   */
+  #debouncedHandleSeek;
+
+  /**
+   * @private
+   */
+  #computedWaveformStyles;
+
   constructor() {
     super();
-
-    /** @private */
-    this.debouncedHandleSeek = debounce(this.handleSeek, 100);
+    this.#debouncedHandleSeek = debounce(this.#handleSeek, 100);
   }
 
   firstUpdated() {
-    this.computedWaveformStyles = this.computeWaveformStyles();
+    this.#computedWaveformStyles = this.#computeWaveformStyles();
 
     // get the _rowHeight so we know the height for the waveform
     this._rowHeight = this.shadowRoot.firstElementChild.clientHeight;
   }
 
   render() {
-    const styles = this.computedWaveformStyles;
+    const styles = this.#computedWaveformStyles;
 
     return html` <div class="dFlex flexRow row">
       <soundws-player-button
         class="w2"
-        @click=${this.isPlaying ? this.onPauseClick : this.onPlayClick}
+        @click=${this.isPlaying ? this.#onPauseClick : this.#onPlayClick}
         .title=${this.isPlaying ? 'Pause' : 'Play'}
         .type=${this.isPlaying ? 'pause' : 'play'}
       ></soundws-player-button>
@@ -157,8 +165,8 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
             label="progress"
             class="focusBgAccent px1 flex1"
             .value=${this.currentPct * 100}
-            @input=${this.handleSeeking}
-            @change=${this.debouncedHandleSeek}
+            @input=${this.#handleSeeking}
+            @change=${this.#debouncedHandleSeek}
           ></soundws-range>`}
       <div class="w2 truncate textXs textMuted textCenter">
         <span>${formatSeconds(this.duration)}</span>
@@ -169,14 +177,14 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   /**
    * @private
    */
-  onPlayClick() {
+  #onPlayClick() {
     this.dispatchEvent(new Event('controls:play', { bubbles: true }));
   }
 
   /**
    * @private
    */
-  onPauseClick() {
+  #onPauseClick() {
     this.dispatchEvent(new Event('controls:pause', { bubbles: true }));
   }
 
@@ -185,7 +193,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
    *
    * @private
    */
-  computeWaveformStyles() {
+  #computeWaveformStyles() {
     const styles = computeWaveformStyles(this, defaults.waveform);
 
     return {
@@ -201,14 +209,14 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   /**
    * @private
    */
-  handleSeeking() {
+  #handleSeeking() {
     this.dispatchEvent(new CustomEvent('controls:seeking', { bubbles: true }));
   }
 
   /**
    * @private
    */
-  handleSeek(e) {
+  #handleSeek(e) {
     this.dispatchEvent(
       new CustomEvent('controls:seek', {
         detail: e.detail / 100,

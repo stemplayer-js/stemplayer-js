@@ -160,6 +160,21 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     };
   }
 
+  /**
+   * @private
+   */
+  #controller;
+
+  /**
+   * @private
+   */
+  #debouncedMergePeaks;
+
+  /**
+   * @private
+   */
+  #handleKeypress;
+
   constructor() {
     super();
 
@@ -168,9 +183,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.loop = false;
     this.noHover = false;
     this.noKeyboardEvents = false;
-
-    /** @private */
-    this.debouncedMergePeaks = debounce(this.mergePeaks, 200, true);
+    this.#debouncedMergePeaks = debounce(this.#mergePeaks, 200, true);
 
     const controller = new Controller({
       ac: this.audioContext,
@@ -179,15 +192,17 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       loop: this.loop,
     });
 
-    this.addEventListener('controls:play', this.onPlay);
-    this.addEventListener('controls:pause', this.onPause);
+    this.#controller = controller;
+
+    this.addEventListener('controls:play', this.#onPlay);
+    this.addEventListener('controls:pause', this.#onPause);
     // this.addEventListener('peaks', this.onPeaks);
-    this.addEventListener('stem:load:start', this.onStemLoadingStart);
-    this.addEventListener('stem:load:end', this.onStemLoadingEnd);
-    this.addEventListener('stem:solo', this.onSolo);
-    this.addEventListener('stem:unsolo', this.onUnSolo);
-    this.addEventListener('waveform:draw', this.onWaveformDraw);
-    if (!this.noHover) this.addEventListener('pointermove', this.onHover);
+    this.addEventListener('stem:load:start', this.#onStemLoadingStart);
+    this.addEventListener('stem:load:end', this.#onStemLoadingEnd);
+    this.addEventListener('stem:solo', this.#onSolo);
+    this.addEventListener('stem:unsolo', this.#onUnSolo);
+    this.addEventListener('waveform:draw', this.#onWaveformDraw);
+    if (!this.noHover) this.addEventListener('pointermove', this.#onHover);
 
     const handleSeek = e => {
       if (
@@ -239,50 +254,45 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     );
 
     controller.on('timeupdate', ({ t, pct }) => {
-      this.updateChildren({
+      this.#updateChildren({
         currentTime: t,
         currentPct: pct,
       });
     });
 
     controller.on('end', () => {
-      this.updateChildren({
+      this.#updateChildren({
         currentTime: 0,
         currentPct: 0,
       });
     });
 
     controller.on('seek', ({ t, pct }) => {
-      this.updateChildren({
+      this.#updateChildren({
         currentTime: t,
         currentPct: pct,
       });
     });
 
     controller.on('duration', duration => {
-      this.updateChildren({
+      this.#updateChildren({
         duration,
       });
     });
 
     controller.on('start', () => {
-      this.updateChildren({
+      this.#updateChildren({
         duration: controller.duration,
         isPlaying: true,
       });
     });
 
     controller.on('pause', () => {
-      this.updateChildren({ isPlaying: false });
+      this.#updateChildren({ isPlaying: false });
     });
 
-    // store a reference
-    /** @private */
-    this.controller = controller;
-
     // keypress event
-    /** @private */
-    this.handleKeypress = e => {
+    this.#handleKeypress = e => {
       if (e.defaultPrevented) {
         return; // Should do nothing if the default action has been cancelled
       }
@@ -299,7 +309,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         )
           return;
 
-        if (this.controller.state !== 'running') this.play();
+        if (this.#controller.state !== 'running') this.play();
         else this.pause();
         e.preventDefault();
       }
@@ -311,46 +321,46 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   }
 
   destroy() {
-    this.controller.destroy();
+    this.#controller.destroy();
   }
 
   connectedCallback() {
     super.connectedCallback();
 
     if (!this.noKeyboardEvents) {
-      window.addEventListener('keydown', this.handleKeypress);
+      window.addEventListener('keydown', this.#handleKeypress);
     }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.controller.pause();
+    this.#controller.pause();
 
     if (!this.noKeyboardEvents) {
-      window.removeEventListener('keydown', this.handleKeypress);
+      window.removeEventListener('keydown', this.#handleKeypress);
     }
   }
 
   /**
    * @private
    */
-  onSlotChange(e) {
+  #onSlotChange(e) {
     // inject the controller when an element is added to a slot
     e.target.assignedNodes().forEach(el => {
       // load the stem when the stem is added to the player
       if (el instanceof StemComponent) {
-        el.load(this.controller);
+        el.load(this.#controller);
       }
     });
   }
 
   render() {
     return html`<div class="relative overflow-hidden">
-      <slot name="header" @slotchange=${this.onSlotChange}></slot>
+      <slot name="header" @slotchange=${this.#onSlotChange}></slot>
       <div class="stemsWrapper">
-        <slot class="default" @slotchange=${this.onSlotChange}></slot>
+        <slot class="default" @slotchange=${this.#onSlotChange}></slot>
       </div>
-      <slot name="footer" @slotchange=${this.onSlotChange}></slot>
+      <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
       ${this.isLoading
         ? html`<soundws-mask>
             <soundws-loader></soundws-icon>
@@ -365,22 +375,22 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   /**
    * @private
    */
-  onPlay() {
-    this.controller.play();
+  #onPlay() {
+    this.#controller.play();
   }
 
   /**
    * @private
    */
-  onPause() {
-    this.controller.pause();
+  #onPause() {
+    this.#controller.pause();
   }
 
   /**
    * Exports the current state of the player
    */
   get state() {
-    const { state, currentTime } = this.controller;
+    const { state, currentTime } = this.#controller;
 
     return {
       state,
@@ -400,14 +410,14 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * Start playback
    */
   play() {
-    return this.controller.play();
+    return this.#controller.play();
   }
 
   /**
    * Pause playback
    */
   pause() {
-    return this.controller.pause();
+    return this.#controller.pause();
   }
 
   /**
@@ -415,14 +425,14 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @type {number}
    */
   get duration() {
-    return this.controller?.duration || this._duration;
+    return this.#controller?.duration || this._duration;
   }
 
   set duration(duration) {
     this._duration = duration;
 
-    if (this.controller) {
-      this.controller.duration = duration;
+    if (this.#controller) {
+      this.#controller.duration = duration;
     }
   }
 
@@ -431,7 +441,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @type {number}
    */
   set pct(pct) {
-    this.controller.pct = pct;
+    this.#controller.pct = pct;
   }
 
   /**
@@ -439,13 +449,13 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @type {number}
    */
   set currentTime(t) {
-    this.controller.currentTime = t;
+    this.#controller.currentTime = t;
   }
 
   /**
    *@private
    */
-  onHover(e) {
+  #onHover(e) {
     const el = this.shadowRoot.querySelector('.hover');
     const waveformEl = e.target.waveformComponent;
 
@@ -464,7 +474,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    *
    * @private
    */
-  mergePeaks() {
+  #mergePeaks() {
     const peaks = combinePeaks(
       ...this.stemComponents
         .map(c => c.peaks)
@@ -492,7 +502,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @private
    * @param {Event} e
    */
-  onStemLoadingStart(e) {
+  #onStemLoadingStart(e) {
     e.stopPropagation();
 
     if (this.nLoading === 0) {
@@ -509,7 +519,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @private
    * @param {Event} e
    */
-  onStemLoadingEnd(e) {
+  #onStemLoadingEnd(e) {
     e.stopPropagation();
 
     this.nLoading -= 1;
@@ -528,11 +538,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @private
    * @param {Event} e
    */
-  onWaveformDraw(e) {
+  #onWaveformDraw(e) {
     e.stopPropagation();
 
     if (e.target instanceof StemComponent) {
-      this.debouncedMergePeaks();
+      this.#debouncedMergePeaks();
     }
   }
 
@@ -540,7 +550,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @private
    * @param {Event} e
    */
-  onSolo(e) {
+  #onSolo(e) {
     e.stopPropagation();
 
     this.stemComponents?.forEach(el => {
@@ -556,7 +566,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    * @private
    * @param {Event} e
    */
-  onUnSolo(e) {
+  #onUnSolo(e) {
     e.stopPropagation();
 
     this.stemComponents?.forEach(el => {
@@ -564,9 +574,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     });
   }
 
-  /**
-   * @private
-   */
   get slottedElements() {
     const slots = this.shadowRoot?.querySelectorAll('slot');
 
@@ -587,7 +594,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   /**
    * @private
    */
-  updateChildren(props) {
+  #updateChildren(props) {
     this.slottedElements.forEach(el => {
       if (el instanceof StemComponent || el instanceof ControlComponent)
         Object.keys(props).forEach(key => {
