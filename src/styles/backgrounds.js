@@ -17,7 +17,7 @@
 import { css } from 'lit';
 
 export default css`
-  .bgAccent {
+  .bgBrand {
     background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
   }
 

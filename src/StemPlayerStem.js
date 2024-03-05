@@ -201,7 +201,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           @click=${this.solo === 1 ? this.#handleUnSolo : this.#handleSolo}
           .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
           .type=${this.solo === 1 ? 'unsolo' : 'solo'}
-          class=${this.solo === 1 ? 'bgAccent' : ''}
+          class=${this.solo === 1 ? 'bgBrand' : ''}
         ></soundws-player-button>
       </div>
       <div class="w2 flexNoShrink">
@@ -239,7 +239,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           @click=${this.solo === 1 ? this.#handleUnSolo : this.#handleSolo}
           .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
           .type=${this.solo === 1 ? 'unsolo' : 'solo'}
-          class=${this.solo === 1 ? 'bgAccent' : ''}
+          class=${this.solo === 1 ? 'bgBrand' : ''}
         ></soundws-player-button>
       </div>
       <div class="w5 hoverMenuAnchor dFlex flexAlignStretch pr1">
@@ -251,7 +251,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
         ></soundws-player-button>
         <soundws-range
           label="volume"
-          class="focusBgAccent px1"
+          class="focusbgBrand px1"
           @change=${e => this.#handleVolume(e.detail / 100)}
           .value=${this.volume * 100}
         ></soundws-range>
@@ -274,6 +274,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           ></soundws-waveform>`
         : ''}
       <div class="w2 flexNoShrink"></div>
+      <slot name="end"></slot>
     </div>`;
   }
 

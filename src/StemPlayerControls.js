@@ -171,6 +171,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
       <div class="w2 truncate textXs textMuted textCenter">
         <span>${formatSeconds(this.duration)}</span>
       </div>
+      <slot name="end"></slot>
     </div>`;
   }
 
