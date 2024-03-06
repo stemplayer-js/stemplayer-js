@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.1...@stemplayer-js/stemplayer-js@3.2.0-beta.0) (2024-03-06)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** disable play button if no duration ([76cd9e7](https://github.com/stemplayer-js/stem-player-js/commit/76cd9e7433ac3d4dd8b4225fadb640e3033914d4))
+
+
+### Features
+
+* **stemplayer-js:** added end slot ([afe3ecc](https://github.com/stemplayer-js/stem-player-js/commit/afe3eccd5c6137d93bc2b7d6c5d5fd3de35d2a0f))
+
+
+
+
+
 ## [3.1.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.1.1-beta.0...@stemplayer-js/stemplayer-js@3.1.1) (2024-03-01)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
