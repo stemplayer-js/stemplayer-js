@@ -21,7 +21,7 @@ export default css`
     position: relative;
   }
 
-  .overflow-hidden {
+  .overflowHidden {
     overflow: hidden;
   }
 `;

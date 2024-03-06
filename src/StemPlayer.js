@@ -176,7 +176,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.loop = false;
     this.noHover = false;
     this.noKeyboardEvents = false;
-    this.#debouncedMergePeaks = debounce(this.#mergePeaks, 200, true);
+    this.#debouncedMergePeaks = debounce(this.#mergePeaks, 100);
 
     const controller = new Controller({
       ac: this.audioContext,
@@ -345,10 +345,12 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         el.load(this.#controller);
       }
     });
+
+    this.#debouncedMergePeaks();
   }
 
   render() {
-    return html`<div class="relative overflow-hidden">
+    return html`<div class="relative overflowHidden">
       <slot name="header" @slotchange=${this.#onSlotChange}></slot>
       <div class="stemsWrapper">
         <slot class="default" @slotchange=${this.#onSlotChange}></slot>

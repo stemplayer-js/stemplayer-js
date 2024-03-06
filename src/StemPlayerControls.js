@@ -134,9 +134,10 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
   render() {
     const styles = this.#computedWaveformStyles;
 
-    return html` <div class="dFlex flexRow row">
+    return html`<div class="dFlex flexRow row">
       <soundws-player-button
         class="w2"
+        .disabled=${!this.duration}
         @click=${this.isPlaying ? this.#onPauseClick : this.#onPlayClick}
         .title=${this.isPlaying ? 'Pause' : 'Play'}
         .type=${this.isPlaying ? 'pause' : 'play'}
