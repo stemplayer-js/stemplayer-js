@@ -168,6 +168,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    */
   #handleKeypress;
 
+  /** @private */
+  #nLoading = 0;
+
   constructor() {
     super();
 
@@ -496,14 +499,14 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   #onStemLoadingStart(e) {
     e.stopPropagation();
 
-    if (this.nLoading === 0) {
+    if (this.#nLoading === 0) {
       this.isLoading = true;
       this.dispatchEvent(
         new Event('loading-start', { bubbles: true, composed: true }),
       );
     }
 
-    this.nLoading += 1;
+    this.#nLoading += 1;
   }
 
   /**
@@ -513,9 +516,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   #onStemLoadingEnd(e) {
     e.stopPropagation();
 
-    this.nLoading -= 1;
+    this.#nLoading -= 1;
 
-    if (this.nLoading === 0) {
+    if (this.#nLoading === 0) {
       this.isLoading = false;
       this.dispatchEvent(
         new Event('loading-end', { bubbles: true, composed: true }),
