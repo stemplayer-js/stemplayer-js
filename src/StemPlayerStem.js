@@ -354,10 +354,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    * Get the current volume, while taking into consideration the values for `muted` and `solo`.
    */
   get volume() {
-    if (this.muted || this.solo === 'muted') {
-      console.log('getvol', this.solo);
-      return 0;
-    }
+    if (this.muted || this.solo === 'muted') return 0;
 
     return this.#volume;
   }
