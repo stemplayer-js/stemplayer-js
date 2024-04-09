@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0-beta.6](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.0-beta.5...@stemplayer-js/stemplayer-js@3.2.0-beta.6) (2024-04-09)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** [#3](https://github.com/stemplayer-js/stem-player-js/issues/3) trigger solo setting when setting via external js api. ([1ade49a](https://github.com/stemplayer-js/stem-player-js/commit/1ade49ada9918077015ac686439429baf0cd27b6))
+* **stemplayer-js:** unclosed tag ([204bf98](https://github.com/stemplayer-js/stem-player-js/commit/204bf9818d8b26567c32c57486b1fd5835c89f51))
+
+
+
+
+
 # [3.2.0-beta.5](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.0-beta.4...@stemplayer-js/stemplayer-js@3.2.0-beta.5) (2024-03-28)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
