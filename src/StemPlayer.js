@@ -549,9 +549,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     this.stemComponents?.forEach(el => {
       if (e.detail === el) {
-        el.solo = 1;
+        el.solo = 'on';
       } else {
-        el.solo = -1;
+        el.solo = 'muted';
       }
     });
   }
@@ -564,7 +564,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     e.stopPropagation();
 
     this.stemComponents?.forEach(el => {
-      el.solo = undefined;
+      el.solo = 'off';
     });
   }
 

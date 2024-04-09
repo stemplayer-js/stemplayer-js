@@ -69,7 +69,10 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
        */
       waveform: { type: String },
 
-      solo: { type: Boolean },
+      /**
+       * @param {('off'|'on'|'muted')} solo - The solo state. 'on' = solo this stem; 'muted' = another stem is soloed, mute this one
+       */
+      solo: { type: String },
       muted: { type: Boolean },
       currentPct: { type: Number },
       volume: { type: Number },
@@ -117,6 +120,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   constructor() {
     super();
     this.#volume = 1;
+    this.solo = 'off';
   }
 
   firstUpdated() {
@@ -179,6 +183,13 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       if (['volume', 'muted', 'solo'].indexOf(propName) !== -1) {
         if (this.#HLS) this.#HLS.volume = this.volume;
         if (this.waveformComponent) this.waveformComponent.scaleY = this.volume;
+
+        if (propName === 'solo' && this.solo !== oldValue) {
+          // When setting via the external API we want to also trigger the event that causes the handing of the solo states of other stems
+          if (this.solo === true) this.solo = 'on'; // convert: true is an alias of 'on'
+          if (this.solo === false) this.solo = 'off'; // convert: false is an alias of 'off'
+          this.#dispatchSoloEvent();
+        }
       }
     });
   }
@@ -198,10 +209,10 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     return html`<div class="dFlex flexRow showSm">
       <div class="w2 flexNoShrink">
         <soundws-player-button
-          @click=${this.solo === 1 ? this.#handleUnSolo : this.#handleSolo}
-          .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
-          .type=${this.solo === 1 ? 'unsolo' : 'solo'}
-          class=${this.solo === 1 ? 'bgBrand' : ''}
+          @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
+          .title=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
+          .type=${this.solo === 'on' ? 'unsolo' : 'solo'}
+          class=${this.solo === 'on' ? 'bgBrand' : ''}
         ></soundws-player-button>
       </div>
       <div class="w2 flexNoShrink">
@@ -236,10 +247,10 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     return html`<div class="dFlex flexRow row">
       <div class="w2 flexNoShrink">
         <soundws-player-button
-          @click=${this.solo === 1 ? this.#handleUnSolo : this.#handleSolo}
-          .title=${this.solo === 1 ? 'Disable solo' : 'Solo'}
-          .type=${this.solo === 1 ? 'unsolo' : 'solo'}
-          class=${this.solo === 1 ? 'bgBrand' : ''}
+          @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
+          .title=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
+          .type=${this.solo === 'on' ? 'unsolo' : 'solo'}
+          class=${this.solo === 'on' ? 'bgBrand' : ''}
         ></soundws-player-button>
       </div>
       <div class="w5 hoverMenuAnchor dFlex flexAlignStretch pr1">
@@ -288,19 +299,29 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   /**
    * @private
    */
-  #handleSolo() {
-    this.dispatchEvent(
-      new CustomEvent('stem:solo', { detail: this, bubbles: true }),
-    );
+  #onSoloClick() {
+    this.solo = 'on';
+  }
+
+  /**
+   * Dispatch event so that the solo state of other stems can be modified
+   *
+   * @private
+   */
+  #dispatchSoloEvent() {
+    if (this.solo === 'on' || this.solo === 'off') {
+      const event = this.solo === 'on' ? 'stem:solo' : 'stem:unsolo';
+      this.dispatchEvent(
+        new CustomEvent(event, { detail: this, bubbles: true }),
+      );
+    }
   }
 
   /**
    * @private
    */
-  #handleUnSolo() {
-    this.dispatchEvent(
-      new CustomEvent('stem:unsolo', { detail: this, bubbles: true }),
-    );
+  #onUnSoloClick() {
+    this.solo = 'off';
   }
 
   /**
@@ -323,7 +344,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       this.muted = false;
 
       // when changing the volume on a track that is muted due to solo, un-solo-mute it
-      if (this.solo === -1) this.solo = undefined;
+      if (this.solo === 'muted') this.solo = 'off';
     }
 
     this.requestUpdate('volume', oldValue);
@@ -333,7 +354,10 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    * Get the current volume, while taking into consideration the values for `muted` and `solo`.
    */
   get volume() {
-    if (this.muted || this.solo === -1) return 0;
+    if (this.muted || this.solo === 'muted') {
+      console.log('getvol', this.solo);
+      return 0;
+    }
 
     return this.#volume;
   }
