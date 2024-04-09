@@ -361,7 +361,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
       ${this.isLoading
         ? html`<soundws-mask>
-            <soundws-loader></soundws-icon>
+            <soundws-loader></soundws-loader></soundws-icon>
           </soundws-mask>`
         : ''}
       ${this.displayMode === 'lg' && !this.noHover
