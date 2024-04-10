@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.1-beta.0...@stemplayer-js/stemplayer-js@3.2.1) (2024-04-10)
+
+**Note:** Version bump only for package @stemplayer-js/stemplayer-js
+
+
+
+
+
 ## [3.2.1-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.0...@stemplayer-js/stemplayer-js@3.2.1-beta.0) (2024-04-10)
 
 
