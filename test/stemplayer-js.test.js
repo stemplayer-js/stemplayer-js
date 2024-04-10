@@ -30,6 +30,8 @@ describe('StemPlayer', () => {
 
   // it('pauses when disconnected', async () => {});
 
+  // it('loops when loop is set', async () => {})
+
   it('passes the a11y audit', async () => {
     const el = await fixture(html`<stemplayer-js></stemplayer-js>`);
 
