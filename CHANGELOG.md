@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.0...@stemplayer-js/stemplayer-js@3.2.1) (2024-04-10)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix loop property not responding ([c6b4849](https://github.com/stemplayer-js/stem-player-js/commit/c6b4849e8b6170cdcd6f7382b38d03248ddb1d82))
+
+
+
+
+
 # [3.2.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.0-beta.6...@stemplayer-js/stemplayer-js@3.2.0) (2024-04-09)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
