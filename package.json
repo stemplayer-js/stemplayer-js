@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "3.2.0",
+  "version": "3.2.1-beta.0",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
