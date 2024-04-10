@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        background-color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import 'lit';
+      import '../stemplayer.js';
+    </script>
+    <stemplayer-js loop="loop">
+      <stemplayer-js-controls
+        slot="header"
+        label="Demo track"
+      ></stemplayer-js-controls>
+      <stemplayer-js-stem
+        label="Drums A"
+        src="assets/audio/106%20DRUMS%20A_02.5.m3u8"
+        waveform="assets/waveforms/106%20DRUMS%20A_02.5.json"
+        volume="1"
+      >
+      </stemplayer-js-stem>
+      <stemplayer-js-stem
+        id="stem-drums-b"
+        label="Drums B"
+        src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
+        waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
+        muted="true"
+        volume="0.8"
+      ></stemplayer-js-stem>
+      <stemplayer-js-stem
+        label="Conga"
+        src="assets/audio/106%20CONGA_03.3.m3u8"
+        waveform="assets/waveforms/106%20CONGA_03.3.json"
+        volume="0.7"
+      ></stemplayer-js-stem>
+      <stemplayer-js-stem
+        label="Casaba"
+        src="assets/audio/106%20CABASA_04.3.m3u8"
+        waveform="assets/waveforms/106%20CABASA_04.3.json"
+        volume="0.4"
+        muted="true"
+      ></stemplayer-js-stem>
+      <stemplayer-js-stem
+        label="Bell"
+        src="assets/audio/106%20BELL_05.3.m3u8"
+        waveform="assets/waveforms/106%20BELL_05.3.json"
+        bg-color="green"
+        volume="0.5"
+      ></stemplayer-js-stem>
+    </stemplayer-js>
+
+    <script>
+      const stemplayer = document.querySelector('stemplayer-js');
+      stemplayer.addEventListener('peaks', (peaks) => {
+        console.log(peaks)
+      })
+    </script>
+  </body>
+  <button onclick="document.querySelector('stemplayer-js').loop = !document.querySelector('stemplayer-js').loop">loop</button>
+</html>

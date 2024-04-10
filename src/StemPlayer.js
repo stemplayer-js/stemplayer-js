@@ -337,6 +337,14 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     }
   }
 
+  updated(changedProperties) {
+    changedProperties.forEach((oldValue, propName) => {
+      if (['loop'].indexOf(propName) !== -1) {
+        this.#controller.loop = this.loop;
+      }
+    });
+  }
+
   /**
    * @private
    */
