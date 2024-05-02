@@ -24,4 +24,9 @@ export default css`
     overflow: hidden;
     user-select: none;
   }
+
+  .hRow {
+    line-height: var(--stemplayer-js-row-height, 4.5rem);
+    height: var(--stemplayer-js-row-height, 4.5rem);
+  }
 `;

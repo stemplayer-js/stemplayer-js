@@ -24,4 +24,8 @@ export default css`
   .focusBgBrand:focus {
     background-color: var(--stemplayer-js-brand-color, rgb(1, 164, 179));
   }
+
+  .bgPlayer {
+    background-color: var(--stemplayer-js-background-color, black);
+  }
 `;

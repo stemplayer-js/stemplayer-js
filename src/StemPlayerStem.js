@@ -267,7 +267,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           .value=${this.volume * 100}
         ></soundws-range>
       </div>
-      <div class="w6 px4 alignRight truncate noPointerEvents textCenter">
+      <div class="w8 px4 alignRight truncate noPointerEvents textCenter">
         <span class="truncate textSm">${this.label}</span>
       </div>
       ${this._rowHeight
@@ -281,7 +281,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
             .barWidth=${styles.barWidth}
             .barGap=${styles.barGap}
             .pixelRatio=${styles.devicePixelRatio}
-            .duration=${this.duration}
           ></soundws-waveform>`
         : ''}
       <div class="w2 flexNoShrink"></div>

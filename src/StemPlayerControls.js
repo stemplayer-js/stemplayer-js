@@ -103,6 +103,11 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
       waveProgressColor: { type: String },
 
       /**
+       * Whether the loop is toggled on or off
+       */
+      loop: { type: Boolean },
+
+      /**
        * Used to determine whether the DOM has been initialised
        */
       _rowHeight: { state: true },
@@ -141,6 +146,12 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
         @click=${this.isPlaying ? this.#onPauseClick : this.#onPlayClick}
         .title=${this.isPlaying ? 'Pause' : 'Play'}
         .type=${this.isPlaying ? 'pause' : 'play'}
+      ></soundws-player-button>
+      <soundws-player-button
+        class="w2 ${this.loop ? 'bgBrand' : ''}"
+        @click=${this.#toggleLoop}
+        .title=${this.loop ? 'Loop' : 'Loop'}
+        type="loop"
       ></soundws-player-button>
       ${this.displayMode !== 'xs'
         ? html`<div class="w9 truncate hideXs px4 textCenter">
@@ -229,5 +240,10 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
 
   get waveformComponent() {
     return this.shadowRoot?.querySelector('soundws-waveform');
+  }
+
+  #toggleLoop(e) {
+    this.dispatchEvent(new CustomEvent('controls:loop', { bubbles: true }));
+    e.target.blur();
   }
 }

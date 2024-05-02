@@ -43,8 +43,14 @@ export class ResponsiveLitElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     setTimeout(() => {
-      this.#onResizeCallback = onResize(this.shadowRoot.firstElementChild, () =>
-        this.recalculateDisplayMode(),
+      this.#onResizeCallback = onResize(
+        this.shadowRoot.firstElementChild,
+        () => {
+          this.recalculateDisplayMode();
+
+          // emit resize event (The window resize event fires if the window is resized -not the element)
+          this.dispatchEvent(new Event('resize'));
+        },
       );
     }, 0);
   }
