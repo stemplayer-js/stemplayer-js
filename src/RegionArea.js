@@ -64,6 +64,10 @@ export class RegionArea extends ResponsiveLitElement {
           );
         }
 
+        :hover .cursor {
+          opacity: 1;
+        }
+
         .cursor {
           position: absolute;
           background-color: transparent;
@@ -75,6 +79,7 @@ export class RegionArea extends ResponsiveLitElement {
           margin: 0;
           border-width: 0 1px 0 0px;
           border-style: dashed;
+          opacity: 0;
         }
       `,
     ];
