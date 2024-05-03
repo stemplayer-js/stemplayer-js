@@ -410,7 +410,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   }
 
   render() {
-    return html`<div class="relative overflowHidden">
+    return html`<div class="relative overflowHidden noSelect">
       ${this.displayMode === 'lg' &&
       this.regions &&
       this.regionLeft &&

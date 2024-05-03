@@ -40,4 +40,9 @@ export default css`
   .ztop {
     z-index: 99999;
   }
+
+  .noSelect {
+    user-select: none;
+    -webkit-user-select: none;
+  }
 `;

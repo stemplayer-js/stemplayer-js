@@ -115,7 +115,7 @@ export class RegionArea extends ResponsiveLitElement {
             class="h100 absolute left w2 ztop"
             style="left: calc(${this.pixelsPerSecond * this.offset}px - 50px);"
           >
-            <div class="w2 hRow textCenter noSelect textXs">
+            <div class="w2 hRow textCenter textXs">
               ${formatSeconds(this.offset)}
             </div>
           </div>
@@ -135,7 +135,7 @@ export class RegionArea extends ResponsiveLitElement {
               this.pixelsPerSecond * (this.offset + this.duration)
             }px; top: 0;"
           >
-            <div class="w2 hRow textCenter noSelect textXs">
+            <div class="w2 hRow textCenter textXs">
               ${formatSeconds(this.offset + this.duration)}
             </div>
             <soundws-player-button
@@ -146,7 +146,7 @@ export class RegionArea extends ResponsiveLitElement {
           </div></div>`
         : ''}
       <div class="cursor dashed w2 zTop p1">
-        <div class="w2 hRow textCenter noSelect textXs">
+        <div class="w2 hRow textCenter textXs">
           <span class="bgPlayer p1 muted"
             >${formatSeconds(this.cursorPosition)}</span
           >

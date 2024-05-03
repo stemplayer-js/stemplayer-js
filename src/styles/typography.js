@@ -38,8 +38,4 @@ export default css`
     text-overflow: ellipsis;
     overflow: hidden;
   }
-
-  .noSelect {
-    user-select: none;
-  }
 `;
