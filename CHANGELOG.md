@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.0...@stemplayer-js/stemplayer-js@3.3.0-beta.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** hide/show region cursor on hover ([ff4b7cb](https://github.com/stemplayer-js/stem-player-js/commit/ff4b7cb839f50d9ab9122c3c7a9bc348bcd6772b))
+
+
+
+
+
 # [3.3.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.1...@stemplayer-js/stemplayer-js@3.3.0-beta.0) (2024-05-03)
 
 
