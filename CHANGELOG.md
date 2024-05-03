@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.1...@stemplayer-js/stemplayer-js@3.3.0-beta.0) (2024-05-03)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix for hover when regions is active ([9a141fa](https://github.com/stemplayer-js/stem-player-js/commit/9a141fae1fd84b1b2ee91b3bc0929890eae8a709))
+* **stemplayer-js:** no select for entire player. fix safari ([9c716ff](https://github.com/stemplayer-js/stem-player-js/commit/9c716ffb0fcef0205fd67590ee63fd9fff5988af))
+
+
+### Features
+
+* **stemplayer-js:** added region selection ([68822a0](https://github.com/stemplayer-js/stem-player-js/commit/68822a0640f79fee2ecabf386f5c444b36a8355f))
+
+
+
+
+
 ## [3.2.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.2.1-beta.0...@stemplayer-js/stemplayer-js@3.2.1) (2024-04-10)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
