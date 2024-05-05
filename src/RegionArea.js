@@ -71,7 +71,6 @@ export class RegionArea extends ResponsiveLitElement {
         .cursor {
           position: absolute;
           background-color: transparent;
-          z-index: 999;
           height: 100%;
           top: 0;
           width: 1px;
@@ -80,6 +79,10 @@ export class RegionArea extends ResponsiveLitElement {
           border-width: 0 1px 0 0px;
           border-style: dashed;
           opacity: 0;
+        }
+
+        .ztop {
+          z-index: 100;
         }
       `,
     ];

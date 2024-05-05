@@ -95,7 +95,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
           position: absolute;
           left: 0;
           top: 0;
-          z-index: 10;
+          z-index: 100;
           pointer-events: none;
           height: 100%;
           width: 0;
@@ -116,7 +116,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         stemplayer-js-region {
           position: absolute;
           height: 100%;
-          z-index: 9999;
+          z-index: 100;
         }
       `,
     ];

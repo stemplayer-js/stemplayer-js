@@ -37,10 +37,6 @@ export default css`
     height: 100%;
   }
 
-  .ztop {
-    z-index: 99999;
-  }
-
   .noSelect {
     user-select: none;
     -webkit-user-select: none;
