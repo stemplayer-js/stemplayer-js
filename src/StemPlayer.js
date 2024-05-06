@@ -306,7 +306,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     controller.on('offset', () => {
       this.regionOffset = controller.offset;
-      this.offset = controller.offset;
+      // this.offset = controller.offset;
     });
 
     controller.on('playDuration', () => {
@@ -386,10 +386,10 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         });
       }
       if (['offset'].indexOf(propName) !== -1) {
-        this.#controller.offset = this.offset;
+        this.#controller.offset = parseFloat(this.offset); // for some reason, the value is sometimes reflected as a string
       }
       if (['duration'].indexOf(propName) !== -1) {
-        this.#controller.playDuration = this.duration;
+        this.#controller.playDuration = parseFloat(this.duration); // for some reason, the value is sometimes reflected as a string
       }
     });
   }

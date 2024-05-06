@@ -74,9 +74,16 @@
         stemplayer.offset = undefined
         stemplayer.duration = undefined
       }
+
+      // eslint-disable-next-line no-unused-vars
+      function getState() {
+        console.log(document.querySelector('stemplayer-js').state)
+      }
+
     </script>
   </body>
   <button onclick="document.querySelector('stemplayer-js').loop = !document.querySelector('stemplayer-js').loop">loop</button>
   <button onclick="setRegion(5, 10)">setRegion</button>
   <button onclick="unsetRegion()">unsetRegion</button>
+  <button onclick="getState()">getState</button>
 </html>
