@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.2](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.1...@stemplayer-js/stemplayer-js@3.3.0-beta.2) (2024-05-06)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** explicitly parse duration and offset as float when passing to controller ([6fdbd81](https://github.com/stemplayer-js/stem-player-js/commit/6fdbd81bcc4fe2f8630cfb273ad533073a915d09))
+
+
+
+
+
 # [3.3.0-beta.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.0...@stemplayer-js/stemplayer-js@3.3.0-beta.1) (2024-05-03)
 
 
