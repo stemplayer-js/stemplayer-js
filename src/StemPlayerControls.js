@@ -148,9 +148,9 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
         .type=${this.isPlaying ? 'pause' : 'play'}
       ></soundws-player-button>
       <soundws-player-button
-        class="w2 ${this.loop ? 'bgBrand' : ''}"
+        class="w2 ${this.loop ? '' : 'textMuted'}"
         @click=${this.#toggleLoop}
-        .title=${this.loop ? 'Loop' : 'Loop'}
+        .title=${this.loop ? 'Disable loop' : 'Enable Loop'}
         type="loop"
       ></soundws-player-button>
       ${this.displayMode !== 'xs'

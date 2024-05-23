@@ -250,7 +250,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
           .title=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
           .type=${this.solo === 'on' ? 'unsolo' : 'solo'}
-          class=${this.solo === 'on' ? 'bgBrand' : ''}
         ></soundws-player-button>
       </div>
       <div class="w5 hoverMenuAnchor dFlex flexAlignStretch pr1">
