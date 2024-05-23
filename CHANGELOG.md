@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.4](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.3...@stemplayer-js/stemplayer-js@3.3.0-beta.4) (2024-05-23)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** sensible title attribute for loop button ([5bd39d4](https://github.com/stemplayer-js/stem-player-js/commit/5bd39d468d6cfbf25980a290cfd832a2ae65c721))
+
+
+
+
+
 # [3.3.0-beta.3](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.2...@stemplayer-js/stemplayer-js@3.3.0-beta.3) (2024-05-23)
 
 
