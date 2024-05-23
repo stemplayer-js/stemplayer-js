@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.3](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.2...@stemplayer-js/stemplayer-js@3.3.0-beta.3) (2024-05-23)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** remove global event handler on disconnected ([6deed11](https://github.com/stemplayer-js/stem-player-js/commit/6deed1156179b71a0108a0e02422a02b47b7a08c))
+
+
+
+
+
 # [3.3.0-beta.2](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.1...@stemplayer-js/stemplayer-js@3.3.0-beta.2) (2024-05-06)
 
 

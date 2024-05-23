@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "3.3.0-beta.2",
+  "version": "3.3.0-beta.3",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -52,7 +52,7 @@
     "prepublishOnly": "npm run analyze && npm run build:docs"
   },
   "dependencies": {
-    "@soundws/hls-web-audio": "^2.3.0-beta.1",
+    "@soundws/hls-web-audio": "^2.3.0-beta.2",
     "@soundws/loader-element": "^0.0.3-beta.1",
     "@soundws/mask-element": "^0.0.3-beta.1",
     "@soundws/player-button-element": "^0.2.0-beta.1",
