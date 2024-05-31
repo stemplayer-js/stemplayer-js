@@ -308,7 +308,6 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
    */
   #dispatchSoloEvent() {
     if (this.solo === 'on' || this.solo === 'off') {
-      console.log('solo', this.solo);
       const event = this.solo === 'on' ? 'stem:solo' : 'stem:unsolo';
       this.dispatchEvent(
         new CustomEvent(event, { detail: this, bubbles: true }),
