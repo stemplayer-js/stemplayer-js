@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.5](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.4...@stemplayer-js/stemplayer-js@3.3.0-beta.5) (2024-05-31)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** changing volume on muted-by-solo stem no longer cancels solo ([cde42c0](https://github.com/stemplayer-js/stem-player-js/commit/cde42c0230872d0f35c174c0dd662a50852e4ee0))
+
+
+
+
+
 # [3.3.0-beta.4](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.3...@stemplayer-js/stemplayer-js@3.3.0-beta.4) (2024-05-23)
 
 
