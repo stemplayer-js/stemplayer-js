@@ -545,11 +545,15 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
     if (el && targetEl) {
       const left = targetEl.offsetLeft;
+
       let width = e.offsetX - left > 0 ? e.offsetX - left : 0;
       if (width > targetEl.offsetWidth) width = targetEl.offsetWidth;
 
       el.style.left = `${left}px`;
       el.style.width = `${width}px`;
+    } else {
+      el.style.left = 0;
+      el.style.width = 0;
     }
   }
 
