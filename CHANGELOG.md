@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.6](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.5...@stemplayer-js/stemplayer-js@3.3.0-beta.6) (2024-06-01)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** cursor hover width collapses back to 0 when not hovering over waveform ([4d03f20](https://github.com/stemplayer-js/stem-player-js/commit/4d03f201459ee592719cd2d4627935d2a2892d84))
+
+
+
+
+
 # [3.3.0-beta.5](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0-beta.4...@stemplayer-js/stemplayer-js@3.3.0-beta.5) (2024-05-31)
 
 
