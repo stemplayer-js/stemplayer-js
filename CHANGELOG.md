@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.1-beta.0...@stemplayer-js/stemplayer-js@3.4.0-beta.0) (2024-06-04)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** seek with region works ([681c118](https://github.com/stemplayer-js/stem-player-js/commit/681c1182efba0be6933e67cd9f2cf8c5ebbb9703))
+
+
+### Features
+
+* **stemplayer-js:** export custom element as element.js ([6b5b18d](https://github.com/stemplayer-js/stem-player-js/commit/6b5b18d0c76ce33174a7880c5cd159c4dacb28b0))
+
+
+
+
+
 ## [3.3.1-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.0...@stemplayer-js/stemplayer-js@3.3.1-beta.0) (2024-06-04)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
