@@ -22,7 +22,7 @@ npm i @stemplayer-js/stemplayer-js
 
 ```html
 <script type="module">
-  import '@stemplayer-js/stemplayer-js/stemplayer.js';
+  import '@stemplayer-js/stemplayer-js/element.js';
 </script>
 
 <stemplayer-js>

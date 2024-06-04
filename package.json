@@ -38,6 +38,7 @@
   "exports": {
     ".": "./index.js",
     "./stemplayer-legacy.js": "./stemplayer-legacy.js",
+    "./element.js": "./element.js",
     "./stemplayer.js": "./stemplayer.js",
     "./config.js": "./src/config.js"
   },

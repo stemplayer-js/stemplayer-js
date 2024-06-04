@@ -4,63 +4,63 @@
     <meta charset="utf-8" />
     <style>
       body {
-        background: #fafafa;
+        background-color: #333;
       }
     </style>
   </head>
   <body>
     <script type="module">
       import 'lit';
-      import '../stemplayer-legacy.js';
+      import '../element.js';
     </script>
-    <soundws-stem-player
-      id="player"
-      row-height="60px"
-      sample-rate="22050"
-      loop
-      auto-play="true"
-    >
-      <soundws-stem-player-controls
+    <stemplayer-js>
+      <stemplayer-js-controls
+        slot="header"
         label="Demo track"
-        wave-color="white"
-        wave-progress-color="rgb(0, 206, 224)"
-      ></soundws-stem-player-controls>
-      <soundws-stem
+      ></stemplayer-js-controls>
+      <stemplayer-js-stem
         label="Drums A"
         src="assets/audio/106%20DRUMS%20A_02.5.m3u8"
         waveform="assets/waveforms/106%20DRUMS%20A_02.5.json"
-        volume="0.1"
+        volume="1"
       >
-      </soundws-stem>
-      <soundws-stem
+      </stemplayer-js-stem>
+      <stemplayer-js-stem
         id="stem-drums-b"
         label="Drums B"
         src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
         waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
         muted="true"
-        volume="0.2"
-        wave-color="red"
-      ></soundws-stem>
-      <soundws-stem
+        volume="0.8"
+      ></stemplayer-js-stem>
+      <stemplayer-js-stem
         label="Conga"
         src="assets/audio/106%20CONGA_03.3.m3u8"
         waveform="assets/waveforms/106%20CONGA_03.3.json"
-        volume="0.3"
-      ></soundws-stem>
-      <soundws-stem
+        volume="0.7"
+      ></stemplayer-js-stem>
+      <stemplayer-js-stem
         label="Casaba"
         src="assets/audio/106%20CABASA_04.3.m3u8"
         waveform="assets/waveforms/106%20CABASA_04.3.json"
         volume="0.4"
         muted="true"
-      ></soundws-stem>
-      <soundws-stem
+      ></stemplayer-js-stem>
+      <stemplayer-js-stem
         label="Bell"
         src="assets/audio/106%20BELL_05.3.m3u8"
         waveform="assets/waveforms/106%20BELL_05.3.json"
         bg-color="green"
         volume="0.5"
-      ></soundws-stem>
-    </soundws-stem-player>
+      ></stemplayer-js-stem>
+    </stemplayer-js>
+
+    <script>
+      const stemplayer = document.querySelector('stemplayer-js');
+      stemplayer.addEventListener('peaks', (peaks) => {
+        console.log(peaks)
+      })
+
+    </script>
   </body>
 </html>
