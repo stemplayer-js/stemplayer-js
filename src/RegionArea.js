@@ -62,7 +62,7 @@ export class RegionArea extends ResponsiveLitElement {
         }
 
         .mask {
-          box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.85);
+          box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.75);
         }
 
         .dashed {

@@ -411,6 +411,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
   render() {
     return html`<div class="relative overflowHidden noSelect">
+      ${this.isLoading
+        ? html`<soundws-mask>
+            <soundws-loader></soundws-loader></soundws-icon>
+          </soundws-mask>`
+        : ''}
       ${this.displayMode === 'lg' &&
       this.regions &&
       this.regionLeft &&
@@ -429,11 +434,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         <slot class="default" @slotchange=${this.#onSlotChange}></slot>
       </div>
       <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
-      ${this.isLoading
-        ? html`<soundws-mask>
-            <soundws-loader></soundws-loader></soundws-icon>
-          </soundws-mask>`
-        : ''}
       ${this.displayMode === 'lg' && !this.noHover
         ? html`<div class="hover"></div>`
         : ''}
