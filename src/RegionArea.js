@@ -234,7 +234,8 @@ export class RegionArea extends ResponsiveLitElement {
     // reset
     this.#mouseMoveWidth = undefined;
     this.#mouseDownX = undefined;
-    this.#mouseDownTime = undefined;
+
+    // NOTE: mouseDownTime is unset as part of the click handler as we need it there and click is fired after mousedown/up
   }
 
   #onDeselectClick(e) {
@@ -249,6 +250,7 @@ export class RegionArea extends ResponsiveLitElement {
 
   #handleClick(e) {
     const clickTime = new Date() - this.#mouseDownTime;
+
     if (clickTime < 150) {
       this.dispatchEvent(
         new CustomEvent('region:seek', {
@@ -258,6 +260,8 @@ export class RegionArea extends ResponsiveLitElement {
         }),
       );
     }
+
+    this.#mouseDownTime = undefined;
   }
 
   /**
