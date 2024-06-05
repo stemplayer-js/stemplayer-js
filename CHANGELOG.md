@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0-beta.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.4.0-beta.0...@stemplayer-js/stemplayer-js@3.4.0-beta.1) (2024-06-05)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix for scrolling with region ([3ee9dda](https://github.com/stemplayer-js/stem-player-js/commit/3ee9dda4e7185a73dc3f9abdfc2b0f9dd90a844c))
+
+
+### Features
+
+* **stemplayer-js:** scrollWrapper encompasses entire player ([81ef249](https://github.com/stemplayer-js/stem-player-js/commit/81ef249485b8a54adf2a1bcc206acbafab9abd1b))
+
+
+
+
+
 # [3.4.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.3.1-beta.0...@stemplayer-js/stemplayer-js@3.4.0-beta.0) (2024-06-04)
 
 
