@@ -108,7 +108,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
           transition: opacity 0.2s ease;
         }
 
-        .stemsWrapper {
+        .scrollWrapper {
           max-height: var(--stemplayer-js-max-height, auto);
           overflow: auto;
         }
@@ -231,6 +231,13 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.addEventListener('waveform:seek', e => handleSeek(e));
     this.addEventListener('region:seek', e => handleSeek(e));
     this.addEventListener('controls:seek', e => handleSeek(e));
+
+    // when scrolling in the regions overlay, which is absolutely positioned, this does not trigger scrolling of the scrollWrapper
+    // this is to "forward" any scroll events
+    this.addEventListener('wheel', e => {
+      e.preventDefault();
+      this.shadowRoot.querySelector('.scrollWrapper').scrollTop += e.deltaY;
+    });
 
     this.addEventListener('controls:seeking', () => {
       if (controller.state === 'running') {
@@ -429,11 +436,13 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
             style="left: ${this.regionLeft}; width: ${this.regionWidth}"
           ></stemplayer-js-region>`
         : ''}
-      <slot name="header" @slotchange=${this.#onSlotChange}></slot>
-      <div class="stemsWrapper">
+
+      <div class="scrollWrapper">
+        <slot name="header" @slotchange=${this.#onSlotChange}></slot>
         <slot class="default" @slotchange=${this.#onSlotChange}></slot>
+        <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
       </div>
-      <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
+
       ${this.displayMode === 'lg' && !this.noHover
         ? html`<div class="hover"></div>`
         : ''}
