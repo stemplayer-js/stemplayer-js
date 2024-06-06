@@ -163,6 +163,12 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       audioContext: { type: Object },
 
       /**
+       * Inject a pre instantiated destination for the audio context to use
+       * @see https://developer.mozilla.org/en-US/docs/Web/API/AudioDestinationNode
+       */
+      destination: { type: Object },
+
+      /**
        * Controls the player by keyboard events (e.g. space = start/pause)
        */
       noKeyboardEvents: { type: Boolean, attribute: 'no-keyboard-events' },
@@ -203,9 +209,12 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.noKeyboardEvents = false;
     this.#debouncedMergePeaks = debounce(this.#mergePeaks, 100);
     this.regions = false;
+  }
 
+  firstUpdated() {
     const controller = new Controller({
       ac: this.audioContext,
+      destination: this.destination,
       acOpts: { latencyHint: 'playback', sampleRate: 44100 },
       // duration: this.duration,
       loop: this.loop,
