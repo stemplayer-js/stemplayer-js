@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0-beta.2](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.4.0-beta.1...@stemplayer-js/stemplayer-js@3.4.0-beta.2) (2024-06-06)
+
+
+### Features
+
+* **stemplayer-js:** ac destination can be injected. Demo for effects ([f41671b](https://github.com/stemplayer-js/stem-player-js/commit/f41671bd443e61856a34690cea053bb4edddf8bf))
+
+
+
+
+
 # [3.4.0-beta.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.4.0-beta.0...@stemplayer-js/stemplayer-js@3.4.0-beta.1) (2024-06-05)
 
 

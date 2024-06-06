@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "3.4.0-beta.1",
+  "version": "3.4.0-beta.2",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -53,13 +53,13 @@
     "prepublishOnly": "npm run analyze && npm run build:docs"
   },
   "dependencies": {
-    "@soundws/hls-web-audio": "^2.3.1-beta.0",
-    "@soundws/loader-element": "^0.0.4-beta.0",
-    "@soundws/mask-element": "^0.0.4-beta.0",
-    "@soundws/player-button-element": "^0.2.1-beta.0",
-    "@soundws/range-element": "^0.0.5-beta.0",
-    "@soundws/slider-element": "^0.1.4-beta.0",
-    "@soundws/waveform-element": "^0.2.1-beta.0",
+    "@soundws/hls-web-audio": "^2.3.1-beta.1",
+    "@soundws/loader-element": "^0.0.4-beta.1",
+    "@soundws/mask-element": "^0.0.4-beta.1",
+    "@soundws/player-button-element": "^0.2.1-beta.1",
+    "@soundws/range-element": "^0.0.5-beta.1",
+    "@soundws/slider-element": "^0.1.4-beta.1",
+    "@soundws/waveform-element": "^0.2.1-beta.1",
     "lit": "^3.1.4"
   },
   "devDependencies": {
