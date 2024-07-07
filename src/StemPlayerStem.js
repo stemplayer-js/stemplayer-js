@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import { html, css } from 'lit';
-import HLS from '@soundws/hls-web-audio/hls.js';
+import HLS from '@firstcoders/hls-web-audio/hls.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
 import gridStyles from './styles/grid.js';
 import rowStyles from './styles/row.js';

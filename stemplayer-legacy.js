@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import '@soundws/loader-element/soundws-loader.js';
-import '@soundws/mask-element/soundws-mask.js';
-import '@soundws/player-button-element/soundws-player-button.js';
-import '@soundws/slider-element/soundws-slider.js';
-import '@soundws/range-element/soundws-range.js';
-import '@soundws/waveform-element/soundws-waveform.js';
+import '@firstcoders/loader-element/soundws-loader.js';
+import '@firstcoders/mask-element/soundws-mask.js';
+import '@firstcoders/player-button-element/soundws-player-button.js';
+import '@firstcoders/slider-element/soundws-slider.js';
+import '@firstcoders/range-element/soundws-range.js';
+import '@firstcoders/waveform-element/soundws-waveform.js';
 import { SoundwsStemPlayer } from './src/StemPlayer.js';
 import { SoundwsStemPlayerControls } from './src/StemPlayerControls.js';
 import { SoundwsStemPlayerStem } from './src/StemPlayerStem.js';

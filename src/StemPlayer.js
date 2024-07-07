@@ -15,8 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import { html, css } from 'lit';
-import Controller from '@soundws/hls-web-audio/controller.js';
-import Peaks from '@soundws/waveform-element/Peaks.js';
+import Controller from '@firstcoders/hls-web-audio/controller.js';
+import Peaks from '@firstcoders/waveform-element/Peaks.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
 import { SoundwsStemPlayerControls as ControlComponent } from './StemPlayerControls.js';
 import { SoundwsStemPlayerStem as StemComponent } from './StemPlayerStem.js';
