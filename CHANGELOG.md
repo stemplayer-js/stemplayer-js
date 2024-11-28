@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.0...@stemplayer-js/stemplayer-js@3.5.0-beta.1) (2024-11-28)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix for loading and unloading when (re-)setting src for stem ([21d83bd](https://github.com/stemplayer-js/stem-player-js/commit/21d83bd7a160caec0451cc59243b82650a2cb424))
+
+
+
+
+
 # [3.5.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.4.0...@stemplayer-js/stemplayer-js@3.5.0-beta.0) (2024-11-28)
 
 
