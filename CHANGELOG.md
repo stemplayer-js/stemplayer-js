@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.4.0...@stemplayer-js/stemplayer-js@3.5.0-beta.0) (2024-11-28)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** fix for setting style on undefined el ([8a052bd](https://github.com/stemplayer-js/stem-player-js/commit/8a052bd798bc15e6ab419dc66c37f2be949faf65))
+
+
+### Features
+
+* **stemplayer-js:** load and reload when src of stem is set or changes ([714407d](https://github.com/stemplayer-js/stem-player-js/commit/714407dc878c5ce385c413a6a6f129c97ebf136a))
+
+
+
+
+
 # [3.4.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.4.0-beta.3...@stemplayer-js/stemplayer-js@3.4.0) (2024-09-21)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
