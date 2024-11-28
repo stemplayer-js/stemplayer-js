@@ -136,8 +136,11 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   }
 
   async load(controller) {
-    if (!this.src) throw new Error('Cannot load audio as "src" is not set');
-    if (this.#HLS) throw new Error('The audio is already loaded');
+    if (this.src !== this.#HLS?.src)
+      this.unload(); // the source has changed, unload
+    else return; // the src is the same, do nothing
+
+    if (!this.src) return; // the src was set to null do nothing
 
     this.#HLS = new HLS({
       controller,
@@ -201,8 +204,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
       }
 
       if (propName === 'src') {
-        this.unload();
-        this.requestLoad();
+        if (this.src) this.requestLoad();
       }
     });
   }

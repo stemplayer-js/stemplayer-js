@@ -419,9 +419,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     // inject the controller when an element is added to a slot
     e.target.assignedNodes().forEach(el => {
       if (el instanceof StemComponent) {
-        // load the stem when the stem is added to the player so that it uses the correct controller
-        el.unload(); // unload first
-        if (el.src) el.load(this.#controller);
+        el.load(this.#controller);
       }
     });
 
@@ -430,7 +428,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
 
   #loadStem(e) {
     const el = e.target;
-    if (el.src) el.load(this.#controller);
+    if (el.src) {
+      el.load(this.#controller);
+    }
   }
 
   render() {
