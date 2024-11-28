@@ -136,7 +136,8 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
   }
 
   async load(controller) {
-    if (!this.src || this.#HLS) return;
+    if (!this.src) throw new Error('Cannot load audio as "src" is not set');
+    if (this.#HLS) throw new Error('The audio is already loaded');
 
     this.#HLS = new HLS({
       controller,
@@ -178,6 +179,13 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
     }
   }
 
+  /**
+   * When the src changes, trigger a request to reload the stem (in the context of the player)
+   */
+  requestLoad() {
+    this.dispatchEvent(new Event('stem:load:request', { bubbles: true }));
+  }
+
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
       if (['volume', 'muted', 'solo'].indexOf(propName) !== -1) {
@@ -190,6 +198,11 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
           if (this.solo === false) this.solo = 'off'; // convert: false is an alias of 'off'
           this.#dispatchSoloEvent();
         }
+      }
+
+      if (propName === 'src') {
+        this.unload();
+        this.requestLoad();
       }
     });
   }
