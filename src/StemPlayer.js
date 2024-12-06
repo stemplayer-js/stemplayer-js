@@ -303,9 +303,11 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     );
 
     controller.on('timeupdate', ({ t, pct }) => {
-      this.#updateChildren({
-        currentTime: t,
-        currentPct: pct,
+      requestAnimationFrame(() => {
+        this.#updateChildren({
+          currentTime: t,
+          currentPct: pct,
+        });
       });
     });
 
