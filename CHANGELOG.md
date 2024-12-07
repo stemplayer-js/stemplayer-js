@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.5](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.4...@stemplayer-js/stemplayer-js@3.5.0-beta.5) (2024-12-07)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** queryselector is not in wheel event ([6aefe44](https://github.com/stemplayer-js/stem-player-js/commit/6aefe44694150929d3f9d3e3251d944022db08aa))
+
+
+
+
+
 # [3.5.0-beta.4](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.3...@stemplayer-js/stemplayer-js@3.5.0-beta.4) (2024-12-06)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
