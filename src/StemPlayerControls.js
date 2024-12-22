@@ -165,6 +165,7 @@ export class SoundwsStemPlayerControls extends ResponsiveLitElement {
         ? html`<div class="flex1">
             <soundws-waveform
               .peaks=${this.peaks}
+              .duration=${this.duration}
               .progress=${this.currentPct}
               .progressColor=${styles.waveProgressColor}
               .waveColor=${styles.waveColor}
