@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.7](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.6...@stemplayer-js/stemplayer-js@3.5.0-beta.7) (2024-12-22)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** waveform takes total duration into account when rendering ([9759ae4](https://github.com/stemplayer-js/stem-player-js/commit/9759ae4e456da3138cdb22d02010b7c964da5de2))
+
+
+
+
+
 # [3.5.0-beta.6](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.5...@stemplayer-js/stemplayer-js@3.5.0-beta.6) (2024-12-13)
 
 **Note:** Version bump only for package @stemplayer-js/stemplayer-js
