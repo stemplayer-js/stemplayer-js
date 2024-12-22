@@ -288,6 +288,7 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
         ? html`<soundws-waveform
             class="flex1"
             .src=${this.waveform}
+            .duration=${this.duration}
             .progress=${this.currentPct}
             .scaleY=${this.volume}
             .progressColor=${styles.waveProgressColor}
