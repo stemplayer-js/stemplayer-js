@@ -142,6 +142,9 @@ export class SoundwsStemPlayerStem extends ResponsiveLitElement {
 
     if (!this.src) return; // the src was set to null do nothing
 
+    // init the duration, this is used to render the waveform correctly
+    this.duration = controller.duration;
+
     this.#HLS = new HLS({
       controller,
       volume: this.volume,
