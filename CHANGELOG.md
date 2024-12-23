@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.8](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.7...@stemplayer-js/stemplayer-js@3.5.0-beta.8) (2024-12-23)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** controls take total duration into account ([4c2b36a](https://github.com/stemplayer-js/stem-player-js/commit/4c2b36af11fce39bf847bd7bd653b7b733367ebe))
+
+
+
+
+
 # [3.5.0-beta.7](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.6...@stemplayer-js/stemplayer-js@3.5.0-beta.7) (2024-12-22)
 
 
