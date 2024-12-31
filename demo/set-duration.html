@@ -13,8 +13,9 @@
       import 'lit';
       import '../stemplayer.js';
     </script>
-    <stemplayer-js>
+    <stemplayer-js style="margin-right: 100px;" zoom="1.5" duration="500">
       <stemplayer-js-controls
+        slot="header"
         label="Demo track"
       ></stemplayer-js-controls>
       <stemplayer-js-stem
@@ -52,6 +53,12 @@
         bg-color="green"
         volume="0.5"
       ></stemplayer-js-stem>
+      <stemplayer-js-stem
+        label="Drums A"
+        src="assets/audio/106%20DRUMS%20A_02.5-short.m3u8"
+        waveform="assets/waveforms/106%20DRUMS%20A_02.5-short.json"
+      >
+      </stemplayer-js-stem>
     </stemplayer-js>
 
     <script>

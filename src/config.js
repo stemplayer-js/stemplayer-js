@@ -21,14 +21,16 @@ export const responsiveBreakpoints = {
   sm: '800',
 };
 
+export const waveform = {
+  waveColor: '#AAA',
+  progressColor: 'rgb(0, 206, 224)',
+  devicePixelRatio: 2,
+  barGap: 2,
+  barWidth: 2,
+};
+
 export const defaults = {
-  waveform: {
-    waveColor: '#AAA',
-    progressColor: 'rgb(0, 206, 224)',
-    devicePixelRatio: 2,
-    barGap: 2,
-    barWidth: 2,
-  },
+  waveform,
 };
 
 export default { fetchOptions, responsiveBreakpoints, defaults };

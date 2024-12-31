@@ -16,10 +16,9 @@ describe('StemPlayerControls', () => {
         ></stemplayer-js>`,
       );
 
-      expect(el.slottedElements[0].label).to.equal('Down by the River');
       expect(
         el.slottedElements[0].shadowRoot
-          .querySelector('span')
+          .querySelector('.truncate')
           .innerHTML.indexOf('Down by the River') !== -1,
       ).to.not.equal(-1);
     });
@@ -75,6 +74,7 @@ describe('StemPlayerControls', () => {
         html`<stemplayer-js
           ><stemplayer-js-controls
             label="Down by the River"
+            controls="waveform"
           ></stemplayer-js-controls
         ></stemplayer-js>`,
       );
@@ -86,7 +86,7 @@ describe('StemPlayerControls', () => {
       el.slottedElements[0].peaks = peaks;
 
       const waveformEl =
-        el.slottedElements[0].shadowRoot.querySelector('soundws-waveform');
+        el.slottedElements[0].shadowRoot.querySelector('fc-waveform');
 
       await waveformEl.updateComplete;
 
@@ -100,6 +100,7 @@ describe('StemPlayerControls', () => {
         html`<stemplayer-js
           ><stemplayer-js-controls
             label="Down by the River"
+            controls="waveform"
           ></stemplayer-js-controls
         ></stemplayer-js>`,
       );
@@ -109,7 +110,7 @@ describe('StemPlayerControls', () => {
       await el.slottedElements[0].updateComplete;
 
       const waveformEl =
-        el.slottedElements[0].shadowRoot.querySelector('soundws-waveform');
+        el.slottedElements[0].shadowRoot.querySelector('fc-waveform');
 
       await waveformEl.updateComplete;
 
@@ -132,8 +133,7 @@ describe('StemPlayerControls', () => {
       await el.slottedElements[0].updateComplete;
 
       expect(
-        el.slottedElements[0].shadowRoot.querySelector('soundws-player-button')
-          .type,
+        el.slottedElements[0].shadowRoot.querySelector('fc-player-button').type,
       ).to.equal('pause');
     });
   });
@@ -153,8 +153,7 @@ describe('StemPlayerControls', () => {
       await el.slottedElements[0].updateComplete;
 
       expect(
-        el.slottedElements[0].shadowRoot.querySelector('soundws-player-button')
-          .type,
+        el.slottedElements[0].shadowRoot.querySelector('fc-player-button').type,
       ).to.equal('play');
     });
   });

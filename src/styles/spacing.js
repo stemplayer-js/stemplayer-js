@@ -25,6 +25,10 @@ export default css`
     padding: 0.15rem;
   }
 
+  .p2 {
+    padding: 0.3rem;
+  }
+
   .px1 {
     padding-left: 0.15rem;
     padding-right: 0.15rem;
@@ -33,6 +37,10 @@ export default css`
   .px4 {
     padding-left: 0.6rem;
     padding-right: 0.6rem;
+  }
+
+  .pr5 {
+    padding-right: 0.75rem;
   }
 
   .p4 {
@@ -45,5 +53,9 @@ export default css`
 
   .pr3 {
     padding-right: 0.3rem;
+  }
+
+  .ml--2 {
+    margin-left: calc(var(--stemplayer-js-grid-base, 1.5rem) * -1);
   }
 `;

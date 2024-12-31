@@ -20,7 +20,6 @@
       const biquadFilter = audioCtx.createBiquadFilter();
       biquadFilter.type = 'lowpass';
       biquadFilter.frequency.setValueAtTime(200, audioCtx.currentTime + 1);
-
       biquadFilter.connect(audioCtx.destination);
 
       render(

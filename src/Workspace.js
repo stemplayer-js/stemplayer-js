@@ -15,11 +15,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import { css, html } from 'lit';
+import { createRef, ref } from 'lit/directives/ref.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
 import spacingStyles from './styles/spacing.js';
 import typographyStyles from './styles/typography.js';
 import gridStyles from './styles/grid.js';
-import rowStyles from './styles/row.js';
 import backgroundStyles from './styles/backgrounds.js';
 import utilitiesStyles from './styles/utilities.js';
 import formatSeconds from './lib/format-seconds.js';
@@ -27,7 +27,9 @@ import formatSeconds from './lib/format-seconds.js';
 /**
  * An area that represents the timeline providing functionality to select regions
  */
-export class RegionArea extends ResponsiveLitElement {
+export class Workspace extends ResponsiveLitElement {
+  #eventAreaEl = createRef();
+
   /**
    * A mouse event offsetX coordinate
    */
@@ -48,10 +50,11 @@ export class RegionArea extends ResponsiveLitElement {
    */
   #onMouseUpHandler;
 
+  #wheelEventHandler;
+
   static get styles() {
     return [
       gridStyles,
-      rowStyles,
       typographyStyles,
       backgroundStyles,
       spacingStyles,
@@ -59,10 +62,13 @@ export class RegionArea extends ResponsiveLitElement {
       css`
         :host {
           display: block;
+          width: fit-content;
+          min-width: 100%;
+          position: relative;
         }
 
         .mask {
-          box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.75);
+          box-shadow: 0 0 0 50000px rgba(0, 0, 0, 0.75);
         }
 
         .dashed {
@@ -91,8 +97,33 @@ export class RegionArea extends ResponsiveLitElement {
           opacity: 0;
         }
 
-        .ztop {
-          z-index: 100;
+        .horizon {
+          position: absolute;
+          height: 100%;
+          top: 0;
+          left: var(--stemplayer-js-row-controls-width);
+          right: var(--stemplayer-js-row-end-width);
+        }
+
+        .progress {
+          background-color: var(
+            --stemplayer-js-progress-background-color,
+            rgba(255, 255, 255, 1)
+          );
+          mix-blend-mode: var(--stemplayer-js-progress-mix-blend-mode, overlay);
+          width: calc(
+            (1px * var(--stemplayer-progress, 0)) *
+              var(--fc-waveform-pixels-per-second)
+          );
+        }
+
+        .regionArea {
+          left: calc(
+            var(--fc-waveform-pixels-per-second) * var(--offset) * 1px
+          );
+          width: calc(
+            var(--fc-waveform-pixels-per-second) * var(--duration) * 1px
+          );
         }
       `,
     ];
@@ -102,109 +133,113 @@ export class RegionArea extends ResponsiveLitElement {
     totalDuration: { type: Number },
     offset: { type: Number },
     duration: { type: Number },
-    pixelsPerSecond: { state: true },
+    regions: { type: Boolean },
     cursorPosition: { state: true },
   };
-
-  constructor() {
-    super();
-    this.addEventListener('mousedown', this.#onMouseDown);
-    this.addEventListener('mousemove', this.#onMouseMove);
-    this.addEventListener('click', this.#handleClick);
-    this.addEventListener('resize', () => {
-      this.pixelsPerSecond = this.offsetWidth / this.totalDuration;
-    });
-    this.addEventListener('pointermove', this.#onHover);
-  }
 
   connectedCallback() {
     super.connectedCallback();
     this.#onMouseUpHandler = e => this.#onMouseUp(e);
     document.addEventListener('mouseup', this.#onMouseUpHandler); // mouse up _anywhere_ (not just in this element) will also trigger the select-end behaviour
+
+    setTimeout(() => {
+      const el = this.#eventAreaEl.value;
+      el.addEventListener('mousedown', e => this.#onMouseDown(e));
+      el.addEventListener('mousemove', e => this.#onMouseMove(e));
+      el.addEventListener('click', e => this.#handleClick(e));
+      el.addEventListener('pointermove', e => this.#onHover(e));
+      this.#wheelEventHandler = e => this.#onHover(e);
+      this.addEventListener('wheel', this.#wheelEventHandler);
+    }, 0);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('mouseup', this.#onMouseUpHandler);
+    this.removeEventListener('wheel', this.#wheelEventHandler);
   }
 
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
-      if (propName === 'totalDuration') {
-        this.pixelsPerSecond = this.offsetWidth / this.totalDuration;
+      if (propName === 'offset') {
+        this.style.setProperty('--offset', this.offset);
+      }
+      if (propName === 'duration') {
+        this.style.setProperty('--duration', this.duration);
       }
     });
   }
 
   render() {
-    return html`<div class="w100 h100">
-      ${this.offset > 0 && this.duration < this.totalDuration
-        ? html`<div
-            class="h100 absolute left w2 ztop"
-            style="left: calc(${this.pixelsPerSecond * this.offset}px - 50px);"
+    return html`<div>
+      <div class="horizon z999" ${ref(this.#eventAreaEl)}>
+        ${this.offset > 0 && this.duration > 0
+          ? html`
+        <div class="absolute h100 z999 mask dashed regionArea">
+          <div
+            class="h100 absolute left w2 z99 left-2"
           >
             <div class="w2 hRow textCenter textXs">
               ${formatSeconds(this.offset)}
             </div>
           </div>
           <div class="h100 overflowHidden">
-            <div
-              class="mask dashed h100 relative"
-              style="left: ${Math.round(
-                this.pixelsPerSecond * this.offset,
-              )}px; width: ${Math.round(
-                this.pixelsPerSecond * this.duration,
-              )}px;"
-            ></div>
           </div>
           <div
-            class="h100 absolute right w2 ztop"
-            style="left: ${
-              this.pixelsPerSecond * (this.offset + this.duration)
-            }px; top: 0;"
+            class="h100 absolute right w2 z99 top right-2"
+
           >
             <div class="w2 hRow textCenter textXs">
               ${formatSeconds(this.offset + this.duration)}
             </div>
-            <soundws-player-button
+            <fc-player-button
               @click=${this.#onDeselectClick}
               class="hRow w2"
               type="deselect"
-            ></soundws-player-button>
-          </div></div>`
-        : ''}
-      <div class="cursor dashed w2 zTop p1">
-        <div class="w2 hRow textCenter textXs">
-          <span class="bgPlayer p1 muted"
-            >${formatSeconds(this.cursorPosition)}</span
-          >
+            ></fc-player-button>
+          </div></div></div>`
+          : ''}
+        <div class="cursor dashed w2 z999 noPointerEvents">
+          <div class="w2 hRow textCenter textXs">
+            <span class="bgPlayer p1 muted"
+              >${formatSeconds(this.cursorPosition)}</span
+            >
+          </div>
         </div>
       </div>
+      <slot></slot>
+      <div class="horizon z99 progress"></div>
     </div>`;
   }
 
   #onMouseDown(e) {
-    this.#mouseDownX = e.offsetX;
+    const { offsetX, offsetWidth } = this.resolveOffsets(e);
 
-    if (e.offsetX < 0) {
+    this.#mouseDownX = offsetX;
+
+    if (offsetX < 0) {
       this.#mouseDownX = 0;
     }
 
-    if (e.offsetX > this.offsetWidth) {
-      this.#mouseDownX = this.offsetWidth;
+    if (offsetX > offsetWidth) {
+      this.#mouseDownX = offsetWidth;
     }
 
     this.#mouseDownTime = new Date();
   }
 
   #onMouseMove(e) {
+    if (!this.regions) return;
+
+    const { offsetX, offsetWidth } = this.resolveOffsets(e);
+
     if (
       this.#mouseDownX !== undefined &&
-      e.offsetX > 0 &&
-      e.offsetX < this.offsetWidth
+      offsetX > 0 &&
+      offsetX < offsetWidth
     ) {
-      this.lastOffsetX = e.offsetX;
-      const distance = Math.abs(e.offsetX - this.#mouseDownX);
+      this.lastOffsetX = offsetX;
+      const distance = Math.abs(offsetX - this.#mouseDownX);
       this.#mouseMoveWidth = distance; // distance > 5 ? distance : undefined;
 
       if (this.#mouseMoveWidth) {
@@ -249,6 +284,7 @@ export class RegionArea extends ResponsiveLitElement {
   }
 
   #handleClick(e) {
+    const { offsetX, offsetWidth } = this.resolveOffsets(e);
     const clickTime = new Date() - this.#mouseDownTime;
 
     if (clickTime < 150) {
@@ -256,7 +292,7 @@ export class RegionArea extends ResponsiveLitElement {
         new CustomEvent('region:seek', {
           bubbles: true,
           composed: true,
-          detail: Math.round((e.offsetX / this.clientWidth) * 100) / 100,
+          detail: Math.round((offsetX / offsetWidth) * 100) / 100,
         }),
       );
     }
@@ -270,7 +306,7 @@ export class RegionArea extends ResponsiveLitElement {
    * @returns {{left: Number, width: Number, offset: Number, duration: Number }}
    */
   get state() {
-    const { pixelsPerSecond } = this;
+    const pixelsPerSecond = this.#pixelsPerSecond;
     const coord1 = this.#mouseDownX;
     const coord2 = this.lastOffsetX;
     const left = coord1 < coord2 ? coord1 : coord2;
@@ -284,13 +320,20 @@ export class RegionArea extends ResponsiveLitElement {
   /**
    *@private
    */
+  // eslint-disable-next-line consistent-return
   #onHover(e) {
+    const { offsetX, offsetWidth } = this.resolveOffsets(e);
     const el = this.shadowRoot.querySelector('.cursor');
-    el.style.left =
-      e.offsetX <= this.offsetWidth ? `${e.offsetX}px` : this.offsetWidth;
+
+    if (offsetX < 0 || offsetX > offsetWidth) {
+      el.style.left = `-10000px`;
+      return undefined;
+    }
+
+    el.style.left = `${offsetX}px`;
 
     this.cursorPosition =
-      Math.round((e.offsetX / this.offsetWidth) * this.totalDuration * 10) / 10;
+      Math.round((offsetX / offsetWidth) * this.totalDuration * 10) / 10;
 
     this.dispatchEvent(
       new CustomEvent('region:hover', {
@@ -299,5 +342,29 @@ export class RegionArea extends ResponsiveLitElement {
         composed: true,
       }),
     );
+  }
+
+  resolveOffsets(e) {
+    let { offsetX } = e;
+
+    if (e.target !== this.#eventAreaEl.value) {
+      const rect = this.#eventAreaEl.value.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+    }
+
+    return {
+      offsetX,
+      offsetWidth: this.#eventAreaEl.value.offsetWidth,
+    };
+  }
+
+  /**
+   * How many pixels are used to represent a second in the container that overlays the area where waveforms are drawn
+   */
+  get #pixelsPerSecond() {
+    if (this.#eventAreaEl.value)
+      return this.#eventAreaEl.value.offsetWidth / this.totalDuration;
+
+    return undefined;
   }
 }

@@ -13,9 +13,10 @@
       import 'lit';
       import '../stemplayer.js';
     </script>
-    <stemplayer-js>
+    <stemplayer-js style="margin-right: 100px;" zoom="1.5" regions>
       <stemplayer-js-controls
         label="Demo track"
+        controls="label end:zoom loop"
       ></stemplayer-js-controls>
       <stemplayer-js-stem
         label="Drums A"
@@ -52,7 +53,15 @@
         bg-color="green"
         volume="0.5"
       ></stemplayer-js-stem>
+      <stemplayer-js-stem
+        label="Drums A"
+        src="assets/audio/106%20DRUMS%20A_02.5-short.m3u8"
+        waveform="assets/waveforms/106%20DRUMS%20A_02.5-short.json"
+      >
+      </stemplayer-js-stem>
     </stemplayer-js>
+
+
 
     <script>
       const stemplayer = document.querySelector('stemplayer-js');
@@ -60,6 +69,15 @@
         console.log(peaks)
       })
 
+      // eslint-disable-next-line no-unused-vars
+      function zoom(f) {
+        stemplayer.zoom += f
+        console.log(stemplayer.zoom)
+      }
+
     </script>
+
+    <button onclick="zoom(0.5)">Zoom in</button>
+    <button onclick="zoom(-0.5)">Zoom out</button>
   </body>
 </html>

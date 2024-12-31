@@ -1,3 +1,3 @@
-export { SoundwsStemPlayer } from './src/StemPlayer.js';
-export { SoundwsStemPlayerControls } from './src/StemPlayerControls.js';
-export { SoundwsStemPlayerStem } from './src/StemPlayerStem.js';
+export { FcStemPlayer } from './src/StemPlayer.js';
+export { FcStemPlayerControls } from './src/StemPlayerControls.js';
+export { FcStemPlayerStem } from './src/StemPlayerStem.js';

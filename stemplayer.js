@@ -15,23 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import '@firstcoders/loader-element/soundws-loader.js';
-import '@firstcoders/mask-element/soundws-mask.js';
-import '@firstcoders/player-button-element/soundws-player-button.js';
-import '@firstcoders/slider-element/soundws-slider.js';
-import '@firstcoders/range-element/soundws-range.js';
-import '@firstcoders/waveform-element/soundws-waveform.js';
-import { SoundwsStemPlayer } from './src/StemPlayer.js';
-import { SoundwsStemPlayerControls } from './src/StemPlayerControls.js';
-import { SoundwsStemPlayerStem } from './src/StemPlayerStem.js';
-import { RegionArea } from './src/RegionArea.js';
+import '@firstcoders/loader-element/fc-loader.js';
+import '@firstcoders/mask-element/fc-mask.js';
+import '@firstcoders/player-button-element/fc-player-button.js';
+import '@firstcoders/slider-element/fc-slider.js';
+import '@firstcoders/range-element/fc-range.js';
+import '@firstcoders/waveform-element/fc-waveform.js';
+import { FcStemPlayer } from './src/StemPlayer.js';
+import { FcStemPlayerControls } from './src/StemPlayerControls.js';
+import { FcStemPlayerStem } from './src/StemPlayerStem.js';
+import { Workspace } from './src/Workspace.js';
+import { Row } from './src/Row.js';
 
 export { default as config } from './src/config.js';
 
-window.customElements.define('stemplayer-js', SoundwsStemPlayer);
-window.customElements.define(
-  'stemplayer-js-controls',
-  SoundwsStemPlayerControls,
-);
-window.customElements.define('stemplayer-js-stem', SoundwsStemPlayerStem);
-window.customElements.define('stemplayer-js-region', RegionArea);
+window.customElements.define('stemplayer-js', FcStemPlayer);
+window.customElements.define('stemplayer-js-controls', FcStemPlayerControls);
+window.customElements.define('stemplayer-js-stem', FcStemPlayerStem);
+window.customElements.define('stemplayer-js-workspace', Workspace);
+window.customElements.define('stemplayer-js-row', Row);

@@ -15,11 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import { html, css } from 'lit';
+import { createRef, ref } from 'lit/directives/ref.js';
 import Controller from '@firstcoders/hls-web-audio/controller.js';
 import Peaks from '@firstcoders/waveform-element/Peaks.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
-import { SoundwsStemPlayerControls as ControlComponent } from './StemPlayerControls.js';
-import { SoundwsStemPlayerStem as StemComponent } from './StemPlayerStem.js';
+import { FcStemPlayerControls as ControlComponent } from './StemPlayerControls.js';
+import { FcStemPlayerStem as StemComponent } from './StemPlayerStem.js';
 import utilitiesStyles from './styles/utilities.js';
 import debounce from './lib/debounce.js';
 
@@ -45,35 +46,40 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-background-color=black]
  * @cssprop [--stemplayer-js-row-height=4.5rem]
  * @cssprop [--stemplayer-js-waveform-color]
- * @cssprop [--stemplayer-js-waveform-progress-color]
  * @cssprop [--stemplayer-js-waveform-bar-width]
  * @cssprop [--stemplayer-js-waveform-bar-gap]
  * @cssprop [--stemplayer-js-waveform-pixel-ratio]
  * @cssprop [--stemplayer-js-grid-base=1.5rem]
  * @cssprop [--stemplayer-js-max-height=auto]
- * @cssprop [--stemplayer-hover-mix-blend-mode=overlay]
- * @cssprop [--stemplayer-hover-background-color=rgba(255, 255, 255, 0.5)]
+ * @cssprop [--stemplayer-js-progress-background-color=rgba(255, 255, 255, 1)]
+ * @cssprop [--stemplayer-js-progress-mix-blend-mode=overlay]
  */
-export class SoundwsStemPlayer extends ResponsiveLitElement {
+export class FcStemPlayer extends ResponsiveLitElement {
+  #workspace = createRef();
+
   static get styles() {
     return [
       utilitiesStyles,
       css`
         :host {
-          --soundws-player-button-color: var(--stemplayer-js-color, white);
-          --soundws-range-border-color: var(
-            --stemplayer-js-brand-color,
-            #01a4b3
-          );
-          --soundws-player-button-focus-background-color: var(
+          --fc-player-button-color: var(--stemplayer-js-color, white);
+          --fc-range-border-color: var(--stemplayer-js-brand-color, #01a4b3);
+          --fc-player-button-focus-background-color: var(
             --stemplayer-js-brand-color
           );
-          --soundws-range-focus-background-color: var(
+          --fc-range-focus-background-color: var(--stemplayer-js-brand-color);
+          --fc-slider-handle-border-right-color: var(
             --stemplayer-js-brand-color
           );
-          --soundws-slider-handle-border-right-color: var(
-            --stemplayer-js-brand-color
+
+          --stemplayer-js-row-controls-width: calc(
+            var(--stemplayer-js-grid-base, 1.5rem) * 16
           );
+
+          --stemplayer-js-row-end-width: calc(
+            var(--stemplayer-js-grid-base, 1.5rem) * 2
+          );
+
           display: block;
           font-family: var(
             --stemplayer-js-font-family,
@@ -87,36 +93,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
           background-color: var(--stemplayer-js-background-color, black);
         }
 
-        .relative:hover .hover {
-          opacity: 1;
-        }
-
-        .hover {
-          position: absolute;
-          left: 0;
-          top: 0;
-          z-index: 100;
-          pointer-events: none;
-          height: 100%;
-          width: 0;
-          mix-blend-mode: var(--stemplayer-hover-mix-blend-mode, overlay);
-          background: var(
-            --stemplayer-hover-background-color,
-            rgba(255, 255, 255, 0.75)
-          );
-          opacity: 0;
-          transition: opacity 0.2s ease;
-        }
-
         .scrollWrapper {
           max-height: var(--stemplayer-js-max-height, auto);
           overflow: auto;
-        }
-
-        stemplayer-js-region {
-          position: absolute;
-          height: 100%;
-          z-index: 100;
         }
       `,
     ];
@@ -147,9 +126,9 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       loop: { type: Boolean },
 
       /**
-       * Disabled the mouseover hover effect
+       * Zoom waveform
        */
-      noHover: { type: Boolean, attribute: 'no-hover' },
+      zoom: { type: Number },
 
       /**
        * Enable region selection
@@ -173,8 +152,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
        */
       noKeyboardEvents: { type: Boolean, attribute: 'no-keyboard-events' },
 
-      regionLeft: { state: true },
-      regionWidth: { state: true },
       audioDuration: { state: true },
       regionOffset: { state: true },
       regionDuration: { state: true },
@@ -191,11 +168,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
    */
   #debouncedMergePeaks;
 
-  /**
-   * @private
-   */
-  #handleKeypress;
-
   /** @private */
   #nLoading = 0;
 
@@ -205,10 +177,10 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     // set default values for props
     this.autoplay = false;
     this.loop = false;
-    this.noHover = false;
     this.noKeyboardEvents = false;
     this.#debouncedMergePeaks = debounce(this.#mergePeaks, 100);
     this.regions = false;
+    this.zoom = 1;
   }
 
   firstUpdated() {
@@ -225,7 +197,13 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.addEventListener('controls:play', this.#onPlay);
     this.addEventListener('controls:pause', this.#onPause);
     this.addEventListener('controls:loop', this.#onToggleLoop);
-    // this.addEventListener('peaks', this.onPeaks);
+    this.addEventListener('controls:zoom:in', () => {
+      this.zoom += 0.5;
+    });
+    this.addEventListener('controls:zoom:out', () => {
+      this.zoom -= 0.5;
+      if (this.zoom < 1) this.zoom = 1;
+    });
     this.addEventListener('stem:load:start', this.#onStemLoadingStart);
     this.addEventListener('stem:load:end', this.#onStemLoadingEnd);
     this.addEventListener('stem:solo', this.#onSolo);
@@ -233,7 +211,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.addEventListener('stem:load:request', this.#loadStem);
 
     this.addEventListener('waveform:draw', this.#onWaveformDraw);
-    if (!this.noHover) this.addEventListener('pointermove', this.#onHover);
 
     const handleSeek = e => {
       controller.pct = e.detail;
@@ -242,22 +219,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.addEventListener('waveform:seek', e => handleSeek(e));
     this.addEventListener('region:seek', e => handleSeek(e));
     this.addEventListener('controls:seek', e => handleSeek(e));
-
-    // when scrolling in the regions overlay, which is absolutely positioned, this does not trigger scrolling of the scrollWrapper
-    // this is to "forward" any scroll events
-    const el = this.shadowRoot.querySelector('.scrollWrapper');
-
-    this.addEventListener('wheel', e => {
-      // we prevent default when scolling the scrollWrapper, however when we have scrolled the full length, we want the scroll to apply to the document (like usual)
-      // we store the before, and compare it to the after scrollTop - if it's the same, we infer that the full length has been scrolled
-      const { scrollTop: before } = el;
-
-      el.scrollTop += e.deltaY;
-
-      if (before !== el.scrollTop) {
-        e.preventDefault();
-      }
-    });
 
     this.addEventListener('controls:seeking', () => {
       if (controller.state === 'running') {
@@ -308,6 +269,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
           currentTime: t,
           currentPct: pct,
         });
+
+        this.style.setProperty('--stemplayer-progress', t);
       });
     });
 
@@ -323,6 +286,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
         currentTime: t,
         currentPct: pct,
       });
+
+      this.style.setProperty('--stemplayer-progress', t);
     });
 
     controller.on('duration', duration => {
@@ -331,16 +296,16 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       });
 
       this.audioDuration = duration;
+
+      this.style.setProperty('--stemplayer-duration', duration);
     });
 
     controller.on('offset', () => {
       this.regionOffset = controller.offset;
-      // this.offset = controller.offset;
     });
 
     controller.on('playDuration', () => {
       this.regionDuration = controller.playDuration;
-      // this.duration = controller.playDuration;
     });
 
     controller.on('start', () => {
@@ -354,33 +319,12 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       this.#updateChildren({ isPlaying: false });
     });
 
-    // keypress event
-    this.#handleKeypress = e => {
-      if (e.defaultPrevented) {
-        return; // Should do nothing if the default action has been cancelled
-      }
-
-      const [target] = e.composedPath();
-
-      // control player on spacebar
-      if (e.code.toLowerCase() === 'space') {
-        // ignore form input events
-        if (
-          ['INPUT', 'TEXTAREA', 'BUTTON'].indexOf(
-            target.tagName.toUpperCase(),
-          ) !== -1
-        )
-          return;
-
-        if (this.#controller.state !== 'running') this.play();
-        else this.pause();
-        e.preventDefault();
-      }
-
-      if (e.code.toLowerCase() === 'escape') {
-        target.blur();
-      }
-    };
+    this.addEventListener('resize', () => {
+      // allow time to stabilise
+      setTimeout(() => {
+        this.#recalculatePixelsPerSecond();
+      }, 50);
+    });
   }
 
   destroy() {
@@ -391,7 +335,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     super.connectedCallback();
 
     if (!this.noKeyboardEvents) {
-      window.addEventListener('keydown', this.#handleKeypress);
+      this.keyDownlistener = e => this.#handleKeypress(e);
+      window.addEventListener('keydown', this.keyDownlistener);
     }
   }
 
@@ -400,7 +345,7 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     this.#controller.pause();
 
     if (!this.noKeyboardEvents) {
-      window.removeEventListener('keydown', this.#handleKeypress);
+      window.removeEventListener('keydown', this.keyDownlistener);
     }
   }
 
@@ -419,6 +364,10 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
       }
       if (['duration'].indexOf(propName) !== -1) {
         this.#controller.playDuration = parseFloat(this.duration); // for some reason, the value is sometimes reflected as a string
+      }
+      if (propName === 'zoom') {
+        if (this.zoom < 1) this.zoom = 1; // zomming to smaller than 1 is pointless
+        this.#recalculatePixelsPerSecond();
       }
     });
   }
@@ -445,35 +394,50 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   }
 
   render() {
+    return html`<div>
+      ${this.displayMode === 'lg'
+        ? this.#getLargeScreenTpl()
+        : this.#getSmallScreenTpl()}
+    </div>`;
+  }
+
+  #getLargeScreenTpl() {
+    return html`<div class="relative overflowHidden noSelect">
+      <slot name="header" @slotchange=${this.#onSlotChange}></slot>
+      <div class="scrollWrapper relative">
+        <stemplayer-js-workspace
+          ${ref(this.#workspace)}
+          .totalDuration=${this.audioDuration}
+          .offset=${this.regionOffset}
+          .duration=${this.regionDuration}
+          .regions=${this.regions}
+          @region:update=${this.#onRegionUpdate}
+          @region:change=${this.#onRegionChange}
+        >
+          <slot class="default" @slotchange=${this.#onSlotChange}></slot>
+        </stemplayer-js-workspace>
+      </div>
+      <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
+      ${this.isLoading
+        ? html`<fc-mask>
+            <fc-loader></fc-loader></fc-icon>
+          </fc-mask>`
+        : ''}
+    </div>`;
+  }
+
+  #getSmallScreenTpl() {
     return html`<div class="relative overflowHidden noSelect">
       ${this.isLoading
-        ? html`<soundws-mask>
-            <soundws-loader></soundws-loader></soundws-icon>
-          </soundws-mask>`
+        ? html`<fc-mask>
+            <fc-loader></fc-loader></fc-icon>
+          </fc-mask>`
         : ''}
-      ${this.displayMode === 'lg' &&
-      this.regions &&
-      this.regionLeft &&
-      this.regionWidth
-        ? html`<stemplayer-js-region
-            .totalDuration=${this.audioDuration}
-            .offset=${this.regionOffset}
-            .duration=${this.regionDuration}
-            @region:update=${this.#onRegionUpdate}
-            @region:change=${this.#onRegionChange}
-            style="left: ${this.regionLeft}; width: ${this.regionWidth}"
-          ></stemplayer-js-region>`
-        : ''}
-
       <div class="scrollWrapper">
         <slot name="header" @slotchange=${this.#onSlotChange}></slot>
         <slot class="default" @slotchange=${this.#onSlotChange}></slot>
         <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
       </div>
-
-      ${this.displayMode === 'lg' && !this.noHover
-        ? html`<div class="hover"></div>`
-        : ''}
     </div>`;
   }
 
@@ -565,38 +529,6 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
   }
 
   /**
-   *@private
-   */
-  #onHover(e) {
-    // see if are hovering over the correct elements
-    const targetEl = e
-      .composedPath()
-      .find(
-        el =>
-          ['SOUNDWS-WAVEFORM', 'STEMPLAYER-JS-REGION'].indexOf(el.tagName) !==
-          -1,
-      );
-
-    // over element
-    const el = this.shadowRoot.querySelector('.hover');
-
-    if (el) {
-      if (targetEl) {
-        const left = targetEl.offsetLeft;
-
-        let width = e.offsetX - left > 0 ? e.offsetX - left : 0;
-        if (width > targetEl.offsetWidth) width = targetEl.offsetWidth;
-
-        el.style.left = `${left}px`;
-        el.style.width = `${width}px`;
-      } else {
-        el.style.left = 0;
-        el.style.width = 0;
-      }
-    }
-  }
-
-  /**
    * Calculates the "combined" peaks
    *
    * @private
@@ -665,14 +597,8 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     e.stopPropagation();
 
     if (e.target instanceof StemComponent) {
-      this.#debouncedMergePeaks();
+      this.#debouncedMergePeaks(e);
     }
-
-    // calculate the positioning of the region element
-    // @todo Not sure why but offsetLeft leaves 1 pixel of the underlying waveform visible
-    const padding = 1;
-    this.regionLeft = `${e.detail.offsetLeft - padding}px`;
-    this.regionWidth = `${e.detail.offsetWidth + padding}px`;
   }
 
   /**
@@ -742,5 +668,44 @@ export class SoundwsStemPlayer extends ResponsiveLitElement {
     const { offset, duration } = e.detail;
     this.regionOffset = offset;
     this.regionDuration = duration;
+  }
+
+  #recalculatePixelsPerSecond() {
+    if (this.stemComponents[0]?.row) {
+      const pps =
+        ((this.clientWidth - this.stemComponents[0].row.nonFlexWidth) /
+          this.#controller.duration) *
+        this.zoom;
+
+      if (pps) this.style.setProperty('--fc-waveform-pixels-per-second', pps);
+    }
+  }
+
+  // keypress event
+  #handleKeypress(e) {
+    if (e.defaultPrevented) {
+      return; // Should do nothing if the default action has been cancelled
+    }
+
+    const [target] = e.composedPath();
+
+    // control player on spacebar
+    if (e.code.toLowerCase() === 'space') {
+      // ignore form input events
+      if (
+        ['INPUT', 'TEXTAREA', 'BUTTON'].indexOf(
+          target.tagName.toUpperCase(),
+        ) !== -1
+      )
+        return;
+
+      if (this.#controller.state !== 'running') this.play();
+      else this.pause();
+      e.preventDefault();
+    }
+
+    if (e.code.toLowerCase() === 'escape') {
+      target.blur();
+    }
   }
 }
