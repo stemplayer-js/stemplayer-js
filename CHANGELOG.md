@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.8...@stemplayer-js/stemplayer-js@4.0.0-beta.0) (2025-01-02)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** set duration when loading/initialising with controller as result of mount ([6c304b6](https://github.com/stemplayer-js/stem-player-js/commit/6c304b651a4a460f82e31ea77df03cf71a18cef3))
+
+
+### Code Refactoring
+
+* change to element names ([d82db60](https://github.com/stemplayer-js/stem-player-js/commit/d82db60849a36ec518cb533a7aa9ba6d87423d51))
+* **stemplayer-js:** major refactor of component layout ([d5fc53a](https://github.com/stemplayer-js/stem-player-js/commit/d5fc53a771ff8a289f463cf1273e9e17f8b5e2af))
+
+
+### Features
+
+* **stemplayer-js:** controls component more configurable ([14b5573](https://github.com/stemplayer-js/stem-player-js/commit/14b55736e5bf8ecd9d61a7e8150a1d5db0f9f041))
+
+
+### BREAKING CHANGES
+
+* soundws- prefix is not fc-
+* **stemplayer-js:** progress css vars different. Waveform progress rendering is different
+
+
+
+
+
 # [3.5.0-beta.8](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.7...@stemplayer-js/stemplayer-js@3.5.0-beta.8) (2024-12-23)
 
 
