@@ -302,6 +302,8 @@ export class Workspace extends ResponsiveLitElement {
   #handleClick(e) {
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
 
+    if (offsetX < 0) return;
+
     const clickTime = new Date() - this.#mouseDownTime;
 
     if (clickTime < 150) {
