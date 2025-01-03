@@ -117,14 +117,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
   constructor() {
     super();
     this.#debouncedHandleSeek = debounce(this.#handleSeek, 100);
-    this.controls = [
-      'playpause',
-      'loop',
-      'progress',
-      'label',
-      'duration',
-      'time',
-    ];
+    this.controls = ['playpause', 'loop', 'progress', 'duration', 'time'];
   }
 
   render() {
@@ -140,7 +133,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       <div slot="controls" class="dFlex h100">
         ${this.#renderControl('playpause', true)} ${this.#renderControl('loop')}
         ${this.#renderControl('zoom')}
-        <div class="flex1">${this.#renderControl('label')}</div>
+        ${this.#renderControl('label', this.label)}
         ${this.#renderControl('time', true)}
       </div>
       <div slot="flex" class="h100">
@@ -177,7 +170,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
           </div>`
         : ''}
       <div
-        class="w2 truncate textCenter flexNoShrink z99 bgPlayer op75 top right textXs"
+        class="w2 truncate textCenter flexNoShrink z99 op75 top right textXs"
       >
         ${formatSeconds(this.currentTime || 0)}
       </div>
@@ -324,9 +317,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       </div>`;
 
     if (value === 'time')
-      return html`<div
-        class="w2 textCenter flexNoShrink z99 bgPlayer op75 top right"
-      >
+      return html`<div class="w2 textCenter flexNoShrink z99 op75 top right">
         <span class="p2 textXs">${formatSeconds(this.currentTime || 0)}</span>
       </div>`;
 

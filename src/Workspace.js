@@ -28,7 +28,7 @@ import formatSeconds from './lib/format-seconds.js';
  * An area that represents the timeline providing functionality to select regions
  */
 export class Workspace extends ResponsiveLitElement {
-  #eventAreaEl = createRef();
+  #horizonEl = createRef();
 
   /**
    * A mouse event offsetX coordinate
@@ -95,17 +95,12 @@ export class Workspace extends ResponsiveLitElement {
           border-width: 0 1px 0 0px;
           border-style: dashed;
           opacity: 0;
-        }
-
-        .horizon {
-          position: absolute;
-          height: 100%;
-          top: 0;
-          left: var(--stemplayer-js-row-controls-width);
-          right: var(--stemplayer-js-row-end-width);
+          margin-left: var(--stemplayer-js-row-controls-width);
         }
 
         .progress {
+          left: var(--stemplayer-js-row-controls-width);
+          right: var(--stemplayer-js-row-end-width);
           background-color: var(
             --stemplayer-js-progress-background-color,
             rgba(255, 255, 255, 1)
@@ -118,12 +113,22 @@ export class Workspace extends ResponsiveLitElement {
         }
 
         .regionArea {
+          margin-left: var(--stemplayer-js-row-controls-width);
+          margin-right: var(--stemplayer-js-row-end-width);
           left: calc(
             var(--fc-waveform-pixels-per-second) * var(--offset) * 1px
           );
           width: calc(
             var(--fc-waveform-pixels-per-second) * var(--duration) * 1px
           );
+        }
+
+        .rRowEnd {
+          right: var(--stemplayer-js-row-end-width);
+        }
+
+        .lRowControls {
+          left: var(--stemplayer-js-row-controls-width);
         }
       `,
     ];
@@ -137,20 +142,24 @@ export class Workspace extends ResponsiveLitElement {
     cursorPosition: { state: true },
   };
 
+  constructor() {
+    super();
+
+    setTimeout(() => {
+      this.addEventListener('mousedown', e => this.#onMouseDown(e));
+      this.addEventListener('mousemove', e => this.#onMouseMove(e));
+      this.addEventListener('click', e => this.#handleClick(e));
+      this.addEventListener('pointermove', e => this.#onHover(e));
+      this.addEventListener('mouseout', e => this.#onMouseOut(e));
+      this.#wheelEventHandler = e => this.#onHover(e);
+      this.addEventListener('wheel', this.#wheelEventHandler);
+    }, 0);
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this.#onMouseUpHandler = e => this.#onMouseUp(e);
     document.addEventListener('mouseup', this.#onMouseUpHandler); // mouse up _anywhere_ (not just in this element) will also trigger the select-end behaviour
-
-    setTimeout(() => {
-      const el = this.#eventAreaEl.value;
-      el.addEventListener('mousedown', e => this.#onMouseDown(e));
-      el.addEventListener('mousemove', e => this.#onMouseMove(e));
-      el.addEventListener('click', e => this.#handleClick(e));
-      el.addEventListener('pointermove', e => this.#onHover(e));
-      this.#wheelEventHandler = e => this.#onHover(e);
-      this.addEventListener('wheel', this.#wheelEventHandler);
-    }, 0);
   }
 
   disconnectedCallback() {
@@ -172,9 +181,9 @@ export class Workspace extends ResponsiveLitElement {
 
   render() {
     return html`<div>
-      <div class="horizon z999" ${ref(this.#eventAreaEl)}>
-        ${this.offset > 0 && this.duration > 0
-          ? html`
+      <div class="z99 progress noPointerEvents h100 absolute"></div>
+      ${this.regions && this.offset > 0 && this.duration > 0
+        ? html`
         <div class="absolute h100 z999 mask dashed regionArea">
           <div
             class="h100 absolute left w2 z99 left-2"
@@ -198,17 +207,19 @@ export class Workspace extends ResponsiveLitElement {
               type="deselect"
             ></fc-player-button>
           </div></div></div>`
-          : ''}
-        <div class="cursor dashed w2 z999 noPointerEvents">
-          <div class="w2 hRow textCenter textXs">
-            <span class="bgPlayer p1 muted"
-              >${formatSeconds(this.cursorPosition)}</span
-            >
-          </div>
+        : ''}
+      <div
+        class="cursor dashed w2 z999 noPointerEvents"
+        style="${!this.cursorPosition ? 'visibility:hidden' : ''}"
+      >
+        <div class="w2 hRow textCenter textXs">
+          <span class="bgPlayer p1 muted"
+            >${formatSeconds(this.cursorPosition)}</span
+          >
         </div>
       </div>
       <slot></slot>
-      <div class="horizon z99 progress"></div>
+      <div class="lRowControls rRowEnd absolute" ${ref(this.#horizonEl)}></div>
     </div>`;
   }
 
@@ -239,6 +250,7 @@ export class Workspace extends ResponsiveLitElement {
       offsetX < offsetWidth
     ) {
       this.lastOffsetX = offsetX;
+
       const distance = Math.abs(offsetX - this.#mouseDownX);
       this.#mouseMoveWidth = distance; // distance > 5 ? distance : undefined;
 
@@ -252,6 +264,10 @@ export class Workspace extends ResponsiveLitElement {
         );
       }
     }
+  }
+
+  #onMouseOut() {
+    this.shadowRoot.querySelector('.cursor').style.left = `-10000px`;
   }
 
   #onMouseUp() {
@@ -285,6 +301,7 @@ export class Workspace extends ResponsiveLitElement {
 
   #handleClick(e) {
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
+
     const clickTime = new Date() - this.#mouseDownTime;
 
     if (clickTime < 150) {
@@ -345,16 +362,9 @@ export class Workspace extends ResponsiveLitElement {
   }
 
   resolveOffsets(e) {
-    let { offsetX } = e;
-
-    if (e.target !== this.#eventAreaEl.value) {
-      const rect = this.#eventAreaEl.value.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-    }
-
     return {
-      offsetX,
-      offsetWidth: this.#eventAreaEl.value.offsetWidth,
+      offsetX: e.offsetX - this.horizon.left,
+      offsetWidth: this.offsetWidth - this.horizon.left - this.horizon.right,
     };
   }
 
@@ -362,9 +372,23 @@ export class Workspace extends ResponsiveLitElement {
    * How many pixels are used to represent a second in the container that overlays the area where waveforms are drawn
    */
   get #pixelsPerSecond() {
-    if (this.#eventAreaEl.value)
-      return this.#eventAreaEl.value.offsetWidth / this.totalDuration;
+    return (
+      (this.clientWidth - this.horizon.left - this.horizon.right) /
+      this.totalDuration
+    );
+  }
 
-    return undefined;
+  /**
+   * The horizon represents the limit in which mouse events matter. It coincides with the area where the waveforms are rendered
+   * We do not simply render an absolutely positioned overlay and listen to events on that element, since this would disrupt the normal
+   * event paths, and would prevent us from e.g. listening to click events on a inner element such as a stem.
+   */
+  get horizon() {
+    const el = this.#horizonEl.value;
+
+    return {
+      left: el.offsetLeft,
+      right: this.offsetWidth - el.offsetLeft - el.offsetWidth,
+    };
   }
 }

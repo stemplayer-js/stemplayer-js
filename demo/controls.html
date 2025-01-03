@@ -15,8 +15,9 @@
     </script>
     <stemplayer-js>
       <stemplayer-js-controls
-        label="Demo track"
+        label="Demo track1"
         slot="header"
+        controls="end:loop end:zoom"
       ></stemplayer-js-controls>
       <stemplayer-js-stem
         label="Drums A"
@@ -59,6 +60,12 @@
       const stemplayer = document.querySelector('stemplayer-js');
       stemplayer.addEventListener('peaks', (peaks) => {
         console.log(peaks)
+      })
+
+      console.log(document.querySelector('stemplayer-js-stem'))
+
+      document.querySelector('stemplayer-js-stem').addEventListener('click', (e) => {
+        console.log('click', e.target)
       })
 
     </script>

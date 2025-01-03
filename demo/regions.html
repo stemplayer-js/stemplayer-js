@@ -16,7 +16,6 @@
     <stemplayer-js regions loop="loop" duration="25" offset="5" style="--stemplayer-js-max-height: 300px;">
         <stemplayer-js-controls
           label="Demo tr115ck"
-          style="position: sticky; top: 0; background-color: black; z-index: 99;"
         ></stemplayer-js-controls>
         <stemplayer-js-stem
           label="Drums A"
@@ -79,6 +78,10 @@
       function getState() {
         console.log(document.querySelector('stemplayer-js').state)
       }
+
+      document.querySelector('stemplayer-js-stem').addEventListener('click', (e) => {
+        console.log('click', e)
+      })
 
     </script>
   </body>

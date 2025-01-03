@@ -53,6 +53,8 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-max-height=auto]
  * @cssprop [--stemplayer-js-progress-background-color=rgba(255, 255, 255, 1)]
  * @cssprop [--stemplayer-js-progress-mix-blend-mode=overlay]
+ * @cssprop [--stemplayer-js-row-controls-background-color=black]
+ * @cssprop [--stemplayer-js-row-end-background-color=black]
  */
 export class FcStemPlayer extends ResponsiveLitElement {
   #workspace = createRef();
@@ -298,6 +300,8 @@ export class FcStemPlayer extends ResponsiveLitElement {
       this.audioDuration = duration;
 
       this.style.setProperty('--stemplayer-duration', duration);
+
+      this.#recalculatePixelsPerSecond();
     });
 
     controller.on('offset', () => {

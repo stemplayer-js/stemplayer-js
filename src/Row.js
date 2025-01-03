@@ -46,6 +46,20 @@ export class Row extends LitElement {
         .wEnd {
           min-width: var(--stemplayer-js-row-end-width);
         }
+
+        .bgControls {
+          background-color: var(
+            --stemplayer-js-row-controls-background-color,
+            black
+          );
+        }
+
+        .bgEnd {
+          background-color: var(
+            --stemplayer-js-row-end-background-color,
+            black
+          );
+        }
       `,
     ];
   }
@@ -76,13 +90,13 @@ export class Row extends LitElement {
   // eslint-disable-next-line class-methods-use-this
   #getLargeScreenTpl() {
     return html`<div class="dFlex h100">
-      <div class="wControls flexNoShrink stickLeft bgPlayer z999">
+      <div class="wControls stickLeft bgControls z999">
         <slot name="controls"></slot>
       </div>
       <div class="flex1">
         <slot name="flex"></slot>
       </div>
-      <div class="wEnd flexNoShrink stickRight bgPlayer z999 dFlex">
+      <div class="wEnd stickRight bgEnd z999 dFlex">
         <slot name="end"></slot>
       </div>
     </div>`;
@@ -92,8 +106,6 @@ export class Row extends LitElement {
    * Returns the combined width of the non fluid (flex) containers
    */
   get nonFlexWidth() {
-    console.log(this.shadowRoot.querySelector('div.wEnd'));
-
     try {
       return (
         this.shadowRoot.querySelector('div.wControls').clientWidth +
