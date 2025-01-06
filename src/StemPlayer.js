@@ -408,7 +408,10 @@ export class FcStemPlayer extends ResponsiveLitElement {
   #getLargeScreenTpl() {
     return html`<div class="relative overflowHidden noSelect">
       <slot name="header" @slotchange=${this.#onSlotChange}></slot>
-      <div class="scrollWrapper relative">
+      <div
+        class="scrollWrapper relative"
+        style="${this.zoom === 1 ? 'overflow-x:hidden' : ''}"
+      >
         <stemplayer-js-workspace
           ${ref(this.#workspace)}
           .totalDuration=${this.audioDuration}
