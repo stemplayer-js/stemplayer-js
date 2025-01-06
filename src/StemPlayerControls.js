@@ -52,6 +52,8 @@ export class FcStemPlayerControls extends WaveformHostMixin(
           display: block;
           color: var(--stemplayer-js-controls-color, inherit);
           background-color: var(--stemplayer-js-controls-background-color);
+          --stemplayer-js-row-controls-background-color: transparent;
+          --stemplayer-js-row-end-background-color: transparent;
         }
       `,
     ];
@@ -134,15 +136,23 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         ${this.#renderControl('playpause', true)} ${this.#renderControl('loop')}
         ${this.#renderControl('label', this.label) ||
         html`<div class="flex1"></div>`}
-        ${this.#renderControl('time', true)}
+        ${this.#renderControl(
+          'time',
+          this.#renderControl('waveform') || this.#renderControl('progress'),
+        )}
       </div>
       <div slot="flex" class="h100">
-        ${this.#renderControl('waveform') ||
-        this.#renderControl('progress', true)}
+        ${this.#renderControl('waveform') || this.#renderControl('progress')}
       </div>
       <div slot="end" class="h100 dFlex">
-        ${this.#renderControl('duration', true)} ${this.#renderControl('zoom')}
-        ${this.#renderControl('download')}
+        ${this.#renderControl(
+          'duration',
+          this.#renderControl('waveform') || this.#renderControl('progress'),
+        )}
+        ${!this.#renderControl('waveform')
+          ? html`${this.#renderControl('zoom')}
+            ${this.#renderControl('download')}`
+          : ''}
       </div>
     </stemplayer-js-row>`;
   }

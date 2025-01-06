@@ -96,7 +96,7 @@ export class Row extends LitElement {
       <div class="flex1">
         <slot name="flex"></slot>
       </div>
-      <div class="wEnd stickRight bgEnd z999 dFlex">
+      <div class="wEnd stickRight bgEnd z99 dFlex">
         <slot name="end"></slot>
       </div>
     </div>`;
