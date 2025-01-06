@@ -105,4 +105,8 @@ export default css`
   .right-2 {
     right: calc(-1 * var(--stemplayer-js-grid-base, 1.5rem) * 2);
   }
+
+  .dBlock {
+    display: block;
+  }
 `;

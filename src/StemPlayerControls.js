@@ -132,8 +132,8 @@ export class FcStemPlayerControls extends WaveformHostMixin(
     return html`<stemplayer-js-row>
       <div slot="controls" class="dFlex h100">
         ${this.#renderControl('playpause', true)} ${this.#renderControl('loop')}
-        ${this.#renderControl('zoom')}
-        ${this.#renderControl('label', this.label)}
+        ${this.#renderControl('label', this.label) ||
+        html`<div class="flex1"></div>`}
         ${this.#renderControl('time', true)}
       </div>
       <div slot="flex" class="h100">
@@ -141,8 +141,8 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         this.#renderControl('progress', true)}
       </div>
       <div slot="end" class="h100 dFlex">
-        ${this.#renderControl('duration', true)}
-        ${this.#renderControl('end:loop')} ${this.#renderControl('end:zoom')}
+        ${this.#renderControl('duration', true)} ${this.#renderControl('zoom')}
+        ${this.#renderControl('download')}
       </div>
     </stemplayer-js-row>`;
   }
@@ -204,6 +204,13 @@ export class FcStemPlayerControls extends WaveformHostMixin(
   /**
    * @private
    */
+  #onDownloadClick() {
+    this.dispatchEvent(new Event('controls:download', { bubbles: true }));
+  }
+
+  /**
+   * @private
+   */
   #handleSeeking() {
     this.dispatchEvent(new CustomEvent('controls:seeking', { bubbles: true }));
   }
@@ -238,7 +245,14 @@ export class FcStemPlayerControls extends WaveformHostMixin(
   }
 
   #renderControl(value, mandatory) {
-    if (!mandatory && this.controls.indexOf(value) === -1) return '';
+    const activeControls = this.controls.map(control => control.split(':')[0]);
+    if (!mandatory && activeControls.indexOf(value) === -1) return '';
+
+    const controls = {};
+    this.controls.forEach(control => {
+      const [name, disabled] = control.split(':');
+      controls[name] = { disabled: disabled === 'disabled' };
+    });
 
     if (value === 'playpause')
       return html`<fc-player-button
@@ -249,7 +263,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         .type=${this.isPlaying ? 'pause' : 'play'}
       ></fc-player-button>`;
 
-    if (value === 'loop' || value === 'end:loop')
+    if (value === 'loop')
       return html`<fc-player-button
         class="w2 flexNoShrink ${this.loop ? '' : 'textMuted'}"
         @click=${this.#toggleLoop}
@@ -257,23 +271,26 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         type="loop"
       ></fc-player-button>`;
 
-    if (value === 'zoom' || value === 'end:zoom')
+    if (value === 'zoom')
       return html`<fc-player-button
           class="w2 flexNoShrink"
           title="zoom in"
           type="zoomin"
+          .disabled=${controls.zoom.disabled}
           @click=${this.#onZoominClick}
         ></fc-player-button
         ><fc-player-button
           class="w2 flexNoShrink"
           title="zoom out"
           type="zoomout"
+          .disabled=${controls.zoom.disabled}
           @click=${this.#onZoomoutClick}
         ></fc-player-button>`;
 
     if (value === 'progress')
       return html`<fc-range
         label="progress"
+        class="focusBgBrand px1 dBlock h100"
         .value=${this.currentPct * 100}
         @input=${this.#handleSeeking}
         @change=${this.#debouncedHandleSeek}
@@ -301,18 +318,20 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         class="w2 flexNoShrink ${this.loop ? '' : 'textMuted'}"
         @click=${this.#toggleLoop}
         .title=${this.loop ? 'Disable loop' : 'Enable Loop'}
+        .disabled=${controls.loop.disabled}
         type="loop"
       ></fc-player-button>`;
 
     if (value === 'label')
       return html`<div
         class="flex1 w100 truncate hideXs px4 pr5 textCenter flexNoShrink"
+        title=${this.label}
       >
         ${this.label}
       </div>`;
 
     if (value === 'duration')
-      return html`<div class="textCenter">
+      return html`<div class="textCenter w2">
         <span class="p2 textXs">${formatSeconds(this.duration)}</span>
       </div>`;
 
@@ -320,6 +339,15 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       return html`<div class="w2 textCenter flexNoShrink z99 op75 top right">
         <span class="p2 textXs">${formatSeconds(this.currentTime || 0)}</span>
       </div>`;
+
+    if (value === 'download')
+      return html`<fc-player-button
+        class="w2 flexNoShrink"
+        title="download"
+        type="download"
+        .disabled=${controls.download.disabled}
+        @click=${this.#onDownloadClick}
+      ></fc-player-button>`;
 
     return '';
   }
