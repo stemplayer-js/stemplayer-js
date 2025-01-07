@@ -300,9 +300,10 @@ export class Workspace extends ResponsiveLitElement {
   }
 
   #handleClick(e) {
-    const { offsetX, offsetWidth } = this.resolveOffsets(e);
+    const { offsetX, offsetXRelativeToParent, offsetWidth } =
+      this.resolveOffsets(e);
 
-    if (offsetX < 0) return;
+    if (offsetXRelativeToParent < 0) return;
 
     const clickTime = new Date() - this.#mouseDownTime;
 
@@ -367,6 +368,8 @@ export class Workspace extends ResponsiveLitElement {
     return {
       offsetX: e.offsetX - this.horizon.left,
       offsetWidth: this.offsetWidth - this.horizon.left - this.horizon.right,
+      offsetXRelativeToParent:
+        e.offsetX - this.horizon.left - this.parentNode.scrollLeft,
     };
   }
 
