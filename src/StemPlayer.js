@@ -157,6 +157,8 @@ export class FcStemPlayer extends ResponsiveLitElement {
       audioDuration: { state: true },
       regionOffset: { state: true },
       regionDuration: { state: true },
+
+      collapsed: { type: Boolean },
     };
   }
 
@@ -183,6 +185,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
     this.#debouncedMergePeaks = debounce(this.#mergePeaks, 100);
     this.regions = false;
     this.zoom = 1;
+    this.collapsed = false;
   }
 
   firstUpdated() {
@@ -199,6 +202,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
     this.addEventListener('controls:play', this.#onPlay);
     this.addEventListener('controls:pause', this.#onPause);
     this.addEventListener('controls:loop', this.#onToggleLoop);
+    this.addEventListener('controls:collapse', this.#onToggleCollapse);
     this.addEventListener('controls:zoom:in', () => {
       this.zoom += 0.5;
     });
@@ -420,6 +424,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
           .regions=${this.regions}
           @region:update=${this.#onRegionUpdate}
           @region:change=${this.#onRegionChange}
+          class=${this.collapsed ? 'hidden h0' : ''}
         >
           <slot class="default" @slotchange=${this.#onSlotChange}></slot>
         </stemplayer-js-workspace>
@@ -465,6 +470,11 @@ export class FcStemPlayer extends ResponsiveLitElement {
   #onToggleLoop() {
     this.#controller.loop = !this.#controller.loop;
     this.loop = !this.loop;
+  }
+
+  #onToggleCollapse() {
+    this.collapsed = !this.collapsed;
+    this.#updateChildren({ collapsed: this.collapsed });
   }
 
   /**

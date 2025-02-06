@@ -220,7 +220,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(ResponsiveLitElement) {
       <fc-slider
         .value=${this.volume * 100}
         label="volume"
-        class="flex1"
+        class="flex1 overflowHidden"
         @change=${e => this.#handleVolume(e.detail / 100)}
         >${this.label}</fc-slider
       >
@@ -254,13 +254,13 @@ export class FcStemPlayerStem extends WaveformHostMixin(ResponsiveLitElement) {
           type="${this.muted || this.volume === 0 ? 'unmute' : 'mute'}"
         ></fc-player-button>
         <fc-range
-          class="w2"
+          class="w2 "
           label="volume"
           @change=${e => this.#handleVolume(e.detail / 100)}
           .value=${this.volume * 100}
         ></fc-range>
         <div
-          class="flex1 px4 truncate noPointerEvents textCenter flexNoShrink textSm"
+          class="flex1 px4 truncate noPointerEvents textLeft flexNoShrink textSm"
         >
           ${this.label}
         </div>

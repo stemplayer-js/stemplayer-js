@@ -46,6 +46,10 @@ export default css`
     height: 100%;
   }
 
+  .h0 {
+    height: 0;
+  }
+
   .noSelect {
     user-select: none;
     -webkit-user-select: none;
@@ -108,5 +112,9 @@ export default css`
 
   .dBlock {
     display: block;
+  }
+
+  .hidden {
+    visibility: hidden;
   }
 `;

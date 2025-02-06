@@ -33,6 +33,10 @@ export default css`
     text-align: center;
   }
 
+  .textLeft {
+    text-align: left;
+  }
+
   .truncate {
     white-space: nowrap;
     text-overflow: ellipsis;

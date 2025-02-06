@@ -151,7 +151,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         )}
         ${!this.#renderControl('waveform')
           ? html`${this.#renderControl('zoom')}
-            ${this.#renderControl('download')}`
+            ${this.#renderControl('download')}${this.#renderControl('collapse')}`
           : ''}
       </div>
     </stemplayer-js-row>`;
@@ -221,6 +221,13 @@ export class FcStemPlayerControls extends WaveformHostMixin(
   /**
    * @private
    */
+  #onToggleCollapseClick() {
+    this.dispatchEvent(new Event('controls:collapse', { bubbles: true }));
+  }
+
+  /**
+   * @private
+   */
   #handleSeeking() {
     this.dispatchEvent(new CustomEvent('controls:seeking', { bubbles: true }));
   }
@@ -260,8 +267,11 @@ export class FcStemPlayerControls extends WaveformHostMixin(
 
     const controls = {};
     this.controls.forEach(control => {
-      const [name, disabled] = control.split(':');
-      controls[name] = { disabled: disabled === 'disabled' };
+      const [name, qualifier] = control.split(':');
+      controls[name] = {
+        disabled: qualifier === 'disabled',
+        toggled: qualifier === 'toggled',
+      };
     });
 
     if (value === 'playpause')
@@ -359,6 +369,20 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         @click=${this.#onDownloadClick}
       ></fc-player-button>`;
 
+    if (value === 'collapse')
+      return html`<fc-player-button
+        class="w2 flexNoShrink"
+        @click=${this.#onToggleCollapseClick}
+        title="toggle"
+        type="${controls.collapse.toggled ? 'unfoldmore' : 'unfoldless'}"
+      ></fc-player-button>`;
+
     return '';
+  }
+
+  set collapsed(v) {
+    const from = v ? 'collapse' : 'collapse:toggled';
+    const to = v ? 'collapse:toggled' : 'collapse';
+    this.controls = this.controls.join(' ').replace(from, to).split(' ');
   }
 }
