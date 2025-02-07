@@ -37,6 +37,7 @@ export class Row extends LitElement {
           line-height: var(--stemplayer-js-row-height, 4.5rem);
           height: var(--stemplayer-js-row-height, 4.5rem);
           user-select: none;
+          overflow: hidden;
         }
 
         .wControls {
