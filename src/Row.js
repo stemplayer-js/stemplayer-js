@@ -37,7 +37,6 @@ export class Row extends LitElement {
           line-height: var(--stemplayer-js-row-height, 4.5rem);
           height: var(--stemplayer-js-row-height, 4.5rem);
           user-select: none;
-          overflow: hidden;
         }
 
         .wControls {
@@ -82,7 +81,7 @@ export class Row extends LitElement {
    */
   // eslint-disable-next-line class-methods-use-this
   #getSmallScreenTpl() {
-    return html`<div class="dFlex h100"><slot></slot></div>`;
+    return html`<div class="dFlex h100 overflowHidden"><slot></slot></div>`;
   }
 
   /**
