@@ -5,7 +5,7 @@
   "email": "support@firstcoders.co.uk",
   "bugs": "https://github.com/stemplayer-js/stemplayer-js/issues",
   "homepage": "https://stemplayer-js.com",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "contributors": [
     {
       "name": "Mark Cremer",
