@@ -328,7 +328,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
 
     if (value === 'label')
       return html`<div
-        class="flex1 w100 truncate hideXs px4 pr5 textCenter flexNoShrink"
+        class="flex1 w100 truncate hideXs px4 pr5 textCenter flexNoShrink textSm"
         title=${this.label}
       >
         ${this.label}
@@ -340,7 +340,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       </div>`;
 
     if (value === 'time')
-      return html`<div class="w2 textCenter flexNoShrink z99 op75 top right">
+      return html`<div class="w2 textCenter flexNoShrink z99 top right">
         <span class="p2 textXs">${formatSeconds(this.currentTime || 0)}</span>
       </div>`;
 
