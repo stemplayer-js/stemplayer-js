@@ -2,11 +2,11 @@ import { css } from 'lit';
 
 export default css`
   .textSm {
-    font-size: 0.85rem;
+    font-size: 0.85em;
   }
 
   .textXs {
-    font-size: 0.75rem;
+    font-size: 0.75em;
   }
 
   .textMuted {
