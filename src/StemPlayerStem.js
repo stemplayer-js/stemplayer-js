@@ -244,7 +244,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(ResponsiveLitElement) {
           .value=${this.volume * 100}
         ></fc-range>
         <div
-          class="flex1 px4 truncate noPointerEvents textRight flexNoShrink textSm"
+          class="flex1 px4 truncate noPointerEvents textCenter flexNoShrink textSm"
         >
           ${this.label}
         </div>

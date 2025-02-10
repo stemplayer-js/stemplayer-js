@@ -21,10 +21,6 @@ export default css`
     text-align: left;
   }
 
-  .textRight {
-    text-align: right;
-  }
-
   .truncate {
     white-space: nowrap;
     text-overflow: ellipsis;
