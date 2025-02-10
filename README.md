@@ -10,7 +10,7 @@ This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) reco
 
 ## Contributing
 
-> This repo is a subtree split of our monorepo which will be made public in due course. We cannot process any pull-requests to this repo. Please contact us for help.
+> This repo is a subtree split of [our monorepo](https://github.com/firstcoders/stemplayer-js-monorepo). Using a monorepo greatly simplifies development of many packages with dependencies. If you'd like to contribute to the development of stemplayer-js, please create a pull-request there.
 
 ## Installation
 
