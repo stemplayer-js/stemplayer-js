@@ -46,7 +46,7 @@ export class Workspace extends ResponsiveLitElement {
       css`
         :host {
           display: block;
-          width: fit-content;
+          width: var(--stemplayer-js-workspace-width, fit-content);
           min-width: 100%;
           position: relative;
         }
