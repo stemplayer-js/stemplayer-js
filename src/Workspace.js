@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2019-2023 First Coders LTD
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 import { css, html } from 'lit';
 import { createRef, ref } from 'lit/directives/ref.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
@@ -35,6 +51,19 @@ export class Workspace extends ResponsiveLitElement {
   #onMouseUpHandler;
 
   #wheelEventHandler;
+
+  /**
+   * Edge handles
+   */
+  #isDraggingLeftHandle = false;
+
+  #isDraggingRightHandle = false;
+
+  #handleDragStartX;
+
+  #initialOffset;
+
+  #initialDuration;
 
   static get styles() {
     return [
@@ -114,6 +143,10 @@ export class Workspace extends ResponsiveLitElement {
         .lRowControls {
           left: var(--stemplayer-js-row-controls-width);
         }
+
+        .handle {
+          cursor: ew-resize;
+        }
       `,
     ];
   }
@@ -124,6 +157,7 @@ export class Workspace extends ResponsiveLitElement {
     duration: { type: Number },
     regions: { type: Boolean },
     cursorPosition: { state: true },
+    lockRegions: { type: Boolean },
   };
 
   constructor() {
@@ -167,31 +201,38 @@ export class Workspace extends ResponsiveLitElement {
     return html`<div>
       <div class="z99 progress noPointerEvents h100 absolute"></div>
       ${this.regions && this.offset > 0 && this.duration > 0
-        ? html`
-        <div class="absolute h100 z999 mask dashed regionArea">
-          <div
-            class="h100 absolute left w2 z99 left-2"
-          >
-            <div class="w2 hRow textCenter textXs">
-              ${formatSeconds(this.offset)}
-            </div>
-          </div>
-          <div class="h100 overflowHidden">
-          </div>
-          <div
-            class="h100 absolute right w2 z99 top right-2"
+          ? html`
+          <div class="absolute h100 z999 mask dashed regionArea">
 
-          >
-            <div class="w2 hRow textCenter textXs">
-              ${formatSeconds(this.offset + this.duration)}
-            </div>
-            <fc-player-button
-              @click=${this.#onDeselectClick}
-              class="hRow w2"
-              type="deselect"
-            ></fc-player-button>
-          </div></div></div>`
-        : ''}
+              <div
+                class="h100 absolute left w2 z99 left-2 ${this.lockRegions ? 'noPointerEvents' : 'handle'}"
+                @mousedown=${this.#onLeftHandleMouseDown}
+              >
+                <div class="w2 hRow textCenter textXs">
+                  ${formatSeconds(this.offset)}
+                </div>
+              </div>
+              <div class="h100 overflowHidden">
+              </div>
+
+              <div
+                class="h100 absolute right w2 z99 top right-2 ${this.lockRegions ? 'noPointerEvents' : 'handle'}"
+                @mousedown=${this.#onRightHandleMouseDown}
+              >
+                <div class="w2 hRow textCenter textXs">
+                  ${formatSeconds(this.offset + this.duration)}
+                </div>
+                <fc-player-button
+                  @click=${this.#onDeselectClick}
+                  @mousedown=${e => e.stopPropagation()}
+                  class="hRow w2"
+                  type="deselect"
+                  style="${this.lockRegions ? 'display:none' : ''}"
+                ></fc-player-button>
+              </div>
+            </div>`
+          : ''
+      }
       <div
         class="cursor dashed w2 z999 noPointerEvents"
         style="${!this.cursorPosition ? 'visibility:hidden' : ''}"
@@ -208,8 +249,8 @@ export class Workspace extends ResponsiveLitElement {
   }
 
   #onMouseDown(e) {
+    if (this.lockRegions) return;
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
-
     this.#mouseDownX = offsetX;
 
     if (offsetX < 0) {
@@ -225,6 +266,7 @@ export class Workspace extends ResponsiveLitElement {
 
   #onMouseMove(e) {
     if (!this.regions) return;
+    if (this.lockRegions) return;
 
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
 
@@ -234,7 +276,6 @@ export class Workspace extends ResponsiveLitElement {
       offsetX < offsetWidth
     ) {
       this.lastOffsetX = offsetX;
-
       const distance = Math.abs(offsetX - this.#mouseDownX);
       this.#mouseMoveWidth = distance; // distance > 5 ? distance : undefined;
 
@@ -251,26 +292,28 @@ export class Workspace extends ResponsiveLitElement {
   }
 
   #onMouseOut() {
+    if (this.lockRegions) return;
     this.shadowRoot.querySelector('.cursor').style.left = `-10000px`;
   }
 
-  #onMouseUp() {
-    // if we're dragging, dispatch and event
-    if (this.#mouseMoveWidth) {
-      this.dispatchEvent(
-        new CustomEvent('region:change', {
-          detail: this.state,
-          bubbles: true,
-          composed: true,
-        }),
-      );
-    }
-
+#onMouseUp() {
+    // Only handle regular region selection if we weren't dragging handles
+    if (!this.#isDraggingLeftHandle && !this.#isDraggingRightHandle) {
+      // If we're finishing a normal region selection drag, dispatch an event.
+      if (this.#mouseMoveWidth) {
+        this.dispatchEvent(
+          new CustomEvent('region:change', {
+            detail: this.state,
+            bubbles: true,
+            composed: true,
+          }),
+        );
+      }
     // reset
-    this.#mouseMoveWidth = undefined;
-    this.#mouseDownX = undefined;
-
-    // NOTE: mouseDownTime is unset as part of the click handler as we need it there and click is fired after mousedown/up
+      this.#mouseMoveWidth = undefined;
+      this.#mouseDownX = undefined;
+// NOTE: mouseDownTime is unset as part of the click handler as we need it there and click is fired after mousedown/up
+    }
   }
 
   #onDeselectClick(e) {
@@ -284,6 +327,7 @@ export class Workspace extends ResponsiveLitElement {
   }
 
   #handleClick(e) {
+    if (this.lockRegions) return;
     const { offsetX, offsetXRelativeToParent, offsetWidth } =
       this.resolveOffsets(e);
 
@@ -305,20 +349,27 @@ export class Workspace extends ResponsiveLitElement {
   }
 
   /**
-   * Gets the current selection state
+   * Gets the current selection state.
    *
-   * @returns {{left: Number, width: Number, offset: Number, duration: Number }}
+   * When a handle is being dragged, we return the public properties
+   * (which are updated by the handle-drag code). Otherwise, we compute
+   * the state from the normal region drag selection.
+   *
+   * @returns {{offset: Number, duration: Number}}
    */
   get state() {
+    if (this.#isDraggingLeftHandle || this.#isDraggingRightHandle) {
+      return { offset: this.offset, duration: this.duration };
+    }
     const pixelsPerSecond = this.#pixelsPerSecond;
-    const coord1 = this.#mouseDownX;
-    const coord2 = this.lastOffsetX;
-    const left = coord1 < coord2 ? coord1 : coord2;
-    const width = this.#mouseMoveWidth;
-    const offset = Math.floor((left / pixelsPerSecond) * 100) / 100;
-    const duration = Math.floor((width / pixelsPerSecond) * 100) / 100;
-
-    return { offset, duration };
+    const coord1 = this.#mouseDownX || 0;
+    const coord2 = this.lastOffsetX || 0;
+    const left = Math.min(coord1, coord2);
+    const width = this.#mouseMoveWidth || 0;
+    return {
+      offset: Math.floor((left / pixelsPerSecond) * 100) / 100,
+      duration: Math.floor((width / pixelsPerSecond) * 100) / 100,
+    };
   }
 
   /**
@@ -326,6 +377,7 @@ export class Workspace extends ResponsiveLitElement {
    */
   // eslint-disable-next-line consistent-return
   #onHover(e) {
+    if (this.lockRegions) return undefined;
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
     const el = this.shadowRoot.querySelector('.cursor');
 
@@ -374,10 +426,123 @@ export class Workspace extends ResponsiveLitElement {
    */
   get horizon() {
     const el = this.#horizonEl.value;
-
     return {
       left: el.offsetLeft,
       right: this.offsetWidth - el.offsetLeft - el.offsetWidth,
     };
   }
+
+  /* ================================
+     Handle Dragging for Region Edges
+     ================================ */
+
+  // Left Handle
+  #onLeftHandleMouseDown(e) {
+    if (this.lockRegions) return;
+    e.stopPropagation();
+    e.preventDefault();
+    this.#isDraggingLeftHandle = true;
+    this.#handleDragStartX = e.clientX;
+    // Save current region boundaries.
+    this.#initialOffset = this.offset;
+    this.#initialDuration = this.duration;
+    document.addEventListener('mousemove', this.#onLeftHandleMouseMove);
+    document.addEventListener('mouseup', this.#onLeftHandleMouseUp);
+  }
+
+  #onLeftHandleMouseMove = (e) => {
+    if (this.lockRegions) return;
+    if (!this.#isDraggingLeftHandle) return;
+    const deltaX = e.clientX - this.#handleDragStartX;
+    const secondsDelta = deltaX / this.#pixelsPerSecond;
+    let newOffset = this.#initialOffset + secondsDelta;
+    // Clamp: newOffset cannot exceed the current right edge.
+    const rightEdge = this.#initialOffset + this.#initialDuration;
+    if (newOffset > rightEdge) {
+      newOffset = rightEdge;
+    }
+    if (newOffset < 0) {
+      newOffset = 0;
+    }
+    const newDuration = rightEdge - newOffset;
+    this.offset = newOffset;
+    this.duration = newDuration;
+    this.dispatchEvent(
+      new CustomEvent('region:update', {
+        detail: this.state,
+        bubbles: true,
+        composed: true,
+      })
+    );
+  };
+
+  #onLeftHandleMouseUp = () => {
+    if (this.lockRegions) return;
+    if (this.#isDraggingLeftHandle) {
+      // Dispatch while still in dragging mode so that state returns the updated values.
+      this.dispatchEvent(
+        new CustomEvent('region:change', {
+          detail: this.state,
+          bubbles: true,
+          composed: true,
+        })
+      );
+      // Now clear the dragging flag.
+      this.#isDraggingLeftHandle = false;
+      document.removeEventListener('mousemove', this.#onLeftHandleMouseMove);
+      document.removeEventListener('mouseup', this.#onLeftHandleMouseUp);
+    }
+  };
+
+  // Right Handle
+  #onRightHandleMouseDown(e) {
+    if (this.lockRegions) return;
+    e.stopPropagation();
+    e.preventDefault();
+    this.#isDraggingRightHandle = true;
+    this.#handleDragStartX = e.clientX;
+    // Save current region boundaries.
+    this.#initialOffset = this.offset;
+    this.#initialDuration = this.duration;
+    document.addEventListener('mousemove', this.#onRightHandleMouseMove);
+    document.addEventListener('mouseup', this.#onRightHandleMouseUp);
+  }
+
+  #onRightHandleMouseMove = (e) => {
+    if (this.lockRegions) return;
+    if (!this.#isDraggingRightHandle) return;
+    const deltaX = e.clientX - this.#handleDragStartX;
+    const secondsDelta = deltaX / this.#pixelsPerSecond;
+    let newDuration = this.#initialDuration + secondsDelta;
+    if (newDuration < 0) {
+      newDuration = 0;
+    }
+    this.duration = newDuration;
+    this.dispatchEvent(
+      new CustomEvent('region:update', {
+        detail: this.state,
+        bubbles: true,
+        composed: true,
+      })
+    );
+  };
+
+  #onRightHandleMouseUp = () => {
+    if (this.lockRegions) return;
+    if (this.#isDraggingRightHandle) {
+      // Dispatch while still in dragging mode so that state returns the updated values.
+      this.dispatchEvent(
+        new CustomEvent('region:change', {
+          detail: this.state,
+          bubbles: true,
+          composed: true,
+        })
+      );
+      // Now clear the dragging flag.
+      this.#isDraggingRightHandle = false;
+      document.removeEventListener('mousemove', this.#onRightHandleMouseMove);
+      document.removeEventListener('mouseup', this.#onRightHandleMouseUp);
+    }
+  };
+
 }

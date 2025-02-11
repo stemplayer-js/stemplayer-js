@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        background-color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import 'lit';
+      import '../stemplayer.js';
+    </script>
+    <stemplayer-js regions loop="loop" duration="25" offset="5" style="--stemplayer-js-max-height: 300px;" lockRegions>
+        <stemplayer-js-controls
+          label="Demo tr115ck"
+          slot="header"
+          controls="progress zoom"
+        ></stemplayer-js-controls>
+        <stemplayer-js-stem
+          label="Drums A"
+          src="assets/audio/106%20DRUMS%20A_02.5.m3u8"
+          waveform="assets/waveforms/106%20DRUMS%20A_02.5.json"
+          volume="1"
+        >
+        </stemplayer-js-stem>
+        <stemplayer-js-stem
+          id="stem-drums-b"
+          label="Drums B"
+          src="assets/audio/106%20DRUMS%20B_01.5.m3u8"
+          waveform="assets/waveforms/106%20DRUMS%20B_01.5.json"
+          muted="true"
+          volume="0.8"
+        ></stemplayer-js-stem>
+        <stemplayer-js-stem
+          label="Conga"
+          src="assets/audio/106%20CONGA_03.3.m3u8"
+          waveform="assets/waveforms/106%20CONGA_03.3.json"
+          volume="0.7"
+        ></stemplayer-js-stem>
+        <stemplayer-js-stem
+          label="Casaba"
+          src="assets/audio/106%20CABASA_04.3.m3u8"
+          waveform="assets/waveforms/106%20CABASA_04.3.json"
+          volume="0.4"
+          muted="true"
+        ></stemplayer-js-stem>
+        <stemplayer-js-stem
+          label="Bell"
+          src="assets/audio/106%20BELL_05.3.m3u8"
+          waveform="assets/waveforms/106%20BELL_05.3.json"
+          bg-color="green"
+          volume="0.5"
+        ></stemplayer-js-stem>
+    </stemplayer-js>
+
+    <script>
+      const stemplayer = document.querySelector('stemplayer-js');
+      stemplayer.addEventListener('region:change', (e) => {
+        console.log(e.detail)
+      })
+
+      // eslint-disable-next-line no-unused-vars
+      function setRegion(offset, duration) {
+        console.log('setregion', offset, duration);
+        stemplayer.offset = offset
+        stemplayer.duration = duration
+      }
+
+      // eslint-disable-next-line no-unused-vars
+      function unsetRegion(offset, duration) {
+        console.log('unsetRegion', offset, duration);
+        stemplayer.offset = undefined
+        stemplayer.duration = undefined
+      }
+
+      // eslint-disable-next-line no-unused-vars
+      function getState() {
+        console.log(document.querySelector('stemplayer-js').state)
+      }
+
+      document.querySelector('stemplayer-js-stem').addEventListener('click', (e) => {
+        console.log('click', e)
+      })
+
+    </script>
+  </body>
+  <button onclick="document.querySelector('stemplayer-js').loop = !document.querySelector('stemplayer-js').loop">loop</button>
+  <button onclick="setRegion(5, 10)">setRegion</button>
+  <button onclick="unsetRegion()">unsetRegion</button>
+  <button onclick="getState()">getState</button>
+</html>

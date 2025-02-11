@@ -143,6 +143,11 @@ export class FcStemPlayer extends ResponsiveLitElement {
       regionDuration: { state: true },
 
       collapsed: { type: Boolean },
+
+      /**
+      * Enable locking for the region selection
+      */
+      lockRegions: { type: Boolean },
     };
   }
 
@@ -170,6 +175,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
     this.regions = false;
     this.zoom = 1;
     this.collapsed = false;
+    this.lockRegions = false;
   }
 
   firstUpdated() {
@@ -406,6 +412,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
           .offset=${this.regionOffset}
           .duration=${this.regionDuration}
           .regions=${this.regions}
+          .lockRegions=${this.lockRegions}
           @region:update=${this.#onRegionUpdate}
           @region:change=${this.#onRegionChange}
           class=${this.collapsed ? 'hidden h0' : ''}
