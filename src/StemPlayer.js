@@ -145,8 +145,8 @@ export class FcStemPlayer extends ResponsiveLitElement {
       collapsed: { type: Boolean },
 
       /**
-      * Enable locking for the region selection
-      */
+       * Enable locking for the region selection
+       */
       lockRegions: { type: Boolean },
     };
   }

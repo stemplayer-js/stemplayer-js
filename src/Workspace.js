@@ -1,19 +1,3 @@
-/**
- * Copyright (C) 2019-2023 First Coders LTD
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
 import { css, html } from 'lit';
 import { createRef, ref } from 'lit/directives/ref.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
@@ -201,38 +185,38 @@ export class Workspace extends ResponsiveLitElement {
     return html`<div>
       <div class="z99 progress noPointerEvents h100 absolute"></div>
       ${this.regions && this.offset > 0 && this.duration > 0
-          ? html`
-          <div class="absolute h100 z999 mask dashed regionArea">
+        ? html` <div class="absolute h100 z999 mask dashed regionArea">
+            <div
+              class="h100 absolute left w2 z99 left-2 ${this.lockRegions
+                ? 'noPointerEvents'
+                : 'handle'}"
+              @mousedown=${this.#onLeftHandleMouseDown}
+            >
+              <div class="w2 hRow textCenter textXs">
+                ${formatSeconds(this.offset)}
+              </div>
+            </div>
+            <div class="h100 overflowHidden"></div>
 
-              <div
-                class="h100 absolute left w2 z99 left-2 ${this.lockRegions ? 'noPointerEvents' : 'handle'}"
-                @mousedown=${this.#onLeftHandleMouseDown}
-              >
-                <div class="w2 hRow textCenter textXs">
-                  ${formatSeconds(this.offset)}
-                </div>
+            <div
+              class="h100 absolute right w2 z99 top right-2 ${this.lockRegions
+                ? 'noPointerEvents'
+                : 'handle'}"
+              @mousedown=${this.#onRightHandleMouseDown}
+            >
+              <div class="w2 hRow textCenter textXs">
+                ${formatSeconds(this.offset + this.duration)}
               </div>
-              <div class="h100 overflowHidden">
-              </div>
-
-              <div
-                class="h100 absolute right w2 z99 top right-2 ${this.lockRegions ? 'noPointerEvents' : 'handle'}"
-                @mousedown=${this.#onRightHandleMouseDown}
-              >
-                <div class="w2 hRow textCenter textXs">
-                  ${formatSeconds(this.offset + this.duration)}
-                </div>
-                <fc-player-button
-                  @click=${this.#onDeselectClick}
-                  @mousedown=${e => e.stopPropagation()}
-                  class="hRow w2"
-                  type="deselect"
-                  style="${this.lockRegions ? 'display:none' : ''}"
-                ></fc-player-button>
-              </div>
-            </div>`
-          : ''
-      }
+              <fc-player-button
+                @click=${this.#onDeselectClick}
+                @mousedown=${e => e.stopPropagation()}
+                class="hRow w2"
+                type="deselect"
+                style="${this.lockRegions ? 'display:none' : ''}"
+              ></fc-player-button>
+            </div>
+          </div>`
+        : ''}
       <div
         class="cursor dashed w2 z999 noPointerEvents"
         style="${!this.cursorPosition ? 'visibility:hidden' : ''}"
@@ -296,7 +280,7 @@ export class Workspace extends ResponsiveLitElement {
     this.shadowRoot.querySelector('.cursor').style.left = `-10000px`;
   }
 
-#onMouseUp() {
+  #onMouseUp() {
     // Only handle regular region selection if we weren't dragging handles
     if (!this.#isDraggingLeftHandle && !this.#isDraggingRightHandle) {
       // If we're finishing a normal region selection drag, dispatch an event.
@@ -309,10 +293,10 @@ export class Workspace extends ResponsiveLitElement {
           }),
         );
       }
-    // reset
+      // reset
       this.#mouseMoveWidth = undefined;
       this.#mouseDownX = undefined;
-// NOTE: mouseDownTime is unset as part of the click handler as we need it there and click is fired after mousedown/up
+      // NOTE: mouseDownTime is unset as part of the click handler as we need it there and click is fired after mousedown/up
     }
   }
 
@@ -450,7 +434,7 @@ export class Workspace extends ResponsiveLitElement {
     document.addEventListener('mouseup', this.#onLeftHandleMouseUp);
   }
 
-  #onLeftHandleMouseMove = (e) => {
+  #onLeftHandleMouseMove = e => {
     if (this.lockRegions) return;
     if (!this.#isDraggingLeftHandle) return;
     const deltaX = e.clientX - this.#handleDragStartX;
@@ -472,7 +456,7 @@ export class Workspace extends ResponsiveLitElement {
         detail: this.state,
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   };
 
@@ -485,7 +469,7 @@ export class Workspace extends ResponsiveLitElement {
           detail: this.state,
           bubbles: true,
           composed: true,
-        })
+        }),
       );
       // Now clear the dragging flag.
       this.#isDraggingLeftHandle = false;
@@ -508,7 +492,7 @@ export class Workspace extends ResponsiveLitElement {
     document.addEventListener('mouseup', this.#onRightHandleMouseUp);
   }
 
-  #onRightHandleMouseMove = (e) => {
+  #onRightHandleMouseMove = e => {
     if (this.lockRegions) return;
     if (!this.#isDraggingRightHandle) return;
     const deltaX = e.clientX - this.#handleDragStartX;
@@ -523,7 +507,7 @@ export class Workspace extends ResponsiveLitElement {
         detail: this.state,
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   };
 
@@ -536,7 +520,7 @@ export class Workspace extends ResponsiveLitElement {
           detail: this.state,
           bubbles: true,
           composed: true,
-        })
+        }),
       );
       // Now clear the dragging flag.
       this.#isDraggingRightHandle = false;
@@ -544,5 +528,4 @@ export class Workspace extends ResponsiveLitElement {
       document.removeEventListener('mouseup', this.#onRightHandleMouseUp);
     }
   };
-
 }
