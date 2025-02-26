@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0-beta.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@4.0.0-beta.0...@stemplayer-js/stemplayer-js@4.0.0-beta.1) (2025-02-26)
+
+
+### Bug Fixes
+
+* return undefined in hover handler when lockRegions is active ([e1173ba](https://github.com/stemplayer-js/stem-player-js/commit/e1173ba068df737c7fc1a86facfdb27df44d629a))
+* **stemplayer-js:** overflow issue ([dcd722a](https://github.com/stemplayer-js/stem-player-js/commit/dcd722a7e901dbc47d5f662d23172d0e852e1a44))
+* **stemplayer-js:** responsive slider text overflow truncate ([2b4a650](https://github.com/stemplayer-js/stem-player-js/commit/2b4a65073508ae8976515cf7d75ce4d39bf27f99))
+* **stemplayer-js:** row end has lower z-index ([98708bd](https://github.com/stemplayer-js/stem-player-js/commit/98708bdbe61120ed5b0dbd544b0121a0af1a482b))
+* **stemplayer-js:** row overflow hidden only on small screen ([a0857d9](https://github.com/stemplayer-js/stem-player-js/commit/a0857d9240aa4f674bdbb760070de291b2b53ccc))
+* **stemplayer-js:** workspace click on controls when zoom no longer causes seek ([1d02b82](https://github.com/stemplayer-js/stem-player-js/commit/1d02b825a4b6a92dfe18766636a55988ba759376))
+* **stemplayer-js:** workspace click outside area doesnt trigger seek ([0a755d1](https://github.com/stemplayer-js/stem-player-js/commit/0a755d16602921eb510f9a83dc71e30f1247729d))
+
+
+### Features
+
+* **stemplayer-js:** toggle collapse ([13847c7](https://github.com/stemplayer-js/stem-player-js/commit/13847c79ac24d71540b6cfed626bf8c22ca19ea6))
+* **stemplayer-js:** workspace-width from css var ([44aaaf7](https://github.com/stemplayer-js/stem-player-js/commit/44aaaf7cdb748cc3d1044d0e2c94bdacad6d3e7c))
+
+
+### Reverts
+
+* Revert "style(stemplayer-js): align label right for large screen" ([a73d575](https://github.com/stemplayer-js/stem-player-js/commit/a73d5756dad484a7d3e8ef4bdb388a075bed5107))
+
+
+
+
+
 # [4.0.0-beta.0](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@3.5.0-beta.8...@stemplayer-js/stemplayer-js@4.0.0-beta.0) (2025-01-02)
 
 
