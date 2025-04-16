@@ -36,19 +36,6 @@ export class Workspace extends ResponsiveLitElement {
 
   #wheelEventHandler;
 
-  /**
-   * Edge handles
-   */
-  #isDraggingLeftHandle = false;
-
-  #isDraggingRightHandle = false;
-
-  #handleDragStartX;
-
-  #initialOffset;
-
-  #initialDuration;
-
   static get styles() {
     return [
       gridStyles,
@@ -130,6 +117,10 @@ export class Workspace extends ResponsiveLitElement {
 
         .handle {
           cursor: ew-resize;
+          position: absolute;
+          height: 100%;
+          top: 0;
+          width: 10px;
         }
       `,
     ];
@@ -173,10 +164,13 @@ export class Workspace extends ResponsiveLitElement {
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
       if (propName === 'offset') {
-        this.style.setProperty('--offset', this.offset);
+        this.style.setProperty('--offset', Math.floor(this.offset * 100) / 100);
       }
       if (propName === 'duration') {
-        this.style.setProperty('--duration', this.duration);
+        this.style.setProperty(
+          '--duration',
+          Math.floor(this.duration * 100) / 100,
+        );
       }
     });
   }
@@ -189,21 +183,27 @@ export class Workspace extends ResponsiveLitElement {
             <div
               class="h100 absolute left w2 z99 left-2 ${this.lockRegions
                 ? 'noPointerEvents'
-                : 'handle'}"
-              @mousedown=${this.#onLeftHandleMouseDown}
+                : ''}"
             >
               <div class="w2 hRow textCenter textXs">
                 ${formatSeconds(this.offset)}
               </div>
+              <div
+                class="handle right"
+                @mousedown=${this.#onHandleMouseDown}
+              ></div>
             </div>
             <div class="h100 overflowHidden"></div>
 
             <div
               class="h100 absolute right w2 z99 top right-2 ${this.lockRegions
                 ? 'noPointerEvents'
-                : 'handle'}"
-              @mousedown=${this.#onRightHandleMouseDown}
+                : ''}"
             >
+              <div
+                class="handle left"
+                @mousedown=${this.#onHandleMouseDown}
+              ></div>
               <div class="w2 hRow textCenter textXs">
                 ${formatSeconds(this.offset + this.duration)}
               </div>
@@ -235,14 +235,17 @@ export class Workspace extends ResponsiveLitElement {
   #onMouseDown(e) {
     if (this.lockRegions) return;
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
-    this.#mouseDownX = offsetX;
 
-    if (offsetX < 0) {
-      this.#mouseDownX = 0;
-    }
+    if (!this.isDraggingHandle) {
+      this.#mouseDownX = offsetX;
 
-    if (offsetX > offsetWidth) {
-      this.#mouseDownX = offsetWidth;
+      if (offsetX < 0) {
+        this.#mouseDownX = 0;
+      }
+
+      if (offsetX > offsetWidth) {
+        this.#mouseDownX = offsetWidth;
+      }
     }
 
     this.#mouseDownTime = new Date();
@@ -282,22 +285,22 @@ export class Workspace extends ResponsiveLitElement {
 
   #onMouseUp() {
     // Only handle regular region selection if we weren't dragging handles
-    if (!this.#isDraggingLeftHandle && !this.#isDraggingRightHandle) {
-      // If we're finishing a normal region selection drag, dispatch an event.
-      if (this.#mouseMoveWidth) {
-        this.dispatchEvent(
-          new CustomEvent('region:change', {
-            detail: this.state,
-            bubbles: true,
-            composed: true,
-          }),
-        );
-      }
-      // reset
-      this.#mouseMoveWidth = undefined;
-      this.#mouseDownX = undefined;
-      // NOTE: mouseDownTime is unset as part of the click handler as we need it there and click is fired after mousedown/up
+    // If we're finishing a normal region selection drag, dispatch an event.
+    if (this.#mouseMoveWidth) {
+      this.dispatchEvent(
+        new CustomEvent('region:change', {
+          detail: this.state,
+          bubbles: true,
+          composed: true,
+        }),
+      );
     }
+
+    // reset
+    this.#mouseMoveWidth = undefined;
+    this.#mouseDownX = undefined;
+    this.isDraggingHandle = undefined;
+    // NOTE: mouseDownTime is unset as part of the click handler as we need it there and click is fired after mousedown/up
   }
 
   #onDeselectClick(e) {
@@ -312,6 +315,7 @@ export class Workspace extends ResponsiveLitElement {
 
   #handleClick(e) {
     if (this.lockRegions) return;
+
     const { offsetX, offsetXRelativeToParent, offsetWidth } =
       this.resolveOffsets(e);
 
@@ -324,7 +328,7 @@ export class Workspace extends ResponsiveLitElement {
         new CustomEvent('region:seek', {
           bubbles: true,
           composed: true,
-          detail: Math.round((offsetX / offsetWidth) * 100) / 100,
+          detail: Math.floor((offsetX / offsetWidth) * 100) / 100,
         }),
       );
     }
@@ -342,17 +346,15 @@ export class Workspace extends ResponsiveLitElement {
    * @returns {{offset: Number, duration: Number}}
    */
   get state() {
-    if (this.#isDraggingLeftHandle || this.#isDraggingRightHandle) {
-      return { offset: this.offset, duration: this.duration };
-    }
     const pixelsPerSecond = this.#pixelsPerSecond;
     const coord1 = this.#mouseDownX || 0;
     const coord2 = this.lastOffsetX || 0;
     const left = Math.min(coord1, coord2);
     const width = this.#mouseMoveWidth || 0;
+
     return {
-      offset: Math.floor((left / pixelsPerSecond) * 100) / 100,
-      duration: Math.floor((width / pixelsPerSecond) * 100) / 100,
+      offset: Math.round((left / pixelsPerSecond) * 100) / 100,
+      duration: Math.round((width / pixelsPerSecond) * 100) / 100,
     };
   }
 
@@ -361,19 +363,20 @@ export class Workspace extends ResponsiveLitElement {
    */
   // eslint-disable-next-line consistent-return
   #onHover(e) {
-    if (this.lockRegions) return undefined;
+    if (this.lockRegions) return;
+
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
     const el = this.shadowRoot.querySelector('.cursor');
 
     if (offsetX < 0 || offsetX > offsetWidth) {
       el.style.left = `-10000px`;
-      return undefined;
+      return;
     }
 
-    el.style.left = `${offsetX}px`;
+    el.style.left = `${Math.floor(offsetX)}px`;
 
     this.cursorPosition =
-      Math.round((offsetX / offsetWidth) * this.totalDuration * 10) / 10;
+      Math.floor((offsetX / offsetWidth) * this.totalDuration * 10) / 10;
 
     this.dispatchEvent(
       new CustomEvent('region:hover', {
@@ -416,116 +419,20 @@ export class Workspace extends ResponsiveLitElement {
     };
   }
 
-  /* ================================
-     Handle Dragging for Region Edges
-     ================================ */
+  #onHandleMouseDown(e) {
+    const isRightHandle = e.target.classList.contains('left');
 
-  // Left Handle
-  #onLeftHandleMouseDown(e) {
-    if (this.lockRegions) return;
-    e.stopPropagation();
-    e.preventDefault();
-    this.#isDraggingLeftHandle = true;
-    this.#handleDragStartX = e.clientX;
-    // Save current region boundaries.
-    this.#initialOffset = this.offset;
-    this.#initialDuration = this.duration;
-    document.addEventListener('mousemove', this.#onLeftHandleMouseMove);
-    document.addEventListener('mouseup', this.#onLeftHandleMouseUp);
+    const pps = this.#pixelsPerSecond;
+    const left = Math.round(pps * this.offset * 1000) / 1000;
+    const width = Math.round(pps * this.duration * 1000) / 1000;
+    const right2 = left + width;
+
+    this.isDraggingHandle = true;
+
+    if (isRightHandle) {
+      this.#mouseDownX = left;
+    } else {
+      this.#mouseDownX = right2;
+    }
   }
-
-  #onLeftHandleMouseMove = e => {
-    if (this.lockRegions) return;
-    if (!this.#isDraggingLeftHandle) return;
-    const deltaX = e.clientX - this.#handleDragStartX;
-    const secondsDelta = deltaX / this.#pixelsPerSecond;
-    let newOffset = this.#initialOffset + secondsDelta;
-    // Clamp: newOffset cannot exceed the current right edge.
-    const rightEdge = this.#initialOffset + this.#initialDuration;
-    if (newOffset > rightEdge) {
-      newOffset = rightEdge;
-    }
-    if (newOffset < 0) {
-      newOffset = 0;
-    }
-    const newDuration = rightEdge - newOffset;
-    this.offset = newOffset;
-    this.duration = newDuration;
-    this.dispatchEvent(
-      new CustomEvent('region:update', {
-        detail: this.state,
-        bubbles: true,
-        composed: true,
-      }),
-    );
-  };
-
-  #onLeftHandleMouseUp = () => {
-    if (this.lockRegions) return;
-    if (this.#isDraggingLeftHandle) {
-      // Dispatch while still in dragging mode so that state returns the updated values.
-      this.dispatchEvent(
-        new CustomEvent('region:change', {
-          detail: this.state,
-          bubbles: true,
-          composed: true,
-        }),
-      );
-      // Now clear the dragging flag.
-      this.#isDraggingLeftHandle = false;
-      document.removeEventListener('mousemove', this.#onLeftHandleMouseMove);
-      document.removeEventListener('mouseup', this.#onLeftHandleMouseUp);
-    }
-  };
-
-  // Right Handle
-  #onRightHandleMouseDown(e) {
-    if (this.lockRegions) return;
-    e.stopPropagation();
-    e.preventDefault();
-    this.#isDraggingRightHandle = true;
-    this.#handleDragStartX = e.clientX;
-    // Save current region boundaries.
-    this.#initialOffset = this.offset;
-    this.#initialDuration = this.duration;
-    document.addEventListener('mousemove', this.#onRightHandleMouseMove);
-    document.addEventListener('mouseup', this.#onRightHandleMouseUp);
-  }
-
-  #onRightHandleMouseMove = e => {
-    if (this.lockRegions) return;
-    if (!this.#isDraggingRightHandle) return;
-    const deltaX = e.clientX - this.#handleDragStartX;
-    const secondsDelta = deltaX / this.#pixelsPerSecond;
-    let newDuration = this.#initialDuration + secondsDelta;
-    if (newDuration < 0) {
-      newDuration = 0;
-    }
-    this.duration = newDuration;
-    this.dispatchEvent(
-      new CustomEvent('region:update', {
-        detail: this.state,
-        bubbles: true,
-        composed: true,
-      }),
-    );
-  };
-
-  #onRightHandleMouseUp = () => {
-    if (this.lockRegions) return;
-    if (this.#isDraggingRightHandle) {
-      // Dispatch while still in dragging mode so that state returns the updated values.
-      this.dispatchEvent(
-        new CustomEvent('region:change', {
-          detail: this.state,
-          bubbles: true,
-          composed: true,
-        }),
-      );
-      // Now clear the dragging flag.
-      this.#isDraggingRightHandle = false;
-      document.removeEventListener('mousemove', this.#onRightHandleMouseMove);
-      document.removeEventListener('mouseup', this.#onRightHandleMouseUp);
-    }
-  };
 }

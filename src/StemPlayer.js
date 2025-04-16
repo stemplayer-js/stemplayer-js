@@ -266,7 +266,10 @@ export class FcStemPlayer extends ResponsiveLitElement {
           currentPct: pct,
         });
 
-        this.style.setProperty('--stemplayer-progress', t);
+        this.style.setProperty(
+          '--stemplayer-progress',
+          Math.round(t * 100) / 100,
+        );
       });
     });
 
@@ -283,7 +286,10 @@ export class FcStemPlayer extends ResponsiveLitElement {
         currentPct: pct,
       });
 
-      this.style.setProperty('--stemplayer-progress', t);
+      this.style.setProperty(
+        '--stemplayer-progress',
+        Math.round(t * 100) / 100,
+      );
     });
 
     controller.on('duration', duration => {
