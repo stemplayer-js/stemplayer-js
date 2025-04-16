@@ -122,6 +122,10 @@ export class Workspace extends ResponsiveLitElement {
           top: 0;
           width: 10px;
         }
+
+        fc-player-button[type='deselect'] {
+          display: var(--stemplayer-js-region-btn-deselect-display, block);
+        }
       `,
     ];
   }
@@ -146,6 +150,14 @@ export class Workspace extends ResponsiveLitElement {
       this.addEventListener('mouseout', e => this.#onMouseOut(e));
       this.#wheelEventHandler = e => this.#onHover(e);
       this.addEventListener('wheel', this.#wheelEventHandler);
+
+      // hide the deselect button if we are in a locked state
+      if (this.lockRegions) {
+        this.style.setProperty(
+          '--stemplayer-js-region-btn-deselect-display',
+          'none',
+        );
+      }
     }, 0);
   }
 
@@ -212,7 +224,6 @@ export class Workspace extends ResponsiveLitElement {
                 @mousedown=${e => e.stopPropagation()}
                 class="hRow w2"
                 type="deselect"
-                style="${this.lockRegions ? 'display:none' : ''}"
               ></fc-player-button>
             </div>
           </div>`
@@ -262,9 +273,29 @@ export class Workspace extends ResponsiveLitElement {
       offsetX > 0 &&
       offsetX < offsetWidth
     ) {
+      // store pre-change values for rollback
+      const oldMouseMoveWidth = this.#mouseMoveWidth;
+      const oldOffsetX = this.lastOffsetX;
+
+      // update values
       this.lastOffsetX = offsetX;
-      const distance = Math.abs(offsetX - this.#mouseDownX);
-      this.#mouseMoveWidth = distance; // distance > 5 ? distance : undefined;
+      this.#mouseMoveWidth = Math.abs(offsetX - this.#mouseDownX);
+
+      // emit pre-update event
+      const preUpdateEvent = new CustomEvent('region:pre-update', {
+        detail: this.state,
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+      });
+
+      this.dispatchEvent(preUpdateEvent);
+
+      // if pre-update event default is prevented, revert to previous state
+      if (preUpdateEvent.defaultPrevented) {
+        this.#mouseMoveWidth = oldMouseMoveWidth;
+        this.lastOffsetX = oldOffsetX;
+      }
 
       if (this.#mouseMoveWidth) {
         this.dispatchEvent(
@@ -306,9 +337,12 @@ export class Workspace extends ResponsiveLitElement {
   #onDeselectClick(e) {
     e.stopPropagation();
     e.preventDefault();
+
     this.dispatchEvent(
       new CustomEvent('region:change', {
         detail: { offset: undefined, duration: undefined },
+        bubbles: true,
+        composed: true,
       }),
     );
   }
@@ -355,6 +389,8 @@ export class Workspace extends ResponsiveLitElement {
     return {
       offset: Math.round((left / pixelsPerSecond) * 100) / 100,
       duration: Math.round((width / pixelsPerSecond) * 100) / 100,
+      direction: coord1 > coord2 ? 'left' : 'right', // left = dragging from right to left and vice versa
+      region: this,
     };
   }
 
