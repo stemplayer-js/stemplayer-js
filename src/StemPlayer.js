@@ -278,6 +278,8 @@ export class FcStemPlayer extends ResponsiveLitElement {
         currentTime: 0,
         currentPct: 0,
       });
+
+      this.style.setProperty('--stemplayer-progress', 0);
     });
 
     controller.on('seek', ({ t, pct }) => {
