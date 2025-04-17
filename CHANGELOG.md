@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0-beta.2](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@4.0.0-beta.1...@stemplayer-js/stemplayer-js@4.0.0-beta.2) (2025-04-17)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** draghandle partially unset offset or duration when crossing region edges ([42ac78c](https://github.com/stemplayer-js/stem-player-js/commit/42ac78ce73c9dd01bc45046a3a946ea38a06ff85))
+* **stemplayer-js:** update progress to 0 on end ([2d9da5a](https://github.com/stemplayer-js/stem-player-js/commit/2d9da5a13cbe59b2e4cea97d1854ac31a876ff16))
+
+
+### Features
+
+* **stemplayer-js:** added css var for display prop for region deselect button ([1f648de](https://github.com/stemplayer-js/stem-player-js/commit/1f648de839f6b189070d8470450b42805a94824d))
+* **stemplayer-js:** drag existing region ([efb85da](https://github.com/stemplayer-js/stem-player-js/commit/efb85dadc4d3eeef96b446cfd6ac13f152e5b048))
+* **stemplayer-js:** emit cancellable pre-update event from region ([adc5a90](https://github.com/stemplayer-js/stem-player-js/commit/adc5a90d39c55ecf75fb6983879e82962397364c))
+
+
+
+
+
 # [4.0.0-beta.1](https://github.com/stemplayer-js/stem-player-js/compare/@stemplayer-js/stemplayer-js@4.0.0-beta.0...@stemplayer-js/stemplayer-js@4.0.0-beta.1) (2025-02-26)
 
 
