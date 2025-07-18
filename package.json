@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "4.0.0-beta.2",
+  "version": "4.0.0-beta.3",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -52,7 +52,7 @@
     "prepublishOnly": "npm run analyze && npm run build:docs"
   },
   "dependencies": {
-    "@firstcoders/hls-web-audio": "^2.5.0-beta.3",
+    "@firstcoders/hls-web-audio": "^2.5.0-beta.4",
     "@firstcoders/loader-element": "^1.0.0-beta.1",
     "@firstcoders/mask-element": "^1.0.0-beta.1",
     "@firstcoders/player-button-element": "^1.0.0-beta.1",
