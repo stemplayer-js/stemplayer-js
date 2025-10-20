@@ -11,7 +11,7 @@ export const WaveformHostMixin = superClass =>
     /**
      * @private
      */
-    #computedWaveformStyles;
+    #computedStyle;
 
     /**
      * Calculates the styles for rendering the waveform
@@ -19,16 +19,13 @@ export const WaveformHostMixin = superClass =>
      * @private
      */
     getComputedWaveformStyles() {
-      const styles =
-        this.#computedWaveformStyles || this.computeWaveformStyles();
+      const styles = this.computeWaveformStyles();
 
-      this.#computedWaveformStyles = {
+      return {
         ...styles,
         waveColor: styles.controlsWaveColor || styles.waveColor,
         waveProgressColor: styles.controlsProgressColor || styles.progressColor,
       };
-
-      return this.#computedWaveformStyles;
     }
 
     computeWaveformStyles() {
@@ -36,7 +33,14 @@ export const WaveformHostMixin = superClass =>
         // EXPERIMENTAL. These properties are used by javascript when instantiating the waveform drawer.
         // This has the possibility of being unreliable.
         // get some stuff that is not styled by css from css vars anyway (for nice theming)
-        const computedStyle = getComputedStyle(this);
+        if (!this.#computedStyle) {
+          this.#computedStyle = getComputedStyle(this);
+          setTimeout(() => {
+            this.#computedStyle = null;
+          }, 1000);
+        }
+
+        const computedStyle = this.#computedStyle;
 
         return {
           waveColor:

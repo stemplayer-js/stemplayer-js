@@ -265,11 +265,6 @@ export class FcStemPlayer extends ResponsiveLitElement {
           currentTime: t,
           currentPct: pct,
         });
-
-        this.style.setProperty(
-          '--stemplayer-progress',
-          Math.round(t * 100) / 100,
-        );
       });
     });
 
@@ -278,8 +273,6 @@ export class FcStemPlayer extends ResponsiveLitElement {
         currentTime: 0,
         currentPct: 0,
       });
-
-      this.style.setProperty('--stemplayer-progress', 0);
     });
 
     controller.on('seek', ({ t, pct }) => {
@@ -287,11 +280,6 @@ export class FcStemPlayer extends ResponsiveLitElement {
         currentTime: t,
         currentPct: pct,
       });
-
-      this.style.setProperty(
-        '--stemplayer-progress',
-        Math.round(t * 100) / 100,
-      );
     });
 
     controller.on('duration', duration => {
@@ -431,7 +419,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
       <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
       ${this.isLoading
         ? html`<fc-mask>
-            <fc-loader></fc-loader></fc-icon>
+            <fc-loader></fc-loader>
           </fc-mask>`
         : ''}
     </div>`;
@@ -441,7 +429,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
     return html`<div class="relative overflowHidden noSelect">
       ${this.isLoading
         ? html`<fc-mask>
-            <fc-loader></fc-loader></fc-icon>
+            <fc-loader></fc-loader>
           </fc-mask>`
         : ''}
       <div class="scrollWrapper">

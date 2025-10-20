@@ -82,20 +82,6 @@ export class Workspace extends ResponsiveLitElement {
           margin-left: var(--stemplayer-js-row-controls-width);
         }
 
-        .progress {
-          left: var(--stemplayer-js-row-controls-width);
-          right: var(--stemplayer-js-row-end-width);
-          background-color: var(
-            --stemplayer-js-progress-background-color,
-            rgba(255, 255, 255, 1)
-          );
-          mix-blend-mode: var(--stemplayer-js-progress-mix-blend-mode, overlay);
-          width: calc(
-            (1px * var(--stemplayer-progress, 0)) *
-              var(--fc-waveform-pixels-per-second)
-          );
-        }
-
         .regionArea {
           margin-left: var(--stemplayer-js-row-controls-width);
           margin-right: var(--stemplayer-js-row-end-width);
@@ -180,12 +166,15 @@ export class Workspace extends ResponsiveLitElement {
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
       if (propName === 'offset') {
-        this.style.setProperty('--offset', Math.floor(this.offset * 100) / 100);
+        this.style.setProperty(
+          '--offset',
+          Math.floor(this.offset * 1000) / 1000,
+        );
       }
       if (propName === 'duration') {
         this.style.setProperty(
           '--duration',
-          Math.floor(this.duration * 100) / 100,
+          Math.floor(this.duration * 1000) / 1000,
         );
       }
     });
@@ -193,7 +182,7 @@ export class Workspace extends ResponsiveLitElement {
 
   render() {
     return html`<div>
-      <div class="z99 progress noPointerEvents h100 absolute"></div>
+      <div class="z99 noPointerEvents h100 absolute"></div>
       ${this.regions && this.offset > 0 && this.duration > 0
         ? html` <div
             class="absolute h100 z999 mask dashed regionArea"
@@ -403,7 +392,7 @@ export class Workspace extends ResponsiveLitElement {
         new CustomEvent('region:seek', {
           bubbles: true,
           composed: true,
-          detail: Math.floor((offsetX / offsetWidth) * 100) / 100,
+          detail: offsetX / offsetWidth,
         }),
       );
     }
@@ -453,7 +442,7 @@ export class Workspace extends ResponsiveLitElement {
     el.style.left = `${Math.floor(offsetX)}px`;
 
     this.cursorPosition =
-      Math.floor((offsetX / offsetWidth) * this.totalDuration * 10) / 10;
+      Math.floor((offsetX / offsetWidth) * this.totalDuration * 1000) / 1000;
 
     this.dispatchEvent(
       new CustomEvent('region:hover', {
