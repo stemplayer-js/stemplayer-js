@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "4.0.0-beta.3",
+  "version": "4.0.0-beta.4",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -58,8 +58,8 @@
     "@firstcoders/player-button-element": "^1.0.0-beta.1",
     "@firstcoders/range-element": "^1.0.0-beta.1",
     "@firstcoders/slider-element": "^1.0.0-beta.1",
-    "@firstcoders/waveform-element": "^1.0.0-beta.1",
-    "lit": "^3.2.1"
+    "@firstcoders/waveform-element": "^1.0.0-beta.2",
+    "lit": "^3.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.8",
