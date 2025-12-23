@@ -139,7 +139,9 @@ export class Workspace extends ResponsiveLitElement {
       this.addEventListener('pointermove', e => this.#onHover(e));
       this.addEventListener('mouseout', e => this.#onMouseOut(e));
       this.#wheelEventHandler = e => this.#onHover(e);
-      this.addEventListener('wheel', this.#wheelEventHandler);
+      this.addEventListener('wheel', this.#wheelEventHandler, {
+        passive: true,
+      });
 
       // hide the deselect button if we are in a locked state
       if (this.lockRegions) {
