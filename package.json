@@ -23,7 +23,7 @@
     "webcomponent",
     "custom-element"
   ],
-  "version": "4.0.0",
+  "version": "4.0.1-beta.0",
   "type": "module",
   "main": "index.js",
   "module": "index.js",
@@ -52,13 +52,13 @@
     "prepublishOnly": "npm run analyze && npm run build:docs"
   },
   "dependencies": {
-    "@firstcoders/hls-web-audio": "^2.5.0",
-    "@firstcoders/loader-element": "^1.0.0",
-    "@firstcoders/mask-element": "^1.0.0",
-    "@firstcoders/player-button-element": "^1.0.0",
-    "@firstcoders/range-element": "^1.0.0",
-    "@firstcoders/slider-element": "^1.0.0",
-    "@firstcoders/waveform-element": "^1.0.0",
+    "@firstcoders/hls-web-audio": "^2.5.1-beta.0",
+    "@firstcoders/loader-element": "^1.0.1-beta.0",
+    "@firstcoders/mask-element": "^1.0.1-beta.0",
+    "@firstcoders/player-button-element": "^1.0.1-beta.0",
+    "@firstcoders/range-element": "^1.0.1-beta.0",
+    "@firstcoders/slider-element": "^1.0.1-beta.0",
+    "@firstcoders/waveform-element": "^1.0.1-beta.0",
     "@lit/context": "^1.1.6",
     "lit": "^3.3.2"
   },
