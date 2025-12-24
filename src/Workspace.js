@@ -1,6 +1,6 @@
 import { css, html } from 'lit';
 import { createRef, ref } from 'lit/directives/ref.js';
-import { ResponsiveLitElement } from './ResponsiveLitElement.js';
+import { ResponsiveConsumerLitElement } from './ResponsiveConsumerLitElement.js';
 import spacingStyles from './styles/spacing.js';
 import typographyStyles from './styles/typography.js';
 import gridStyles from './styles/grid.js';
@@ -11,7 +11,7 @@ import formatSeconds from './lib/format-seconds.js';
 /**
  * An area that represents the timeline providing functionality to select regions
  */
-export class Workspace extends ResponsiveLitElement {
+export class Workspace extends ResponsiveConsumerLitElement {
   #horizonEl = createRef();
 
   /**
@@ -127,6 +127,7 @@ export class Workspace extends ResponsiveLitElement {
     regions: { type: Boolean },
     cursorPosition: { state: true },
     lockRegions: { type: Boolean },
+    pixelsPerSecond: { type: Number },
   };
 
   constructor() {
@@ -276,7 +277,7 @@ export class Workspace extends ResponsiveLitElement {
       // is dragging a region
       if (this.isDraggingRegion) {
         const distance = offsetX - this.#mouseDownX;
-        let newOffset = this.offset + distance / this.#pixelsPerSecond;
+        let newOffset = this.offset + distance / this.pixelsPerSecond;
 
         if (newOffset <= 0) {
           newOffset = 0.0001; // nearly 0, due to a check offset > 0 above in render
@@ -412,15 +413,14 @@ export class Workspace extends ResponsiveLitElement {
    * @returns {{offset: Number, duration: Number}}
    */
   get dragState() {
-    const pixelsPerSecond = this.#pixelsPerSecond;
     const coord1 = this.#mouseDownX || 0;
     const coord2 = this.lastOffsetX || 0;
     const left = Math.min(coord1, coord2);
     const width = this.#mouseMoveWidth || 0;
 
     return {
-      offset: Math.round((left / pixelsPerSecond) * 100) / 100,
-      duration: Math.round((width / pixelsPerSecond) * 100) / 100,
+      offset: Math.round((left / this.pixelsPerSecond) * 100) / 100,
+      duration: Math.round((width / this.pixelsPerSecond) * 100) / 100,
       direction: coord1 > coord2 ? 'left' : 'right', // left = dragging from right to left and vice versa
       region: this,
     };
@@ -465,16 +465,6 @@ export class Workspace extends ResponsiveLitElement {
   }
 
   /**
-   * How many pixels are used to represent a second in the container that overlays the area where waveforms are drawn
-   */
-  get #pixelsPerSecond() {
-    return (
-      (this.clientWidth - this.horizon.left - this.horizon.right) /
-      this.totalDuration
-    );
-  }
-
-  /**
    * The horizon represents the limit in which mouse events matter. It coincides with the area where the waveforms are rendered
    * We do not simply render an absolutely positioned overlay and listen to events on that element, since this would disrupt the normal
    * event paths, and would prevent us from e.g. listening to click events on a inner element such as a stem.
@@ -496,9 +486,9 @@ export class Workspace extends ResponsiveLitElement {
     if (this.isDraggingHandle) {
       const isRightHandle = e.target.classList.contains('left');
 
-      const pps = this.#pixelsPerSecond;
-      const left = Math.round(pps * this.offset * 1000) / 1000;
-      const width = Math.round(pps * this.duration * 1000) / 1000;
+      const left = Math.round(this.pixelsPerSecond * this.offset * 1000) / 1000;
+      const width =
+        Math.round(this.pixelsPerSecond * this.duration * 1000) / 1000;
       const right2 = left + width;
 
       if (isRightHandle) {

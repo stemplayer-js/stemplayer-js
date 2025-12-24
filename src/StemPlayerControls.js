@@ -1,5 +1,5 @@
 import { html, css } from 'lit';
-import { ResponsiveLitElement } from './ResponsiveLitElement.js';
+import { ResponsiveConsumerLitElement } from './ResponsiveConsumerLitElement.js';
 import { WaveformHostMixin } from './mixins/WaveformHostMixin.js';
 import gridStyles from './styles/grid.js';
 import flexStyles from './styles/flex.js';
@@ -17,7 +17,7 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-controls-background-color]
  */
 export class FcStemPlayerControls extends WaveformHostMixin(
-  ResponsiveLitElement,
+  ResponsiveConsumerLitElement,
 ) {
   static get styles() {
     return [

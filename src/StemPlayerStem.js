@@ -1,6 +1,6 @@
 import { html, css } from 'lit';
 import HLS from '@firstcoders/hls-web-audio/hls.js';
-import { ResponsiveLitElement } from './ResponsiveLitElement.js';
+import { ResponsiveConsumerLitElement } from './ResponsiveConsumerLitElement.js';
 import { WaveformHostMixin } from './mixins/WaveformHostMixin.js';
 import gridStyles from './styles/grid.js';
 import flexStyles from './styles/flex.js';
@@ -13,7 +13,9 @@ import { fetchOptions } from './config.js';
 /**
  * A component to render a single stem
  */
-export class FcStemPlayerStem extends WaveformHostMixin(ResponsiveLitElement) {
+export class FcStemPlayerStem extends WaveformHostMixin(
+  ResponsiveConsumerLitElement,
+) {
   static get styles() {
     return [
       gridStyles,

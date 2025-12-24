@@ -148,6 +148,11 @@ export class FcStemPlayer extends ResponsiveLitElement {
        * Enable locking for the region selection
        */
       lockRegions: { type: Boolean },
+
+      /**
+       * Pixels per second for waveform rendering (calculated)
+       */
+      pixelsPerSecond: { state: true },
     };
   }
 
@@ -161,6 +166,11 @@ export class FcStemPlayer extends ResponsiveLitElement {
    */
   #debouncedMergePeaks;
 
+  /**
+   * @private
+   */
+  #debouncedRecalculatePixelsPerSecond;
+
   /** @private */
   #nLoading = 0;
 
@@ -172,10 +182,15 @@ export class FcStemPlayer extends ResponsiveLitElement {
     this.loop = false;
     this.noKeyboardEvents = false;
     this.#debouncedMergePeaks = debounce(this.#mergePeaks, 100);
+    this.#debouncedRecalculatePixelsPerSecond = debounce(
+      this.#recalculatePixelsPerSecond,
+      100,
+    );
     this.regions = false;
     this.zoom = 1;
     this.collapsed = false;
     this.lockRegions = false;
+    this.pixelsPerSecond = 0;
   }
 
   firstUpdated() {
@@ -291,7 +306,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
 
       this.style.setProperty('--stemplayer-duration', duration);
 
-      this.#recalculatePixelsPerSecond();
+      this.#debouncedRecalculatePixelsPerSecond();
     });
 
     controller.on('offset', () => {
@@ -314,10 +329,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
     });
 
     this.addEventListener('resize', () => {
-      // allow time to stabilise
-      setTimeout(() => {
-        this.#recalculatePixelsPerSecond();
-      }, 50);
+      this.#debouncedRecalculatePixelsPerSecond();
     });
   }
 
@@ -361,7 +373,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
       }
       if (propName === 'zoom') {
         if (this.zoom < 1) this.zoom = 1; // zomming to smaller than 1 is pointless
-        this.#recalculatePixelsPerSecond();
+        this.#debouncedRecalculatePixelsPerSecond();
       }
     });
   }
@@ -409,6 +421,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
           .duration=${this.regionDuration}
           .regions=${this.regions}
           .lockRegions=${this.lockRegions}
+          .pixelsPerSecond=${this.pixelsPerSecond}
           @region:update=${this.#onRegionUpdate}
           @region:change=${this.#onRegionChange}
           class=${this.collapsed ? 'hidden h0' : ''}
@@ -675,14 +688,20 @@ export class FcStemPlayer extends ResponsiveLitElement {
   }
 
   #recalculatePixelsPerSecond() {
-    if (this.stemComponents[0]?.row) {
-      const pps =
-        ((this.clientWidth - this.stemComponents[0].row.nonFlexWidth) /
-          this.#controller.duration) *
-        this.zoom;
+    requestAnimationFrame(() => {
+      if (this.stemComponents[0]?.row) {
+        const pps =
+          ((this.clientWidth - this.stemComponents[0].row.nonFlexWidth) /
+            this.#controller.duration) *
+          this.zoom;
 
-      if (pps) this.style.setProperty('--fc-waveform-pixels-per-second', pps);
-    }
+        if (pps) {
+          this.pixelsPerSecond = pps;
+          // Keep CSS custom property for backwards compatibility
+          this.style.setProperty('--fc-waveform-pixels-per-second', pps);
+        }
+      }
+    });
   }
 
   // keypress event
