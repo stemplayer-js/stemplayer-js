@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1-beta.1](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@4.0.1-beta.0...@stemplayer-js/stemplayer-js@4.0.1-beta.1) (2026-03-27)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** mask no longer paints over controls in safari ([e3b79f3](https://github.com/stemplayer-js/stemplayer-js/commit/e3b79f3bd2b1fd1a45afcbc276a8bb0f86521de2))
+
+
+
+
+
 ## [4.0.1-beta.0](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@4.0.0...@stemplayer-js/stemplayer-js@4.0.1-beta.0) (2025-12-24)
 
 
