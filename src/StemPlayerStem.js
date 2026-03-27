@@ -226,7 +226,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(
     const styles = this.getComputedWaveformStyles();
 
     return html`<stemplayer-js-row>
-      <div slot="controls" class="dFlex h100">
+      <div slot="controls" class="dFlex h100 relative z99">
         <fc-player-button
           class="w2 overflowHidden"
           @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
