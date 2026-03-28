@@ -39,6 +39,35 @@ export class FcStemPlayerControls extends WaveformHostMixin(
           --stemplayer-js-row-controls-background-color: transparent;
           --stemplayer-js-row-end-background-color: transparent;
         }
+
+        .stem-row {
+          position: relative;
+          line-height: var(--stemplayer-js-row-height, 4.5rem);
+          height: var(--stemplayer-js-row-height, 4.5rem);
+          user-select: none;
+        }
+
+        .wControls {
+          width: var(--stemplayer-js-row-controls-width);
+        }
+
+        .wEnd {
+          min-width: var(--stemplayer-js-row-end-width);
+        }
+
+        .bgControls {
+          background-color: var(
+            --stemplayer-js-row-controls-background-color,
+            black
+          );
+        }
+
+        .bgEnd {
+          background-color: var(
+            --stemplayer-js-row-end-background-color,
+            black
+          );
+        }
       `,
     ];
   }
@@ -58,7 +87,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       /**
        * The current time of playback
        */
-      currentTime: { type: Number },
+      currentTime: { type: Number, hasChanged: () => false },
 
       /**
        * The peaks data that are to be used for displaying the waveform
@@ -68,7 +97,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       /**
        * The percentage of the current time
        */
-      currentPct: { type: Number },
+      currentPct: { type: Number, hasChanged: () => false },
 
       /**
        * The playing state
@@ -100,6 +129,34 @@ export class FcStemPlayerControls extends WaveformHostMixin(
    */
   #debouncedHandleSeek;
 
+  set currentTime(val) {
+    this._currentTime = val;
+    if (this.shadowRoot) {
+      this.shadowRoot.querySelectorAll('.js-currentTime').forEach(el => {
+        el.textContent = formatSeconds(val || 0);
+      });
+    }
+  }
+
+  get currentTime() {
+    return this._currentTime;
+  }
+
+  set currentPct(val) {
+    this._currentPct = val;
+    if (this.shadowRoot) {
+      this.shadowRoot.querySelectorAll('fc-range.js-progress').forEach(el => {
+        el.value = val * 100;
+      });
+      const waveform = this.shadowRoot.querySelector('fc-waveform');
+      if (waveform) waveform.progress = val;
+    }
+  }
+
+  get currentPct() {
+    return this._currentPct;
+  }
+
   constructor() {
     super();
     this.#debouncedHandleSeek = debounce(this.#handleSeek, 100);
@@ -115,8 +172,8 @@ export class FcStemPlayerControls extends WaveformHostMixin(
   }
 
   #getLargeScreenTpl() {
-    return html`<stemplayer-js-row>
-      <div slot="controls" class="dFlex h100">
+    return html`<div class="stem-row dFlex h100">
+      <div class="wControls stickLeft bgControls z999 dFlex h100">
         ${this.#renderControl('playpause', true)} ${this.#renderControl('loop')}
         ${this.#renderControl('label', this.label) ||
         html`<div class="flex1"></div>`}
@@ -125,10 +182,10 @@ export class FcStemPlayerControls extends WaveformHostMixin(
           this.#renderControl('waveform') || this.#renderControl('progress'),
         )}
       </div>
-      <div slot="flex" class="h100">
+      <div class="flex1 h100">
         ${this.#renderControl('waveform') || this.#renderControl('progress')}
       </div>
-      <div slot="end" class="h100 dFlex">
+      <div class="wEnd stickRight bgEnd z99 dFlex h100">
         ${this.#renderControl(
           'duration',
           this.#renderControl('waveform') || this.#renderControl('progress'),
@@ -138,11 +195,11 @@ export class FcStemPlayerControls extends WaveformHostMixin(
             ${this.#renderControl('download')}${this.#renderControl('collapse')}`
           : ''}
       </div>
-    </stemplayer-js-row>`;
+    </div>`;
   }
 
   #getSmallScreenTpl() {
-    return html`<stemplayer-js-row displayMode="sm">
+    return html`<div class="stem-row dFlex h100 overflowHidden">
       <fc-player-button
         class="w2 flexNoShrink"
         .disabled=${!this.duration}
@@ -164,21 +221,22 @@ export class FcStemPlayerControls extends WaveformHostMixin(
           </div>`
         : ''}
       <div
-        class="w2 truncate textCenter flexNoShrink z99 op75 top right textXs"
+        class="w2 truncate textCenter flexNoShrink z99 op75 top right textXs js-currentTime"
       >
-        ${formatSeconds(this.currentTime || 0)}
+        0:00
       </div>
       <fc-range
         label="progress"
-        class="focusBgBrand px1 flex1 flexNoShrink"
-        .value=${this.currentPct * 100}
+        class="focusBgBrand px1 flex1 flexNoShrink js-progress"
+        .value=${0}
+        .step=${0.001}
         @input=${this.#handleSeeking}
         @change=${this.#debouncedHandleSeek}
       ></fc-range>
       <div class="w2 op75 textCenter textXs">
         <span class="p2">${formatSeconds(this.duration)}</span>
       </div>
-    </stemplayer-js-row>`;
+    </div>`;
   }
 
   /**
@@ -294,8 +352,9 @@ export class FcStemPlayerControls extends WaveformHostMixin(
     if (value === 'progress')
       return html`<fc-range
         label="progress"
-        class="focusBgBrand px1 dBlock h100"
-        .value=${this.currentPct * 100}
+        class="focusBgBrand px1 dBlock h100 js-progress"
+        .value=${0}
+        .step=${0.001}
         @input=${this.#handleSeeking}
         @change=${this.#debouncedHandleSeek}
       ></fc-range>`;
@@ -305,9 +364,10 @@ export class FcStemPlayerControls extends WaveformHostMixin(
 
       return html`
         <fc-waveform
+          class="dBlock h100 w100"
           .peaks=${this.peaks}
           .duration=${this.duration}
-          .progress=${this.currentPct}
+          .progress=${this.currentPct || 0}
           .progressColor=${styles.waveProgressColor}
           .waveColor=${styles.waveColor}
           .barWidth=${styles.barWidth}
@@ -341,7 +401,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
 
     if (value === 'time')
       return html`<div class="w2 textCenter flexNoShrink z99 top right">
-        <span class="p2 textXs">${formatSeconds(this.currentTime || 0)}</span>
+        <span class="p2 textXs js-currentTime">0:00</span>
       </div>`;
 
     if (value === 'download')

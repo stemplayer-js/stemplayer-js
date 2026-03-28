@@ -8,6 +8,31 @@ A streaming, low latency Stem Player Web-Component
 
 This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
 
+## Architecture (Current)
+
+The player is split across four custom elements:
+
+- `stemplayer-js`: orchestration, playback lifecycle, keyboard handling, UI tick loop.
+- `stemplayer-js-controls`: top control strip (play/pause, loop, seek, time, zoom).
+- `stemplayer-js-stem`: per-track row (solo/mute/volume + waveform).
+- `stemplayer-js-workspace`: timeline overlay for region selection, cursor, and region gestures.
+
+### Component Distribution
+
+- Playback engine and segment scheduling remain in `@firstcoders/hls-web-audio`.
+- High-frequency visual updates (`currentTime`, `currentPct`) are rendered in `stemplayer-js`.
+- The workspace is an overlay sibling (not a structural wrapper around rows), reducing nesting depth and avoiding layout coupling.
+
+### Flow Overview
+
+1. `stemplayer-js` creates the shared `AudioController` and loads each slotted `stemplayer-js-stem`.
+2. On playback, a UI tick loop in `stemplayer-js` reads controller time/pct.
+3. Tick values are pushed directly to controls/stems.
+4. `stemplayer-js-controls` and `stemplayer-js-stem` update their UI imperatively for hot-path values.
+5. `stemplayer-js-workspace` handles regions/cursor interactions and emits `region:*` events.
+
+This keeps scheduling concerns in the audio package while keeping visual progress updates in the UI layer.
+
 ## Contributing
 
 > This repo is a subtree split of [our monorepo](https://github.com/firstcoders/stemplayer-js-monorepo). Using a monorepo greatly simplifies development of many packages with dependencies. If you'd like to contribute to the development of stemplayer-js, please create a pull-request there.
@@ -67,6 +92,11 @@ Downloading and decoding, for example, 10 5minute audio files will consume bandw
 
 **Why not progressive download?**
 We need to use the web audio API to achieve precise synchronized playback.
+
+## Performance Notes
+
+- Use pre-generated waveforms and segmented audio to minimize startup and memory pressure.
+- UI progress is driven by the player UI loop; this avoids coupling high-frequency render work to engine internals.
 
 See also
 

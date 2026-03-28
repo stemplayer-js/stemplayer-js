@@ -5,3 +5,9 @@ import { createContext } from '@lit/context';
  * Prevents each child component from recalculating responsive breakpoints
  */
 export const displayModeContext = createContext('displayMode');
+
+/**
+ * Context for cascading player state from parent to children
+ * Prevents unnecessary DOM traversals and ensures batch Lit renders
+ */
+export const playerStateContext = createContext('playerState');

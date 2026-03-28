@@ -1,5 +1,5 @@
 import { html, css } from 'lit';
-import HLS from '@firstcoders/hls-web-audio/hls.js';
+import HLS from '@firstcoders/hls-web-audio/track/HLS.js';
 import { ResponsiveConsumerLitElement } from './ResponsiveConsumerLitElement.js';
 import { WaveformHostMixin } from './mixins/WaveformHostMixin.js';
 import gridStyles from './styles/grid.js';
@@ -32,6 +32,35 @@ export class FcStemPlayerStem extends WaveformHostMixin(
           );
           display: block;
         }
+
+        .stem-row {
+          position: relative;
+          line-height: var(--stemplayer-js-row-height, 4.5rem);
+          height: var(--stemplayer-js-row-height, 4.5rem);
+          user-select: none;
+        }
+
+        .wControls {
+          width: var(--stemplayer-js-row-controls-width);
+        }
+
+        .wEnd {
+          min-width: var(--stemplayer-js-row-end-width);
+        }
+
+        .bgControls {
+          background-color: var(
+            --stemplayer-js-row-controls-background-color,
+            black
+          );
+        }
+
+        .bgEnd {
+          background-color: var(
+            --stemplayer-js-row-end-background-color,
+            black
+          );
+        }
       `,
     ];
   }
@@ -58,7 +87,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(
        */
       solo: { type: String },
       muted: { type: Boolean },
-      currentPct: { type: Number },
+      currentPct: { type: Number, hasChanged: () => false },
       volume: { type: Number },
 
       /**
@@ -76,6 +105,17 @@ export class FcStemPlayerStem extends WaveformHostMixin(
        */
       waveProgressColor: { type: String },
     };
+  }
+
+  set currentPct(val) {
+    this._currentPct = val;
+    // Directly push to fc-waveform without triggering a Lit re-render
+    const el = this.shadowRoot?.querySelector('fc-waveform');
+    if (el) el.progress = val;
+  }
+
+  get currentPct() {
+    return this._currentPct;
   }
 
   /**
@@ -190,7 +230,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(
    * @private
    */
   #getSmallScreenTpl() {
-    return html`<stemplayer-js-row displayMode="sm">
+    return html`<div class="stem-row dFlex h100 overflowHidden">
       <fc-player-button
         @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
         .title=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
@@ -216,7 +256,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(
         .scaleY=${this.volume}
         style="display: none;"
       ></fc-waveform>
-    </stemplayer-js-row>`;
+    </div>`;
   }
 
   /**
@@ -225,8 +265,8 @@ export class FcStemPlayerStem extends WaveformHostMixin(
   #getLargeScreenTpl() {
     const styles = this.getComputedWaveformStyles();
 
-    return html`<stemplayer-js-row>
-      <div slot="controls" class="dFlex h100 relative z99">
+    return html`<div class="stem-row dFlex h100">
+      <div class="wControls stickLeft bgControls z999 dFlex h100 relative">
         <fc-player-button
           class="w2 overflowHidden"
           @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
@@ -251,23 +291,25 @@ export class FcStemPlayerStem extends WaveformHostMixin(
           ${this.label}
         </div>
       </div>
-      ${styles
-        ? html`
-            <fc-waveform
-              class="h100"
-              slot="flex"
-              .src=${this.waveform}
-              .progress=${this.currentPct}
-              .scaleY=${this.volume}
-              .progressColor=${styles.waveProgressColor}
-              .waveColor=${styles.waveColor}
-              .barWidth=${styles.barWidth}
-              .barGap=${styles.barGap}
-              .pixelRatio=${styles.devicePixelRatio}
-            ></fc-waveform>
-          `
-        : ''}
-    </stemplayer-js-row>`;
+      <div class="flex1">
+        ${styles
+          ? html`
+              <fc-waveform
+                class="h100"
+                .src=${this.waveform}
+                .progress=${this.currentPct}
+                .scaleY=${this.volume}
+                .progressColor=${styles.waveProgressColor}
+                .waveColor=${styles.waveColor}
+                .barWidth=${styles.barWidth}
+                .barGap=${styles.barGap}
+                .pixelRatio=${styles.devicePixelRatio}
+              ></fc-waveform>
+            `
+          : ''}
+      </div>
+      <div class="wEnd stickRight bgEnd z99 dFlex"></div>
+    </div>`;
   }
 
   /**
@@ -354,9 +396,5 @@ export class FcStemPlayerStem extends WaveformHostMixin(
    */
   get waveformComponent() {
     return this.shadowRoot?.querySelector('fc-waveform');
-  }
-
-  get row() {
-    return this.shadowRoot.querySelector('stemplayer-js-row');
   }
 }

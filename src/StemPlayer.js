@@ -1,7 +1,9 @@
 import { html, css } from 'lit';
 import { createRef, ref } from 'lit/directives/ref.js';
-import Controller from '@firstcoders/hls-web-audio/controller.js';
+import { ContextProvider } from '@lit/context';
+import Controller from '@firstcoders/hls-web-audio/core/AudioController.js';
 import Peaks from '@firstcoders/waveform-element/Peaks.js';
+import { playerStateContext } from './contexts.js';
 import { ResponsiveLitElement } from './ResponsiveLitElement.js';
 import { FcStemPlayerControls as ControlComponent } from './StemPlayerControls.js';
 import { FcStemPlayerStem as StemComponent } from './StemPlayerStem.js';
@@ -150,8 +152,16 @@ export class FcStemPlayer extends ResponsiveLitElement {
       lockRegions: { type: Boolean },
 
       /**
+       * How often the UI should update during playback, in milliseconds.
+       * Defaults to 250ms (approximately 4 times per second). Controls both the
+       * player state updates and the timeupdate event emission rate.
+       */
+      uiUpdateInterval: { type: Number, attribute: 'ui-update-interval' },
+
+      /**
        * Pixels per second for waveform rendering (calculated)
        */
+
       pixelsPerSecond: { state: true },
     };
   }
@@ -174,6 +184,12 @@ export class FcStemPlayer extends ResponsiveLitElement {
   /** @private */
   #nLoading = 0;
 
+  /** @private */
+  #playerStateProvider;
+
+  /** @private */
+  #lastPeaksData = [];
+
   constructor() {
     super();
 
@@ -190,7 +206,34 @@ export class FcStemPlayer extends ResponsiveLitElement {
     this.zoom = 1;
     this.collapsed = false;
     this.lockRegions = false;
+    this.uiUpdateInterval = 250;
     this.pixelsPerSecond = 0;
+
+    this.playerState = {
+      currentTime: 0,
+      currentPct: 0,
+      duration: 0,
+      isPlaying: false,
+      loop: false,
+      collapsed: false,
+      peaks: null,
+    };
+
+    // Set up context provider
+    this.#playerStateProvider = new ContextProvider(this, {
+      context: playerStateContext,
+      initialValue: this.playerState,
+    });
+  }
+
+  /**
+   * Updates multiple player state properties at once and provides them to consumers
+   * @param {Object} props
+   * @private
+   */
+  #updatePlayerState(props) {
+    this.playerState = { ...this.playerState, ...props };
+    this.#playerStateProvider.setValue(this.playerState);
   }
 
   firstUpdated() {
@@ -246,12 +289,74 @@ export class FcStemPlayer extends ResponsiveLitElement {
       }
     });
 
-    ['timeupdate', 'end', 'seek', 'start', 'pause'].forEach(event => {
+    ['end', 'seek', 'start', 'pause', 'pause-end'].forEach(event => {
       controller.on(event, args => {
         this.dispatchEvent(
           new CustomEvent(event, { detail: args, bubbles: true }),
         );
       });
+    });
+
+    let tUiNext;
+    let lastTickTime = 0;
+    const uiTick = timestamp => {
+      const currentTimestamp = timestamp || performance.now();
+
+      if (currentTimestamp - lastTickTime >= this.uiUpdateInterval) {
+        lastTickTime = currentTimestamp;
+
+        const { currentTime: t, pct } = controller;
+
+        // Push clock values directly to children — bypassing ContextProvider entirely
+        // avoids triggering the ContextConsumer cascade (12+ microtasks per tick)
+        this.stemComponents.forEach(el => {
+          el.currentPct = pct;
+        });
+        this.controlsComponents.forEach(el => {
+          el.currentTime = t;
+          el.currentPct = pct;
+        });
+
+        this.dispatchEvent(
+          new CustomEvent('timeupdate', {
+            detail: {
+              t,
+              pct,
+              remaining: controller.remaining,
+              act: controller.ac?.currentTime,
+            },
+            bubbles: true,
+          }),
+        );
+      }
+
+      if (
+        controller.desiredState === 'resumed' ||
+        controller.state === 'running' ||
+        controller.isBuffering
+      ) {
+        tUiNext = requestAnimationFrame(uiTick);
+      } else {
+        tUiNext = undefined;
+      }
+    };
+
+    controller.on('start', () => {
+      if (tUiNext) cancelAnimationFrame(tUiNext);
+      lastTickTime = 0; // force immediate update on start
+      tUiNext = requestAnimationFrame(uiTick);
+    });
+
+    controller.on('pause-end', () => {
+      if (
+        (controller.desiredState === 'resumed' ||
+          controller.state === 'running') &&
+        !tUiNext
+      ) {
+        tUiNext = requestAnimationFrame(uiTick);
+      }
+      this.isLoading = false;
+      this.dispatchEvent(new Event('loading-end'));
     });
 
     controller.on('pause-start', () => {
@@ -265,40 +370,46 @@ export class FcStemPlayer extends ResponsiveLitElement {
       this.dispatchEvent(new Event('loading-start'));
     });
 
-    controller.on('pause-end', () => {
-      this.isLoading = false;
-      this.dispatchEvent(new Event('loading-end'));
-    });
-
-    controller.on('error', err =>
-      this.dispatchEvent(new ErrorEvent('error', err)),
-    );
-
-    controller.on('timeupdate', ({ t, pct }) => {
-      requestAnimationFrame(() => {
-        this.#updateChildren({
-          currentTime: t,
-          currentPct: pct,
-        });
-      });
+    controller.on('error', err => {
+      if (tUiNext) cancelAnimationFrame(tUiNext);
+      this.dispatchEvent(new ErrorEvent('error', err));
     });
 
     controller.on('end', () => {
-      this.#updateChildren({
+      if (tUiNext) cancelAnimationFrame(tUiNext);
+      tUiNext = undefined;
+      this.#updatePlayerState({
         currentTime: 0,
         currentPct: 0,
       });
     });
 
+    controller.on('pause', () => {
+      if (tUiNext) cancelAnimationFrame(tUiNext);
+      tUiNext = undefined;
+    });
+
     controller.on('seek', ({ t, pct }) => {
-      this.#updateChildren({
+      this.#updatePlayerState({
         currentTime: t,
         currentPct: pct,
       });
+      // Ensure we fire a single timeupdate on seek so UI renders exactly the seeked position immediately
+      this.dispatchEvent(
+        new CustomEvent('timeupdate', {
+          detail: {
+            t,
+            pct,
+            remaining: controller.remaining,
+            act: controller.ac?.currentTime,
+          },
+          bubbles: true,
+        }),
+      );
     });
 
     controller.on('duration', duration => {
-      this.#updateChildren({
+      this.#updatePlayerState({
         duration,
       });
 
@@ -318,14 +429,18 @@ export class FcStemPlayer extends ResponsiveLitElement {
     });
 
     controller.on('start', () => {
-      this.#updateChildren({
+      this.#updatePlayerState({
         duration: controller.duration,
         isPlaying: true,
       });
     });
 
     controller.on('pause', () => {
-      this.#updateChildren({ isPlaying: false });
+      this.#updatePlayerState({
+        isPlaying: false,
+        currentTime: controller.currentTime,
+        currentPct: controller.pct,
+      });
     });
 
     this.addEventListener('resize', () => {
@@ -356,26 +471,38 @@ export class FcStemPlayer extends ResponsiveLitElement {
   }
 
   updated(changedProperties) {
+    let offsetChanged = false;
+    let durationChanged = false;
+
     changedProperties.forEach((oldValue, propName) => {
       if (['loop'].indexOf(propName) !== -1) {
         this.#controller.loop = this.loop;
 
         // notify the controls component of the change
-        this.#updateChildren({
+        this.#updatePlayerState({
           loop: this.loop,
         });
       }
       if (['offset'].indexOf(propName) !== -1) {
-        this.#controller.offset = parseFloat(this.offset); // for some reason, the value is sometimes reflected as a string
+        offsetChanged = true;
       }
       if (['duration'].indexOf(propName) !== -1) {
-        this.#controller.playDuration = parseFloat(this.duration); // for some reason, the value is sometimes reflected as a string
+        durationChanged = true;
       }
       if (propName === 'zoom') {
         if (this.zoom < 1) this.zoom = 1; // zomming to smaller than 1 is pointless
         this.#debouncedRecalculatePixelsPerSecond();
       }
     });
+
+    if (offsetChanged || durationChanged) {
+      const parsedOffset = parseFloat(this.offset);
+      const parsedDuration = parseFloat(this.duration);
+      this.#controller.setRegion(
+        Number.isNaN(parsedOffset) ? 0 : parsedOffset,
+        Number.isNaN(parsedDuration) ? undefined : parsedDuration,
+      );
+    }
   }
 
   /**
@@ -414,20 +541,20 @@ export class FcStemPlayer extends ResponsiveLitElement {
         class="scrollWrapper relative"
         style="${this.zoom === 1 ? 'overflow-x:hidden' : ''}"
       >
+        <slot class="default" @slotchange=${this.#onSlotChange}></slot>
+
         <stemplayer-js-workspace
           ${ref(this.#workspace)}
           .totalDuration=${this.audioDuration}
           .offset=${this.regionOffset}
-          .duration=${this.regionDuration}
+          .regionDuration=${this.regionDuration}
           .regions=${this.regions}
           .lockRegions=${this.lockRegions}
           .pixelsPerSecond=${this.pixelsPerSecond}
           @region:update=${this.#onRegionUpdate}
           @region:change=${this.#onRegionChange}
           class=${this.collapsed ? 'hidden h0' : ''}
-        >
-          <slot class="default" @slotchange=${this.#onSlotChange}></slot>
-        </stemplayer-js-workspace>
+        ></stemplayer-js-workspace>
       </div>
       <slot name="footer" @slotchange=${this.#onSlotChange}></slot>
       ${this.isLoading
@@ -474,7 +601,7 @@ export class FcStemPlayer extends ResponsiveLitElement {
 
   #onToggleCollapse() {
     this.collapsed = !this.collapsed;
-    this.#updateChildren({ collapsed: this.collapsed });
+    this.#updatePlayerState({ collapsed: this.collapsed });
   }
 
   /**
@@ -551,16 +678,31 @@ export class FcStemPlayer extends ResponsiveLitElement {
    * @private
    */
   #mergePeaks() {
-    const peaks = Peaks.combine(
-      ...this.stemComponents.map(c => c.peaks).filter(e => !!e),
-    );
+    const childPeaks = this.stemComponents.map(c => c.peaks).filter(e => !!e);
 
-    // pass the combined peaks to the controls component
-    this.slottedElements
-      .filter(el => el instanceof ControlComponent)
-      .forEach(el => {
-        el.peaks = peaks;
-      });
+    // Check if the underlying peak data has actually changed
+    const currentData = childPeaks.map(p => p.data);
+    let changed = currentData.length !== this.#lastPeaksData.length;
+
+    if (!changed) {
+      for (let i = 0; i < currentData.length; i += 1) {
+        if (currentData[i] !== this.#lastPeaksData[i]) {
+          changed = true;
+          break;
+        }
+      }
+    }
+
+    if (!changed) {
+      return; // Skip expensive combine & re-render cycle
+    }
+
+    this.#lastPeaksData = currentData;
+
+    const peaks = Peaks.combine(...childPeaks);
+
+    // Provide the combined peaks to all consumers
+    this.#updatePlayerState({ peaks });
 
     this.dispatchEvent(
       new CustomEvent('peaks', {
@@ -663,22 +805,20 @@ export class FcStemPlayer extends ResponsiveLitElement {
     return this.slottedElements.filter(e => e instanceof StemComponent);
   }
 
+  get controlsComponents() {
+    return this.slottedElements.filter(e => e instanceof ControlComponent);
+  }
+
   /**
    * @private
    */
-  #updateChildren(props) {
-    this.slottedElements.forEach(el => {
-      if (el instanceof StemComponent || el instanceof ControlComponent)
-        Object.keys(props).forEach(key => {
-          el[key] = props[key];
-        });
-    });
-  }
 
   #onRegionChange(e) {
     const { offset, duration } = e.detail;
-    this.#controller.offset = offset;
-    this.#controller.playDuration = duration;
+    this.#controller.setRegion(
+      Number.isNaN(parseFloat(offset)) ? 0 : parseFloat(offset),
+      Number.isNaN(parseFloat(duration)) ? undefined : parseFloat(duration),
+    );
   }
 
   #onRegionUpdate(e) {
@@ -689,11 +829,10 @@ export class FcStemPlayer extends ResponsiveLitElement {
 
   #recalculatePixelsPerSecond() {
     requestAnimationFrame(() => {
-      if (this.stemComponents[0]?.row) {
-        const pps =
-          ((this.clientWidth - this.stemComponents[0].row.nonFlexWidth) /
-            this.#controller.duration) *
-          this.zoom;
+      const waveformWidth = this.#workspace.value?.waveformWidth;
+
+      if (waveformWidth > 0 && this.#controller.duration > 0) {
+        const pps = (waveformWidth / this.#controller.duration) * this.zoom;
 
         if (pps) {
           this.pixelsPerSecond = pps;

@@ -48,7 +48,12 @@ export class Workspace extends ResponsiveConsumerLitElement {
           display: block;
           width: var(--stemplayer-js-workspace-width, fit-content);
           min-width: 100%;
-          position: relative;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          pointer-events: none;
+          z-index: 10;
         }
 
         .mask {
@@ -73,6 +78,7 @@ export class Workspace extends ResponsiveConsumerLitElement {
           background-color: transparent;
           height: 100%;
           top: 0;
+          left: 0;
           width: 1px;
           padding: 0;
           margin: 0;
@@ -80,9 +86,12 @@ export class Workspace extends ResponsiveConsumerLitElement {
           border-style: dashed;
           opacity: 0;
           margin-left: var(--stemplayer-js-row-controls-width);
+          transform: translateX(var(--cursor-x, -10000px));
+          will-change: transform;
         }
 
         .regionArea {
+          pointer-events: auto;
           margin-left: var(--stemplayer-js-row-controls-width);
           margin-right: var(--stemplayer-js-row-end-width);
           left: calc(
@@ -99,6 +108,7 @@ export class Workspace extends ResponsiveConsumerLitElement {
 
         .lRowControls {
           left: var(--stemplayer-js-row-controls-width);
+          pointer-events: auto;
         }
 
         .handle {
@@ -123,12 +133,16 @@ export class Workspace extends ResponsiveConsumerLitElement {
   static properties = {
     totalDuration: { type: Number },
     offset: { type: Number },
-    duration: { type: Number },
+    regionDuration: { type: Number },
     regions: { type: Boolean },
     cursorPosition: { state: true },
     lockRegions: { type: Boolean },
     pixelsPerSecond: { type: Number },
   };
+
+  #hoverRafId = null;
+
+  #mouseMoveRafId = null;
 
   constructor() {
     super();
@@ -174,10 +188,10 @@ export class Workspace extends ResponsiveConsumerLitElement {
           Math.floor(this.offset * 1000) / 1000,
         );
       }
-      if (propName === 'duration') {
+      if (propName === 'regionDuration') {
         this.style.setProperty(
           '--duration',
-          Math.floor(this.duration * 1000) / 1000,
+          Math.floor(this.regionDuration * 1000) / 1000,
         );
       }
     });
@@ -186,7 +200,7 @@ export class Workspace extends ResponsiveConsumerLitElement {
   render() {
     return html`<div>
       <div class="z99 noPointerEvents h100 absolute"></div>
-      ${this.regions && this.offset > 0 && this.duration > 0
+      ${this.regions && this.offset > 0 && this.regionDuration > 0
         ? html` <div
             class="absolute h100 z999 mask dashed regionArea"
             @mousedown=${this.#onRegionMouseDown}
@@ -210,7 +224,7 @@ export class Workspace extends ResponsiveConsumerLitElement {
             >
               <div class="handle left"></div>
               <div class="w2 hRow textCenter textXs">
-                ${formatSeconds(this.offset + this.duration)}
+                ${formatSeconds(this.offset + this.regionDuration)}
               </div>
               <fc-player-button
                 @click=${this.#onDeselectClick}
@@ -231,13 +245,17 @@ export class Workspace extends ResponsiveConsumerLitElement {
           >
         </div>
       </div>
-      <slot></slot>
-      <div class="lRowControls rRowEnd absolute" ${ref(this.#horizonEl)}></div>
+      <div
+        class="lRowControls rRowEnd absolute h100 top bottom"
+        ${ref(this.#horizonEl)}
+      ></div>
     </div>`;
   }
 
   #onMouseDown(e) {
     if (this.lockRegions) return;
+    if (e.target.closest && e.target.closest('fc-player-button')) return;
+
     const { offsetX, offsetWidth } = this.resolveOffsets(e);
 
     if (this.isDraggingRegion) {
@@ -263,77 +281,91 @@ export class Workspace extends ResponsiveConsumerLitElement {
     if (!this.regions) return;
     if (this.lockRegions) return;
 
-    const { offsetX, offsetWidth } = this.resolveOffsets(e);
-
-    if (
-      this.#mouseDownX !== undefined &&
-      offsetX > 0 &&
-      offsetX < offsetWidth
-    ) {
-      // store pre-change values for rollback
-      const oldMouseMoveWidth = this.#mouseMoveWidth;
-      const oldOffsetX = this.lastOffsetX;
-
-      // is dragging a region
-      if (this.isDraggingRegion) {
-        const distance = offsetX - this.#mouseDownX;
-        let newOffset = this.offset + distance / this.pixelsPerSecond;
-
-        if (newOffset <= 0) {
-          newOffset = 0.0001; // nearly 0, due to a check offset > 0 above in render
-        }
-
-        if (newOffset + this.duration > this.totalDuration) {
-          // prevent dragging past the end
-          newOffset = this.totalDuration - this.duration;
-        }
-
-        this.offset = newOffset;
-        this.#mouseDownX = offsetX;
-      }
-      // is dragging a handle or creating new region
-      else {
-        this.lastOffsetX = offsetX;
-        this.#mouseMoveWidth = Math.abs(offsetX - this.#mouseDownX);
-      }
-
-      // emit pre-update event
-      const preUpdateEvent = new CustomEvent('region:pre-update', {
-        detail: this.dragState,
-        bubbles: true,
-        composed: true,
-        cancelable: true,
-      });
-
-      this.dispatchEvent(preUpdateEvent);
-
-      // if pre-update event default is prevented, revert to previous state
-      if (preUpdateEvent.defaultPrevented) {
-        this.#mouseMoveWidth = oldMouseMoveWidth;
-        this.lastOffsetX = oldOffsetX;
-      }
-
-      if (this.#mouseMoveWidth) {
-        this.dispatchEvent(
-          new CustomEvent('region:update', {
-            detail: this.dragState,
-            bubbles: true,
-            composed: true,
-          }),
-        );
-      }
+    if (this.#mouseMoveRafId) {
+      cancelAnimationFrame(this.#mouseMoveRafId);
     }
+
+    this.#mouseMoveRafId = requestAnimationFrame(() => {
+      const { offsetX, offsetWidth } = this.resolveOffsets(e);
+
+      if (
+        this.#mouseDownX !== undefined &&
+        offsetX > 0 &&
+        offsetX < offsetWidth
+      ) {
+        // store pre-change values for rollback
+        const oldMouseMoveWidth = this.#mouseMoveWidth;
+        const oldOffsetX = this.lastOffsetX;
+
+        // is dragging a region
+        if (this.isDraggingRegion) {
+          const distance = offsetX - this.#mouseDownX;
+          let newOffset = this.offset + distance / this.pixelsPerSecond;
+
+          if (newOffset <= 0) {
+            newOffset = 0.0001; // nearly 0, due to a check offset > 0 above in render
+          }
+
+          if (newOffset + this.regionDuration > this.totalDuration) {
+            // prevent dragging past the end
+            newOffset = this.totalDuration - this.regionDuration;
+          }
+
+          this.offset = newOffset;
+          this.#mouseDownX = offsetX;
+        }
+        // is dragging a handle or creating new region
+        else {
+          this.lastOffsetX = offsetX;
+          this.#mouseMoveWidth = Math.abs(offsetX - this.#mouseDownX);
+        }
+
+        // emit pre-update event
+        const preUpdateEvent = new CustomEvent('region:pre-update', {
+          detail: this.dragState,
+          bubbles: true,
+          composed: true,
+          cancelable: true,
+        });
+
+        this.dispatchEvent(preUpdateEvent);
+
+        // if pre-update event default is prevented, revert to previous state
+        if (preUpdateEvent.defaultPrevented) {
+          this.#mouseMoveWidth = oldMouseMoveWidth;
+          this.lastOffsetX = oldOffsetX;
+        }
+
+        if (this.#mouseMoveWidth) {
+          this.dispatchEvent(
+            new CustomEvent('region:update', {
+              detail: this.dragState,
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        }
+      }
+    });
   }
 
   #onMouseOut() {
     if (this.lockRegions) return;
-    this.shadowRoot.querySelector('.cursor').style.left = `-10000px`;
+    this.style.setProperty('--cursor-x', `-10000px`);
   }
 
   #onMouseUp() {
+    const isClick =
+      this.#mouseDownTime && new Date() - this.#mouseDownTime < 200;
+
     // Only handle regular region selection if we weren't dragging handles
     // If we're finishing a normal region selection drag, dispatch an event.
-    if (this.#mouseMoveWidth) {
+    // We ignore if the interaction was so fast that it's clearly a click/tap rather than a deliberate drag
+    if (
+      this.#mouseMoveWidth &&
+      Math.abs(this.#mouseMoveWidth) > 3 &&
+      !isClick
+    ) {
       this.dispatchEvent(
         new CustomEvent('region:change', {
           detail: this.dragState,
@@ -343,14 +375,14 @@ export class Workspace extends ResponsiveConsumerLitElement {
       );
     }
 
-    // If we were dragging a handle, dispatch an event with the new offset and duration, which were set explicitly
+    // If we were dragging a region or a handle, dispatch an event with the new offset and duration, which were set explicitly
     // in the mousemove handler. This is to allow the parent to update the region state.
-    if (this.isDraggingRegion) {
+    if (this.isDraggingRegion || this.isDraggingHandle !== undefined) {
       this.dispatchEvent(
         new CustomEvent('region:change', {
           detail: {
             offset: this.offset,
-            duration: this.duration,
+            duration: this.regionDuration,
             region: this,
           },
           bubbles: true,
@@ -426,6 +458,10 @@ export class Workspace extends ResponsiveConsumerLitElement {
     };
   }
 
+  get waveformWidth() {
+    return this.#horizonEl.value?.clientWidth || 0;
+  }
+
   /**
    *@private
    */
@@ -433,26 +469,31 @@ export class Workspace extends ResponsiveConsumerLitElement {
   #onHover(e) {
     if (this.lockRegions) return;
 
-    const { offsetX, offsetWidth } = this.resolveOffsets(e);
-    const el = this.shadowRoot.querySelector('.cursor');
-
-    if (offsetX < 0 || offsetX > offsetWidth) {
-      el.style.left = `-10000px`;
-      return;
+    if (this.#hoverRafId) {
+      cancelAnimationFrame(this.#hoverRafId);
     }
 
-    el.style.left = `${Math.floor(offsetX)}px`;
+    this.#hoverRafId = requestAnimationFrame(() => {
+      const { offsetX, offsetWidth } = this.resolveOffsets(e);
 
-    this.cursorPosition =
-      Math.floor((offsetX / offsetWidth) * this.totalDuration * 1000) / 1000;
+      if (offsetX < 0 || offsetX > offsetWidth) {
+        this.style.setProperty('--cursor-x', `-10000px`);
+        return;
+      }
 
-    this.dispatchEvent(
-      new CustomEvent('region:hover', {
-        detail: this.dragState,
-        bubbles: true,
-        composed: true,
-      }),
-    );
+      this.style.setProperty('--cursor-x', `${Math.floor(offsetX)}px`);
+
+      this.cursorPosition =
+        Math.floor((offsetX / offsetWidth) * this.totalDuration * 1000) / 1000;
+
+      this.dispatchEvent(
+        new CustomEvent('region:hover', {
+          detail: this.dragState,
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
   }
 
   resolveOffsets(e) {
@@ -488,7 +529,7 @@ export class Workspace extends ResponsiveConsumerLitElement {
 
       const left = Math.round(this.pixelsPerSecond * this.offset * 1000) / 1000;
       const width =
-        Math.round(this.pixelsPerSecond * this.duration * 1000) / 1000;
+        Math.round(this.pixelsPerSecond * this.regionDuration * 1000) / 1000;
       const right2 = left + width;
 
       if (isRightHandle) {
