@@ -6,6 +6,7 @@ import typographyStyles from './styles/typography.js';
 import gridStyles from './styles/grid.js';
 import backgroundStyles from './styles/backgrounds.js';
 import utilitiesStyles from './styles/utilities.js';
+import rowStyles from './styles/row.js';
 import formatSeconds from './lib/format-seconds.js';
 
 /**
@@ -43,6 +44,7 @@ export class Workspace extends ResponsiveConsumerLitElement {
       backgroundStyles,
       spacingStyles,
       utilitiesStyles,
+      rowStyles,
       css`
         :host {
           display: block;

@@ -36,7 +36,7 @@ export default css`
   }
 
   .pr3 {
-    padding-right: 0.3rem;
+    padding-right: 0.45rem;
   }
 
   .ml--2 {

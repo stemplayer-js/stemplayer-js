@@ -1,12 +1,5 @@
 import { html, css } from 'lit';
-import { ResponsiveConsumerLitElement } from './ResponsiveConsumerLitElement.js';
-import { WaveformHostMixin } from './mixins/WaveformHostMixin.js';
-import gridStyles from './styles/grid.js';
-import flexStyles from './styles/flex.js';
-import spacingStyles from './styles/spacing.js';
-import typographyStyles from './styles/typography.js';
-import bgStyles from './styles/backgrounds.js';
-import utilityStyle from './styles/utilities.js';
+import { StemPlayerBaseRow } from './StemPlayerBaseRow.js';
 import formatSeconds from './lib/format-seconds.js';
 import debounce from './lib/debounce.js';
 
@@ -16,17 +9,10 @@ import debounce from './lib/debounce.js';
  * @cssprop [--stemplayer-js-controls-color]
  * @cssprop [--stemplayer-js-controls-background-color]
  */
-export class FcStemPlayerControls extends WaveformHostMixin(
-  ResponsiveConsumerLitElement,
-) {
+export class FcStemPlayerControls extends StemPlayerBaseRow {
   static get styles() {
     return [
-      gridStyles,
-      flexStyles,
-      spacingStyles,
-      typographyStyles,
-      bgStyles,
-      utilityStyle,
+      ...super.styles,
       css`
         :host {
           --fc-player-button-color: var(
@@ -35,38 +21,12 @@ export class FcStemPlayerControls extends WaveformHostMixin(
           );
           display: block;
           color: var(--stemplayer-js-controls-color, inherit);
-          background-color: var(--stemplayer-js-controls-background-color);
+          background-color: var(
+            --stemplayer-js-controls-background-color,
+            transparent
+          );
           --stemplayer-js-row-controls-background-color: transparent;
           --stemplayer-js-row-end-background-color: transparent;
-        }
-
-        .stem-row {
-          position: relative;
-          line-height: var(--stemplayer-js-row-height, 4.5rem);
-          height: var(--stemplayer-js-row-height, 4.5rem);
-          user-select: none;
-        }
-
-        .wControls {
-          width: var(--stemplayer-js-row-controls-width);
-        }
-
-        .wEnd {
-          min-width: var(--stemplayer-js-row-end-width);
-        }
-
-        .bgControls {
-          background-color: var(
-            --stemplayer-js-row-controls-background-color,
-            black
-          );
-        }
-
-        .bgEnd {
-          background-color: var(
-            --stemplayer-js-row-end-background-color,
-            black
-          );
         }
       `,
     ];
@@ -74,16 +34,6 @@ export class FcStemPlayerControls extends WaveformHostMixin(
 
   static get properties() {
     return {
-      /**
-       * The label to display
-       */
-      label: { type: String },
-
-      /**
-       * The duration of the track
-       */
-      duration: { type: Number },
-
       /**
        * The current time of playback
        */
@@ -93,11 +43,6 @@ export class FcStemPlayerControls extends WaveformHostMixin(
        * The peaks data that are to be used for displaying the waveform
        */
       peaks: { type: Object },
-
-      /**
-       * The percentage of the current time
-       */
-      currentPct: { type: Number, hasChanged: () => false },
 
       /**
        * The playing state
@@ -142,19 +87,13 @@ export class FcStemPlayerControls extends WaveformHostMixin(
     return this._currentTime;
   }
 
-  set currentPct(val) {
-    this._currentPct = val;
+  updateProgress(val) {
+    super.updateProgress(val);
     if (this.shadowRoot) {
       this.shadowRoot.querySelectorAll('fc-range.js-progress').forEach(el => {
         el.value = val * 100;
       });
-      const waveform = this.shadowRoot.querySelector('fc-waveform');
-      if (waveform) waveform.progress = val;
     }
-  }
-
-  get currentPct() {
-    return this._currentPct;
   }
 
   constructor() {
@@ -163,15 +102,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
     this.controls = ['playpause', 'loop', 'progress', 'duration', 'time'];
   }
 
-  render() {
-    return html`<div>
-      ${this.displayMode === 'lg'
-        ? this.#getLargeScreenTpl()
-        : this.#getSmallScreenTpl()}
-    </div>`;
-  }
-
-  #getLargeScreenTpl() {
+  renderLargeScreen() {
     return html`<div class="stem-row dFlex h100">
       <div class="wControls stickLeft bgControls z999 dFlex h100">
         ${this.#renderControl('playpause', true)} ${this.#renderControl('loop')}
@@ -198,21 +129,9 @@ export class FcStemPlayerControls extends WaveformHostMixin(
     </div>`;
   }
 
-  #getSmallScreenTpl() {
+  renderSmallScreen() {
     return html`<div class="stem-row dFlex h100 overflowHidden">
-      <fc-player-button
-        class="w2 flexNoShrink"
-        .disabled=${!this.duration}
-        @click=${this.isPlaying ? this.#onPauseClick : this.#onPlayClick}
-        .title=${this.isPlaying ? 'Pause' : 'Play'}
-        .type=${this.isPlaying ? 'pause' : 'play'}
-      ></fc-player-button>
-      <fc-player-button
-        class="w2 flexNoShrink ${this.loop ? '' : 'textMuted'}"
-        @click=${this.#toggleLoop}
-        .title=${this.loop ? 'Disable loop' : 'Enable Loop'}
-        type="loop"
-      ></fc-player-button>
+      ${this.#renderControl('playpause', true)} ${this.#renderControl('loop')}
       ${this.displayMode !== 'xs'
         ? html`<div
             class="flex1 truncate hideXs px4 pr5 textCenter flexNoShrink"
@@ -222,6 +141,9 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         : ''}
       <div
         class="w2 truncate textCenter flexNoShrink z99 op75 top right textXs js-currentTime"
+        role="timer"
+        aria-label="Current time"
+        aria-live="off"
       >
         0:00
       </div>
@@ -234,7 +156,9 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         @change=${this.#debouncedHandleSeek}
       ></fc-range>
       <div class="w2 op75 textCenter textXs">
-        <span class="p2">${formatSeconds(this.duration)}</span>
+        <span class="p2" role="timer" aria-label="Duration"
+          >${formatSeconds(this.duration)}</span
+        >
       </div>
     </div>`;
   }
@@ -321,7 +245,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
         class="w2 flexNoShrink"
         .disabled=${!this.duration}
         @click=${this.isPlaying ? this.#onPauseClick : this.#onPlayClick}
-        .title=${this.isPlaying ? 'Pause' : 'Play'}
+        .label=${this.isPlaying ? 'Pause' : 'Play'}
         .type=${this.isPlaying ? 'pause' : 'play'}
       ></fc-player-button>`;
 
@@ -329,21 +253,22 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       return html`<fc-player-button
         class="w2 flexNoShrink ${this.loop ? '' : 'textMuted'}"
         @click=${this.#toggleLoop}
-        .title=${this.loop ? 'Disable loop' : 'Enable Loop'}
+        .label=${this.loop ? 'Disable loop' : 'Enable Loop'}
+        .disabled=${controls.loop?.disabled}
         type="loop"
       ></fc-player-button>`;
 
     if (value === 'zoom')
       return html`<fc-player-button
           class="w2 flexNoShrink"
-          title="zoom in"
+          label="zoom in"
           type="zoomin"
           .disabled=${controls.zoom.disabled}
           @click=${this.#onZoominClick}
         ></fc-player-button
         ><fc-player-button
           class="w2 flexNoShrink"
-          title="zoom out"
+          label="zoom out"
           type="zoomout"
           .disabled=${controls.zoom.disabled}
           @click=${this.#onZoomoutClick}
@@ -377,37 +302,36 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       `;
     }
 
-    if (value === 'loop')
-      return html`<fc-player-button
-        class="w2 flexNoShrink ${this.loop ? '' : 'textMuted'}"
-        @click=${this.#toggleLoop}
-        .title=${this.loop ? 'Disable loop' : 'Enable Loop'}
-        .disabled=${controls.loop.disabled}
-        type="loop"
-      ></fc-player-button>`;
-
     if (value === 'label')
       return html`<div
         class="flex1 w100 truncate hideXs px4 pr5 textCenter flexNoShrink textSm"
-        title=${this.label}
+        label=${this.label}
       >
         ${this.label}
       </div>`;
 
     if (value === 'duration')
       return html`<div class="textCenter w2">
-        <span class="p2 textXs">${formatSeconds(this.duration)}</span>
+        <span class="p2 textXs" role="timer" aria-label="Duration"
+          >${formatSeconds(this.duration)}</span
+        >
       </div>`;
 
     if (value === 'time')
       return html`<div class="w2 textCenter flexNoShrink z99 top right">
-        <span class="p2 textXs js-currentTime">0:00</span>
+        <span
+          class="p2 textXs js-currentTime"
+          role="timer"
+          aria-label="Current time"
+          aria-live="off"
+          >0:00</span
+        >
       </div>`;
 
     if (value === 'download')
       return html`<fc-player-button
         class="w2 flexNoShrink"
-        title="download"
+        label="download"
         type="download"
         .disabled=${controls.download.disabled}
         @click=${this.#onDownloadClick}
@@ -417,7 +341,7 @@ export class FcStemPlayerControls extends WaveformHostMixin(
       return html`<fc-player-button
         class="w2 flexNoShrink"
         @click=${this.#onToggleCollapseClick}
-        title="toggle"
+        label="toggle"
         type="${controls.collapse.toggled ? 'unfoldmore' : 'unfoldless'}"
       ></fc-player-button>`;
 

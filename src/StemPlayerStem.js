@@ -1,29 +1,15 @@
 import { html, css } from 'lit';
 import HLS from '@firstcoders/hls-web-audio/track/HLS.js';
-import { ResponsiveConsumerLitElement } from './ResponsiveConsumerLitElement.js';
-import { WaveformHostMixin } from './mixins/WaveformHostMixin.js';
-import gridStyles from './styles/grid.js';
-import flexStyles from './styles/flex.js';
-import spacingStyles from './styles/spacing.js';
-import typographyStyles from './styles/typography.js';
-import bgStyles from './styles/backgrounds.js';
-import utilityStyle from './styles/utilities.js';
+import { StemPlayerBaseRow } from './StemPlayerBaseRow.js';
 import { fetchOptions } from './config.js';
 
 /**
  * A component to render a single stem
  */
-export class FcStemPlayerStem extends WaveformHostMixin(
-  ResponsiveConsumerLitElement,
-) {
+export class FcStemPlayerStem extends StemPlayerBaseRow {
   static get styles() {
     return [
-      gridStyles,
-      flexStyles,
-      spacingStyles,
-      typographyStyles,
-      bgStyles,
-      utilityStyle,
+      ...super.styles,
       css`
         :host {
           --fc-player-button-color: var(
@@ -32,46 +18,12 @@ export class FcStemPlayerStem extends WaveformHostMixin(
           );
           display: block;
         }
-
-        .stem-row {
-          position: relative;
-          line-height: var(--stemplayer-js-row-height, 4.5rem);
-          height: var(--stemplayer-js-row-height, 4.5rem);
-          user-select: none;
-        }
-
-        .wControls {
-          width: var(--stemplayer-js-row-controls-width);
-        }
-
-        .wEnd {
-          min-width: var(--stemplayer-js-row-end-width);
-        }
-
-        .bgControls {
-          background-color: var(
-            --stemplayer-js-row-controls-background-color,
-            black
-          );
-        }
-
-        .bgEnd {
-          background-color: var(
-            --stemplayer-js-row-end-background-color,
-            black
-          );
-        }
       `,
     ];
   }
 
   static get properties() {
     return {
-      /**
-       * The label to display
-       */
-      label: { type: String },
-
       /**
        * The url of the audio file
        */
@@ -87,13 +39,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(
        */
       solo: { type: String },
       muted: { type: Boolean },
-      currentPct: { type: Number, hasChanged: () => false },
       volume: { type: Number },
-
-      /**
-       * Override the duration of the track
-       */
-      duration: { type: Number },
 
       /**
        * The colour of the waveform
@@ -105,17 +51,6 @@ export class FcStemPlayerStem extends WaveformHostMixin(
        */
       waveProgressColor: { type: String },
     };
-  }
-
-  set currentPct(val) {
-    this._currentPct = val;
-    // Directly push to fc-waveform without triggering a Lit re-render
-    const el = this.shadowRoot?.querySelector('fc-waveform');
-    if (el) el.progress = val;
-  }
-
-  get currentPct() {
-    return this._currentPct;
   }
 
   /**
@@ -218,29 +153,18 @@ export class FcStemPlayerStem extends WaveformHostMixin(
     });
   }
 
-  render() {
-    return html`<div>
-      ${this.displayMode === 'lg'
-        ? this.#getLargeScreenTpl()
-        : this.#getSmallScreenTpl()}
-    </div>`;
-  }
-
-  /**
-   * @private
-   */
-  #getSmallScreenTpl() {
+  renderSmallScreen() {
     return html`<div class="stem-row dFlex h100 overflowHidden">
       <fc-player-button
         @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
-        .title=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
+        .label=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
         .type=${this.solo === 'on' ? 'unsolo' : 'solo'}
         class="w2 flexNoShrink ${this.solo === 'on' ? 'bgBrand' : ''}"
       ></fc-player-button>
       <fc-player-button
         class="w2 flexNoShrink"
         @click=${this.#toggleMute}
-        .title="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
+        .label="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
         .type="${this.muted || this.volume === 0 ? 'unmute' : 'mute'}"
       ></fc-player-button>
       <fc-slider
@@ -259,10 +183,7 @@ export class FcStemPlayerStem extends WaveformHostMixin(
     </div>`;
   }
 
-  /**
-   * @private
-   */
-  #getLargeScreenTpl() {
+  renderLargeScreen() {
     const styles = this.getComputedWaveformStyles();
 
     return html`<div class="stem-row dFlex h100">
@@ -270,13 +191,13 @@ export class FcStemPlayerStem extends WaveformHostMixin(
         <fc-player-button
           class="w2 overflowHidden"
           @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}
-          .title=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
+          .label=${this.solo === 'on' ? 'Disable solo' : 'Solo'}
           .type=${this.solo === 'on' ? 'unsolo' : 'solo'}
         ></fc-player-button>
         <fc-player-button
           class="w2 overflowHidden"
           @click=${this.#toggleMute}
-          .title="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
+          .label="${this.muted || this.volume === 0 ? 'Unmute' : 'Mute'}"
           type="${this.muted || this.volume === 0 ? 'unmute' : 'mute'}"
         ></fc-player-button>
         <fc-range

@@ -9,14 +9,6 @@ export default css`
     flex: 1;
   }
 
-  .flexRow {
-    flex-direction: row;
-  }
-
-  .flexAlignStretch {
-    align-items: stretch;
-  }
-
   .flexNoShrink {
     flex-shrink: 0;
   }
