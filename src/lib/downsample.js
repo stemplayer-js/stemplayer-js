@@ -13,7 +13,6 @@
  * @see https://github.com/Alexufo/Responsive-waveform/blob/master/largestTriangleThreeBuckets.js
  */
 
-/* eslint-disable */
 export default function largestTriangleThreeBuckets(data, threshold) {
   // data is linear array [90,87,97...]
   var data_length = data.length;

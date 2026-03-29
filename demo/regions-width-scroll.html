@@ -61,21 +61,18 @@
         console.log(e.detail)
       })
 
-      // eslint-disable-next-line no-unused-vars
       function setRegion(offset, duration) {
         console.log('setregion', offset, duration);
         stemplayer.offset = offset
         stemplayer.duration = duration
       }
 
-      // eslint-disable-next-line no-unused-vars
       function unsetRegion(offset, duration) {
         console.log('unsetRegion', offset, duration);
         stemplayer.offset = undefined
         stemplayer.duration = undefined
       }
 
-      // eslint-disable-next-line no-unused-vars
       function getState() {
         console.log(document.querySelector('stemplayer-js').state)
       }

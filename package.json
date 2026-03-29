@@ -45,8 +45,8 @@
     "analyze": "cem analyze --litelement",
     "build:docs": "npx web-component-analyzer --format markdown stemplayer.js --outDir docs",
     "start": "web-dev-server",
-    "lint": "eslint --ext .js,.html . --ignore-path .gitignore && prettier \"**/*.js\" --check --ignore-path .gitignore",
-    "format": "eslint --ext .js,.html . --fix --ignore-path .gitignore && prettier \"**/*.js\" --write --ignore-path .gitignore",
+    "lint": "eslint . && prettier \"**/*.js\" --check --ignore-path .gitignore",
+    "format": "eslint . --fix && prettier \"**/*.js\" --write --ignore-path .gitignore",
     "test": "web-test-runner",
     "test:watch": "web-test-runner --watch",
     "prepublishOnly": "npm run analyze && npm run build:docs"
@@ -65,31 +65,17 @@
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "@custom-elements-manifest/analyzer": "^0.11.0",
-    "@open-wc/eslint-config": "^12.0.3",
+    "@open-wc/eslint-config": "^13.0.0",
     "@open-wc/testing": "^4.0.0",
     "@web/dev-server": "^0.4.6",
     "@web/test-runner": "^0.18.3",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.2",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "prettier": "^3.7.4"
+    "prettier": "^3.8.1"
   },
   "customElements": "custom-elements.json",
-  "eslintConfig": {
-    "extends": [
-      "@open-wc",
-      "prettier"
-    ],
-    "rules": {
-      "no-param-reassign": [
-        "error",
-        {
-          "props": false
-        }
-      ]
-    }
-  },
   "prettier": {
     "singleQuote": true,
     "arrowParens": "avoid"

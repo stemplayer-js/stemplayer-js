@@ -104,7 +104,6 @@ export const WaveformHostMixin = superClass =>
 
         return this.#cachedWaveformStyles;
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.debug('Could not use computed waveform styles', err);
       }
 

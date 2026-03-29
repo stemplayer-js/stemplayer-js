@@ -467,7 +467,6 @@ export class Workspace extends ResponsiveConsumerLitElement {
   /**
    *@private
    */
-  // eslint-disable-next-line consistent-return
   #onHover(e) {
     if (this.lockRegions) return;
 
