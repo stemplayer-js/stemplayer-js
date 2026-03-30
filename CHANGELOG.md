@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0-beta.0](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@4.0.1-beta.1...@stemplayer-js/stemplayer-js@4.1.0-beta.0) (2026-03-30)
+
+
+### Bug Fixes
+
+* address Copilot review feedback across tests, docs, and scheduler/buffer logic ([dfdc829](https://github.com/stemplayer-js/stemplayer-js/commit/dfdc829ea31589839983360481891f9a8165436e))
+* **hls-web-audio:** reschedule tracks and expose atomic region setter ([c5f77a4](https://github.com/stemplayer-js/stemplayer-js/commit/c5f77a413e112d5f1f21731e975ebea5cb57b9fe))
+* **stemplayer-js:** consistent controls rendering between screen sizes ([e48b83b](https://github.com/stemplayer-js/stemplayer-js/commit/e48b83b52b53e383d6ff3d6e8bc8dd394147b668))
+* **stemplayer-js:** fix progress when pausing retains position ([32df675](https://github.com/stemplayer-js/stemplayer-js/commit/32df675decf052900bc0dac68eddd396e0817b4c))
+* **stemplayer-js:** lint ([432693e](https://github.com/stemplayer-js/stemplayer-js/commit/432693e0cfa7ad64af41ae121bb9656441840cd1))
+
+
+### Features
+
+* **stemplayer-js:** accessability improvements ([a695665](https://github.com/stemplayer-js/stemplayer-js/commit/a695665df81a5c482bcc6a1fafc8e404e57b80b1))
+
+
+
+
+
 ## [4.0.1-beta.1](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@4.0.1-beta.0...@stemplayer-js/stemplayer-js@4.0.1-beta.1) (2026-03-27)
 
 
