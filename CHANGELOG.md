@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0-beta.1](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@4.1.0-beta.0...@stemplayer-js/stemplayer-js@4.1.0-beta.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* **stemplayer-js:** region drag cleanup ([66e8359](https://github.com/stemplayer-js/stemplayer-js/commit/66e8359f9ab0bcef7bd0451d4234c5aab5ecaa72))
+* **stemplayer-js:** various zoom and width issues ([c13129f](https://github.com/stemplayer-js/stemplayer-js/commit/c13129f61b86b39e75d17ed8fe97f845ece67b22))
+
+
+
+
+
 # [4.1.0-beta.0](https://github.com/stemplayer-js/stemplayer-js/compare/@stemplayer-js/stemplayer-js@4.0.1-beta.1...@stemplayer-js/stemplayer-js@4.1.0-beta.0) (2026-03-30)
 
 
