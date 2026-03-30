@@ -10,6 +10,7 @@ export default css`
 
   .wControls {
     width: var(--stemplayer-js-row-controls-width);
+    flex-shrink: 0;
   }
 
   .wEnd {

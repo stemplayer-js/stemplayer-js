@@ -18,6 +18,15 @@ export class FcStemPlayerStem extends StemPlayerBaseRow {
           );
           display: block;
         }
+
+        :host(.lg) {
+          min-width: calc(
+            var(--stemplayer-js-row-controls-width, 0px) +
+              var(--fc-waveform-pixels-per-second, 0) *
+              var(--stemplayer-duration, 0) * 1px +
+              var(--stemplayer-js-row-end-width, 0px)
+          );
+        }
       `,
     ];
   }
@@ -135,6 +144,10 @@ export class FcStemPlayerStem extends StemPlayerBaseRow {
 
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
+      if (propName === 'displayMode') {
+        this.classList.toggle('lg', this.displayMode === 'lg');
+      }
+
       if (['volume', 'muted', 'solo'].indexOf(propName) !== -1) {
         if (this.#HLS) this.#HLS.volume = this.volume;
         if (this.waveformComponent) this.waveformComponent.scaleY = this.volume;
@@ -187,7 +200,9 @@ export class FcStemPlayerStem extends StemPlayerBaseRow {
     const styles = this.getComputedWaveformStyles();
 
     return html`<div class="stem-row dFlex h100">
-      <div class="wControls stickLeft bgControls z999 dFlex h100 relative">
+      <div
+        class="wControls stickLeft bgControls z999 dFlex h100 relative flexNoShrink"
+      >
         <fc-player-button
           class="w2 overflowHidden"
           @click=${this.solo === 'on' ? this.#onUnSoloClick : this.#onSoloClick}

@@ -104,7 +104,7 @@ export class FcStemPlayerControls extends StemPlayerBaseRow {
 
   renderLargeScreen() {
     return html`<div class="stem-row dFlex h100">
-      <div class="wControls stickLeft bgControls z999 dFlex h100">
+      <div class="wControls stickLeft bgControls z999 dFlex h100 flexNoShrink">
         ${this.#renderControl('playpause', true)} ${this.#renderControl('loop')}
         ${this.#renderControl('label', this.label) ||
         html`<div class="flex1"></div>`}
