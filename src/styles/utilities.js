@@ -54,7 +54,11 @@ export default css`
   }
 
   .z999 {
-    z-index: 990;
+    z-index: 999;
+  }
+
+  .z9999 {
+    z-index: 999;
   }
 
   .op75 {

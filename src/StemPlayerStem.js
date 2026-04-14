@@ -201,7 +201,7 @@ export class FcStemPlayerStem extends StemPlayerBaseRow {
 
     return html`<div class="stem-row dFlex h100">
       <div
-        class="wControls stickLeft bgControls z999 dFlex h100 relative flexNoShrink"
+        class="wControls stickLeft bgControls z9999 dFlex h100 relative flexNoShrink"
       >
         <fc-player-button
           class="w2 overflowHidden"
